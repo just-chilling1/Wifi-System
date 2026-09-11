@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { listInstantIncomePostSets } from "@/app/actions/instant-income-post-sets"
 import { InstantIncomeContent } from "./instant-income-content"
 
 export default async function InstantIncomePage() {
@@ -13,5 +14,8 @@ export default async function InstantIncomePage() {
     redirect("/auth/login")
   }
 
-  return <InstantIncomeContent userId={user.id} />
+  const libraryResult = await listInstantIncomePostSets()
+  const initialSets = libraryResult.success ? libraryResult.sets : []
+
+  return <InstantIncomeContent userId={user.id} initialSets={initialSets} />
 }

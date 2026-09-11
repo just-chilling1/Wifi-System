@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,6 +14,10 @@ import {
   Link2,
   ArrowRight,
   ExternalLink,
+  ChevronDown,
+  FolderOpen,
+  Loader2,
+  Trash2,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { GenerationProgress } from "@/components/generation-progress"
@@ -28,6 +32,12 @@ import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
 import { useScrollToResults } from "@/lib/use-scroll-to-results"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
 import { getPremiumTrainingVimeoId } from "@/lib/premium-training-videos"
+import { isValidAffiliateUrl } from "@/lib/affiliate-url"
+import {
+  deleteInstantIncomePostSet,
+  upsertInstantIncomePostSet,
+  type InstantIncomePostSet,
+} from "@/app/actions/instant-income-post-sets"
 
 const INSTANT_STEPS = [
   {
@@ -37,13 +47,13 @@ const INSTANT_STEPS = [
   },
   {
     num: "2",
-    title: "Enter your link",
-    desc: "Paste your affiliate link once. We drop it into every ready-to-post message.",
+    title: "Name your link",
+    desc: "Paste your affiliate link and give it a name. We save each generation under that name in your posts library.",
   },
   {
     num: "3",
     title: "Copy and post",
-    desc: "Copy a post, personalize it, and share it in groups that allow that kind of message.",
+    desc: "Copy a post, personalize it, and share it in groups that allow that kind of message. Reopen saved sets anytime.",
   },
 ] as const
 
@@ -972,12 +982,37 @@ Start with one thing you'll finish. That's the advice I needed last year and ign
   },
 ]
 
-export function InstantIncomeContent({ userId }: { userId: string }) {
+function defaultLabelFromUrl(url: string): string {
+  const trimmed = url.trim()
+  if (!trimmed) return ""
+  try {
+    const host = new URL(trimmed).hostname.replace(/^www\./i, "")
+    return host || "My offer"
+  } catch {
+    return "My offer"
+  }
+}
+
+export function InstantIncomeContent({
+  userId: _userId,
+  initialSets = [],
+}: {
+  userId: string
+  initialSets?: InstantIncomePostSet[]
+}) {
   const [selectedNiche, setSelectedNiche] = useState<string>("Weight Loss")
   const [affiliateLink, setAffiliateLink] = useState("")
+  const [setName, setSetName] = useState("")
+  const [nameTouched, setNameTouched] = useState(false)
   const [showPosts, setShowPosts] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [guideOpen, setGuideOpen] = useState(false)
+  const [librarySets, setLibrarySets] = useState<InstantIncomePostSet[]>(initialSets)
+  const [openLibraryId, setOpenLibraryId] = useState<string | null>(null)
+  const [formError, setFormError] = useState("")
+  const [libraryError, setLibraryError] = useState("")
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const postsResultsRef = useScrollToResults(showPosts && !!affiliateLink.trim())
 
@@ -985,22 +1020,76 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
 
   const filteredPosts = facebookPosts.filter((p) => p.niche === selectedNiche)
 
-  const handleCopy = (post: FacebookPost) => {
-    const populatedPost = post.post.replace("[LINK]", affiliateLink)
-    navigator.clipboard.writeText(populatedPost)
-    setCopiedId(post.id)
+  useEffect(() => {
+    if (nameTouched) return
+    setSetName(defaultLabelFromUrl(affiliateLink))
+  }, [affiliateLink, nameTouched])
+
+  const handleCopy = (postId: string, body: string) => {
+    navigator.clipboard.writeText(body)
+    setCopiedId(postId)
     setTimeout(() => setCopiedId(null), 2000)
   }
 
-  const handleGeneratePosts = () => {
-    if (!affiliateLink.trim()) return
+  const handleGeneratePosts = async () => {
+    const link = affiliateLink.trim()
+    const name = setName.trim()
+
+    if (!isValidAffiliateUrl(link)) {
+      setFormError("Use a full link that starts with https://")
+      return
+    }
+    if (!name) {
+      setFormError("Add a name for this link so we can save the set in your library.")
+      return
+    }
+
+    setFormError("")
+    setLibraryError("")
     setShowPosts(false)
     setGenerating(true)
-    // Short generation phase: the posts get personalized with the user's link
-    setTimeout(() => {
-      setGenerating(false)
-      setShowPosts(true)
-    }, 4500)
+
+    const personalized = filteredPosts.map((post) => ({
+      id: post.id,
+      body: post.post.replace("[LINK]", link),
+    }))
+
+    await new Promise((resolve) => setTimeout(resolve, 4500))
+
+    const result = await upsertInstantIncomePostSet({
+      name,
+      affiliateUrl: link,
+      niche: selectedNiche,
+      posts: personalized,
+    })
+
+    setGenerating(false)
+
+    if (!result.success) {
+      setFormError(result.error)
+      return
+    }
+
+    setLibrarySets((prev) => {
+      const without = prev.filter(
+        (s) => s.id !== result.set.id && s.name.trim().toLowerCase() !== name.toLowerCase(),
+      )
+      return [result.set, ...without]
+    })
+    setShowPosts(true)
+  }
+
+  const handleDeleteSet = async (setId: string) => {
+    setDeletingId(setId)
+    setLibraryError("")
+    const result = await deleteInstantIncomePostSet(setId)
+    setDeletingId(null)
+    if (!result.success) {
+      setLibraryError(result.error)
+      return
+    }
+    setLibrarySets((prev) => prev.filter((s) => s.id !== setId))
+    if (openLibraryId === setId) setOpenLibraryId(null)
   }
 
   return (
@@ -1026,11 +1115,34 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
 
       <PremiumSteps title="Three steps to post" steps={INSTANT_STEPS} />
 
-      <PremiumControlCard
-        icon={Facebook}
-        title="How to find and post in Facebook groups"
-        description="Groups reward members who sound human. Read this once, then generate drafts and edit the first line before you paste."
-      >
+      <section className="glass-card overflow-hidden p-0">
+        <button
+          type="button"
+          onClick={() => setGuideOpen((open) => !open)}
+          aria-expanded={guideOpen}
+          className="flex w-full items-center gap-3 border-b border-[var(--ds-line)] bg-sapphire-100 p-5 text-left transition-colors hover:bg-sapphire-100/80 md:p-6"
+        >
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sapphire-100 text-sapphire-700">
+            <Facebook size={24} strokeWidth={1.75} aria-hidden />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block font-medium text-ink">How to find and post in Facebook groups</span>
+            <span className="mt-0.5 block text-sm text-ink-3">
+              Groups reward members who sound human. Read this once, then generate drafts and edit the first line
+              before you paste.
+            </span>
+          </span>
+          <ChevronDown
+            className={cn(
+              "h-5 w-5 shrink-0 text-sapphire-700 transition-transform duration-200",
+              guideOpen && "rotate-180",
+            )}
+            aria-hidden
+          />
+        </button>
+
+        {guideOpen ? (
+          <div className="space-y-3 p-5 md:p-6">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {GUIDE_STEPS.map((step) => {
                 const Icon = step.icon
@@ -1083,10 +1195,140 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                 </li>
               </ul>
             </div>
-      </PremiumControlCard>
+          </div>
+        ) : null}
+      </section>
+
+      <section className="space-y-4">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="page-eyebrow mb-1">Library</p>
+            <h2 className="text-xl font-semibold text-ink sm:text-2xl">Saved post sets</h2>
+            <p className="mt-1 text-sm text-text-secondary">
+              Each generation is saved under the link name you enter. Same name updates that set.
+            </p>
+          </div>
+          <p className="rounded-full border border-[var(--ds-line)] bg-card px-3 py-1.5 text-sm font-semibold text-ink">
+            {librarySets.length} set{librarySets.length === 1 ? "" : "s"}
+          </p>
+        </div>
+
+        {libraryError ? (
+          <p
+            role="alert"
+            className="rounded-xl border border-[#C53030]/30 bg-[#FDE4E4] px-3.5 py-2.5 text-sm font-medium text-[#C53030]"
+          >
+            {libraryError}
+          </p>
+        ) : null}
+
+        {librarySets.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-[var(--ds-line)] bg-card px-5 py-10 text-center">
+            <FolderOpen className="mx-auto h-8 w-8 text-sapphire-700" aria-hidden />
+            <p className="mt-3 text-sm font-semibold text-ink">No saved sets yet</p>
+            <p className="mt-1 text-sm text-text-secondary">
+              Generate posts with a link name to start your library.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {librarySets.map((set) => {
+              const open = openLibraryId === set.id
+              return (
+                <article
+                  key={set.id}
+                  className="overflow-hidden rounded-2xl border border-[var(--ds-line)] bg-card shadow-[var(--ds-shadow-card)]"
+                >
+                  <div className="flex flex-wrap items-center gap-3 px-4 py-3 sm:px-5">
+                    <button
+                      type="button"
+                      onClick={() => setOpenLibraryId(open ? null : set.id)}
+                      className="flex min-w-0 flex-1 items-center gap-3 text-left"
+                    >
+                      <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
+                        <FolderOpen className="h-4 w-4" aria-hidden />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-semibold text-ink">{set.name}</span>
+                        <span className="mt-0.5 block truncate text-xs text-text-secondary">
+                          {set.niche} · {set.posts.length} posts ·{" "}
+                          {new Date(set.updatedAt).toLocaleDateString()}
+                        </span>
+                      </span>
+                      <ChevronDown
+                        className={cn(
+                          "h-4 w-4 shrink-0 text-text-secondary transition-transform",
+                          open && "rotate-180",
+                        )}
+                        aria-hidden
+                      />
+                    </button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={deletingId === set.id}
+                      onClick={() => void handleDeleteSet(set.id)}
+                      className={cn("h-9 shrink-0", outlineCtaClass)}
+                      aria-label={`Delete ${set.name}`}
+                    >
+                      {deletingId === set.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+
+                  {open ? (
+                    <div className="space-y-3 border-t border-[var(--ds-line)] bg-surface-nested/40 px-4 py-4 sm:px-5">
+                      <p className="truncate text-xs text-text-secondary">{set.affiliateUrl}</p>
+                      {set.posts.map((post, index) => (
+                        <div
+                          key={post.id}
+                          className="rounded-xl border border-[var(--ds-line)] bg-card p-4"
+                        >
+                          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-sapphire-700">
+                            Post #{index + 1}
+                          </p>
+                          <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink">
+                            {post.body}
+                          </p>
+                          <Button
+                            type="button"
+                            onClick={() => handleCopy(`${set.id}-${post.id}`, post.body)}
+                            className={cn(
+                              "mt-3 h-10 w-full text-sm",
+                              copiedId === `${set.id}-${post.id}`
+                                ? "rounded-xl bg-sapphire-500 font-medium text-white hover:bg-sapphire-500"
+                                : primaryCtaClass,
+                            )}
+                          >
+                            {copiedId === `${set.id}-${post.id}` ? (
+                              <>
+                                <CheckCircle2 className="mr-2 h-4 w-4" />
+                                Copied
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="mr-2 h-4 w-4" />
+                                Copy this post
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                </article>
+              )
+            })}
+          </div>
+        )}
+      </section>
 
       <PremiumControlCard
-        icon={PenLine}
+        icon={FolderOpen}
         title="Personalize your drafts"
         description="Pick a niche, paste your affiliate link once, and we drop it into every ready-to-post story."
       >
@@ -1179,11 +1421,40 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                 type="url"
                 placeholder="https://digistore24.com/..."
                 value={affiliateLink}
-                onChange={(e) => setAffiliateLink(e.target.value)}
+                onChange={(e) => {
+                  setAffiliateLink(e.target.value)
+                  setShowPosts(false)
+                }}
                 className="h-12 bg-card text-base text-ink"
               />
               <p className="mt-2 text-xs leading-relaxed text-text-secondary">
                 We add this URL to every draft below. Must start with https://
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-[var(--ds-line)] bg-surface-nested/70 p-4 sm:p-5">
+              <Label
+                htmlFor="set-name"
+                className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-text-secondary"
+              >
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-sapphire-100 text-sapphire-700">
+                  <FolderOpen size={12} aria-hidden />
+                </span>
+                Step 3 · Name for this link
+              </Label>
+              <Input
+                id="set-name"
+                type="text"
+                placeholder="e.g. Melatonin Digistore"
+                value={setName}
+                onChange={(e) => {
+                  setNameTouched(true)
+                  setSetName(e.target.value)
+                }}
+                className="h-12 bg-card text-base text-ink"
+              />
+              <p className="mt-2 text-xs leading-relaxed text-text-secondary">
+                Saved sets use this name. Generating again with the same name updates that set.
               </p>
             </div>
 
@@ -1196,9 +1467,18 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
               <WelcomeOfferBanner />
             ) : null}
 
+            {formError ? (
+              <p
+                role="alert"
+                className="flex items-start gap-2 rounded-xl border border-[#C53030]/30 bg-[#FDE4E4] px-3.5 py-2.5 text-sm font-medium text-[#C53030]"
+              >
+                {formError}
+              </p>
+            ) : null}
+
             <Button
-              onClick={handleGeneratePosts}
-              disabled={!affiliateLink.trim() || generating}
+              onClick={() => void handleGeneratePosts()}
+              disabled={!affiliateLink.trim() || !setName.trim() || generating}
               className={cn("h-12 w-full text-base sm:h-14 sm:text-lg", primaryCtaClass)}
               size="lg"
             >
@@ -1251,7 +1531,9 @@ export function InstantIncomeContent({ userId }: { userId: string }) {
                     </p>
                   </div>
                   <Button
-                    onClick={() => handleCopy(post)}
+                    onClick={() =>
+                      handleCopy(post.id, post.post.replace("[LINK]", affiliateLink))
+                    }
                     className={cn(
                       "mt-4 h-12 w-full text-base",
                       copiedId === post.id
