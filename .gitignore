@@ -31,3 +31,10 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# training video pipeline (thumbnails only)
+training-video-system/**
+!training-video-system/wifi-code/
+training-video-system/wifi-code/**
+!training-video-system/wifi-code/thumbnails/
+!training-video-system/wifi-code/thumbnails/**
