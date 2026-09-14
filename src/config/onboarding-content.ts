@@ -1,5 +1,7 @@
 import { brand } from "./brand.config"
 
+export const ONBOARDING_META_KEY = "onboarding_completed" as const
+
 /**
  * Wifi Code onboarding — edit copy here only.
  * Plain language, no product/page names in body steps, no ads.

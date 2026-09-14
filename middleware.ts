@@ -22,7 +22,9 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/embed/") ||
     pathname.startsWith("/api/eligibility/") ||
     pathname === "/api/track/specialist-popup" ||
-    pathname.startsWith("/api/track/specialist-popup/")
+    pathname.startsWith("/api/track/specialist-popup/") ||
+    pathname === "/api/auth/ensure-admin" ||
+    pathname.startsWith("/api/auth/ensure-admin/")
   ) {
     return withRobotsTag(NextResponse.next({ request }))
   }

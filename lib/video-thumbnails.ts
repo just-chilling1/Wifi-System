@@ -31,15 +31,29 @@ export const VIDEO_THUMBNAIL_PATHS = {
 export type VideoThumbnailSlug = keyof typeof VIDEO_THUMBNAIL_PATHS
 
 const VIMEO_TO_SLUG: Partial<Record<string, VideoThumbnailSlug>> = {
-  "1212736531": "watch-this-first",
-  "1212736532": "how-the-money-flows",
-  "1214125517": "your-5-minute-tour",
-  "1214128570": "gold-rush",
-  "1214131356": "my-vault",
-  "1214134021": "unlimited",
-  "1214136849": "instant-income",
-  "1214140189": "automated-profits",
-  "1214142200": "cyber-protection",
+  "1225645049": "watch-this-first",
+  "1225645048": "how-the-money-flows",
+  "1226575133": "your-5-minute-tour",
+  "1225645047": "gold-rush-mindset",
+  "1226575131": "gold-rush",
+  "1225645046": "my-vault-mindset",
+  "1226577448": "my-vault",
+  "1226573904": "link-vault-mindset",
+  "1226575132": "link-vault",
+  "1226543582": "unlimited-mindset",
+  "1226577449": "unlimited",
+  "1226543605": "instant-income-mindset",
+  "1226547482": "instant-income",
+  "1226544264": "automated-profits-mindset",
+  "1226545479": "automated-profits",
+  "1226544662": "cyber-protection-mindset",
+  "1226546051": "cyber-protection",
+  "1226544973": "reseller-license-rights-mindset",
+  "1226547483": "reseller-license-rights",
+  "1226545017": "high-ticket-payouts-mindset",
+  "1226546591": "high-ticket-payouts",
+  "1226574609": "done-for-you-profit-mindset",
+  "1226577445": "done-for-you-profit",
 }
 
 type ThumbnailLookup = {

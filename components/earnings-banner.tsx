@@ -4,14 +4,18 @@ import { useState } from "react"
 import Link from "next/link"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { FREE_TRAINING_URL } from "@/config/offers.config"
+import { usePromoLinks } from "@/context/PromoLinksContext"
 
 export type BannerSize = "compact" | "prominent" | "full"
 
 export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
   const [dismissed, setDismissed] = useState(false)
+  const { settings } = usePromoLinks()
+  const ctaUrl = settings.externalTrainingUrl
+  const title = settings.externalTrainingTitle
+  const ctaLabel = settings.externalTrainingCtaLabel
 
-  if (dismissed) return null
+  if (dismissed || !ctaUrl) return null
 
   const compact = size === "compact"
   const prominent = size === "prominent"
@@ -66,9 +70,7 @@ export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
                 : "mb-4 max-w-4xl text-3xl md:text-5xl",
           )}
         >
-          Wake Up With An Extra{" "}
-          <span className="earnings-banner-accent">$1,000&ndash;$5,000</span>{" "}
-          In Your Bank Account Tomorrow
+          {title}
         </h2>
 
         {(prominent || !compact) && (
@@ -85,7 +87,7 @@ export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
         )}
 
         <Link
-          href={FREE_TRAINING_URL}
+          href={ctaUrl}
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
@@ -97,7 +99,7 @@ export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
                 : "px-10 py-5 text-xl md:text-2xl",
           )}
         >
-          Watch The Free Training &gt;&gt;
+          {ctaLabel}
         </Link>
 
         {(prominent || !compact) && (

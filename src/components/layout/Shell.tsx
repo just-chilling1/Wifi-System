@@ -35,7 +35,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   const isPublicPage = PUBLIC_SHELL_BYPASS_PREFIXES.some((prefix) => pathname.startsWith(prefix))
 
-  const hideSupportBanner = pathname === "/support" || pathname.startsWith("/support/")
+  const hideSupportBanner =
+    pathname === "/support" ||
+    pathname.startsWith("/support/") ||
+    pathname === "/admin" ||
+    pathname.startsWith("/admin/")
 
   if (isAuthPage || isPublicPage) {
     return <>{children}</>

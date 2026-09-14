@@ -38,3 +38,18 @@ training-video-system/**
 training-video-system/wifi-code/**
 !training-video-system/wifi-code/thumbnails/
 !training-video-system/wifi-code/thumbnails/**
+
+# never commit raw video / audio assets
+*.mp4
+*.webm
+*.mov
+*.avi
+*.mkv
+*.mp3
+*.wav
+*.m4a
+*.aac
+*.flac
+*.ogg
+*.aiff
+*.wma

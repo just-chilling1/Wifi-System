@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Eye, EyeOff, Lock, Mail } from "lucide-react"
 import { brand } from "@/config/brand.config"
+import { isAdminUser } from "@/lib/admin"
 
 export default function LoginPage() {
   const [callbackError, setCallbackError] = useState(false)
@@ -28,6 +29,10 @@ export default function LoginPage() {
     }
   }, [])
 
+  useEffect(() => {
+    void fetch("/api/auth/ensure-admin", { method: "POST" }).catch(() => {})
+  }, [])
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     const supabase = createClient()
@@ -35,12 +40,14 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      await fetch("/api/auth/ensure-admin", { method: "POST" }).catch(() => {})
+
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
       if (error) throw error
-      router.push("/onboarding")
+      router.push(isAdminUser(data.user) ? "/admin" : "/onboarding")
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {

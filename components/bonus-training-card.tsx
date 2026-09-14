@@ -1,11 +1,17 @@
+"use client"
+
 import Link from "next/link"
-import { FREE_TRAINING_URL } from "@/lib/support"
 import { cn } from "@/lib/utils"
+import { usePromoLinks } from "@/context/PromoLinksContext"
 
 const BENEFITS = ["No experience needed", "Step-by-step", "24/7 automation"] as const
 
 /** Compact free-training ad between dashboard videos. */
 export function BonusTrainingCard() {
+  const { settings } = usePromoLinks()
+  const ctaUrl = settings.externalTrainingUrl
+  const ctaLabel = settings.externalTrainingCtaLabel
+
   return (
     <div className="bonus-training-card">
       <div className="bonus-training-card__body">
@@ -60,12 +66,12 @@ export function BonusTrainingCard() {
             </p>
 
             <Link
-              href={FREE_TRAINING_URL}
+              href={ctaUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="bonus-training-cta mt-3 inline-flex min-h-[3rem] w-full items-center justify-center rounded-xl px-5 py-3.5 text-center text-[13px] font-black leading-snug whitespace-normal sm:text-sm"
             >
-              Yes! Show Me How To Earn $1,000&ndash;$5,000 A Day
+              {ctaLabel}
             </Link>
 
             <p className="mt-2.5 text-center text-[11px] font-semibold tracking-wide text-text-secondary md:text-xs">

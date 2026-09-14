@@ -52,7 +52,12 @@ export function ExclusiveOffersNavSection({
             <span className="exclusive-offers-nav-play" aria-hidden>
               <Play className="h-3.5 w-3.5 fill-current" strokeWidth={0} />
             </span>
-            <span className="min-w-0 flex-1 break-words leading-snug">{offer.title}</span>
+            <span className="exclusive-offers-nav-copy min-w-0 flex-1">
+              <span className="exclusive-offers-nav-title">{offer.title}</span>
+              {offer.cta?.trim() ? (
+                <span className="exclusive-offers-nav-subtitle">{offer.cta.trim()}</span>
+              ) : null}
+            </span>
             <ExternalLink
               className="exclusive-offers-nav-external h-3.5 w-3.5 shrink-0 text-ink-4"
               strokeWidth={1.75}

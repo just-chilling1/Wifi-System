@@ -35,6 +35,7 @@ import { getPremiumTrainingVimeoId } from "@/lib/premium-training-videos"
 import { isValidAffiliateUrl } from "@/lib/affiliate-url"
 import {
   deleteInstantIncomePostSet,
+  markInstantIncomePostUsed,
   upsertInstantIncomePostSet,
   type InstantIncomePostSet,
 } from "@/app/actions/instant-income-post-sets"
@@ -1008,13 +1009,19 @@ export function InstantIncomeContent({
   const [generating, setGenerating] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [guideOpen, setGuideOpen] = useState(false)
+  const [libraryOpen, setLibraryOpen] = useState(initialSets.length > 0)
   const [librarySets, setLibrarySets] = useState<InstantIncomePostSet[]>(initialSets)
   const [openLibraryId, setOpenLibraryId] = useState<string | null>(null)
   const [formError, setFormError] = useState("")
   const [libraryError, setLibraryError] = useState("")
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [markingPostKey, setMarkingPostKey] = useState<string | null>(null)
 
   const postsResultsRef = useScrollToResults(showPosts && !!affiliateLink.trim())
+
+  const savedSetForResults = librarySets.find(
+    (set) => set.name.trim().toLowerCase() === setName.trim().toLowerCase(),
+  )
 
   const niches = Array.from(new Set(facebookPosts.map((p) => p.niche)))
 
@@ -1076,7 +1083,22 @@ export function InstantIncomeContent({
       )
       return [result.set, ...without]
     })
+    setLibraryOpen(true)
+    setOpenLibraryId(result.set.id)
     setShowPosts(true)
+  }
+
+  const handleMarkPostUsed = async (setId: string, postId: string) => {
+    const key = `${setId}-${postId}`
+    setMarkingPostKey(key)
+    setLibraryError("")
+    const result = await markInstantIncomePostUsed(setId, postId)
+    setMarkingPostKey(null)
+    if (!result.success) {
+      setLibraryError(result.error)
+      return
+    }
+    setLibrarySets((prev) => prev.map((set) => (set.id === result.set.id ? result.set : set)))
   }
 
   const handleDeleteSet = async (setId: string) => {
@@ -1199,132 +1221,205 @@ export function InstantIncomeContent({
         ) : null}
       </section>
 
-      <section className="space-y-4">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="page-eyebrow mb-1">Library</p>
-            <h2 className="text-xl font-semibold text-ink sm:text-2xl">Saved post sets</h2>
-            <p className="mt-1 text-sm text-text-secondary">
+      <section className="glass-card overflow-hidden p-0">
+        <button
+          type="button"
+          onClick={() => setLibraryOpen((open) => !open)}
+          aria-expanded={libraryOpen}
+          className="flex w-full flex-wrap items-center gap-3 border-b border-[var(--ds-line)] bg-sapphire-100 p-5 text-left transition-colors hover:bg-sapphire-100/80 md:p-6"
+        >
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-sapphire-700 shadow-sm">
+            <FolderOpen size={24} strokeWidth={1.75} aria-hidden />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="page-eyebrow mb-1 block">Library</span>
+            <span className="block text-xl font-semibold text-ink sm:text-2xl">Saved post sets</span>
+            <span className="mt-1 block text-sm text-text-secondary">
               Each generation is saved under the link name you enter. Same name updates that set.
-            </p>
-          </div>
-          <p className="rounded-full border border-[var(--ds-line)] bg-card px-3 py-1.5 text-sm font-semibold text-ink">
-            {librarySets.length} set{librarySets.length === 1 ? "" : "s"}
-          </p>
-        </div>
+            </span>
+          </span>
+          <span className="flex shrink-0 items-center gap-2">
+            <span className="rounded-full border border-[var(--ds-line)] bg-card px-3 py-1.5 text-sm font-semibold text-ink">
+              {librarySets.length} set{librarySets.length === 1 ? "" : "s"}
+            </span>
+            <ChevronDown
+              className={cn(
+                "h-5 w-5 shrink-0 text-sapphire-700 transition-transform duration-200",
+                libraryOpen && "rotate-180",
+              )}
+              aria-hidden
+            />
+          </span>
+        </button>
 
-        {libraryError ? (
-          <p
-            role="alert"
-            className="rounded-xl border border-[#C53030]/30 bg-[#FDE4E4] px-3.5 py-2.5 text-sm font-medium text-[#C53030]"
-          >
-            {libraryError}
-          </p>
-        ) : null}
+        {libraryOpen ? (
+          <div className="space-y-4 p-5 md:p-6">
+            {libraryError ? (
+              <p
+                role="alert"
+                className="rounded-xl border border-[#C53030]/30 bg-[#FDE4E4] px-3.5 py-2.5 text-sm font-medium text-[#C53030]"
+              >
+                {libraryError}
+              </p>
+            ) : null}
 
-        {librarySets.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-[var(--ds-line)] bg-card px-5 py-10 text-center">
-            <FolderOpen className="mx-auto h-8 w-8 text-sapphire-700" aria-hidden />
-            <p className="mt-3 text-sm font-semibold text-ink">No saved sets yet</p>
-            <p className="mt-1 text-sm text-text-secondary">
-              Generate posts with a link name to start your library.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {librarySets.map((set) => {
-              const open = openLibraryId === set.id
-              return (
-                <article
-                  key={set.id}
-                  className="overflow-hidden rounded-2xl border border-[var(--ds-line)] bg-card shadow-[var(--ds-shadow-card)]"
-                >
-                  <div className="flex flex-wrap items-center gap-3 px-4 py-3 sm:px-5">
-                    <button
-                      type="button"
-                      onClick={() => setOpenLibraryId(open ? null : set.id)}
-                      className="flex min-w-0 flex-1 items-center gap-3 text-left"
+            {librarySets.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-[var(--ds-line)] bg-card px-5 py-10 text-center">
+                <FolderOpen className="mx-auto h-8 w-8 text-sapphire-700" aria-hidden />
+                <p className="mt-3 text-sm font-semibold text-ink">No saved sets yet</p>
+                <p className="mt-1 text-sm text-text-secondary">
+                  Generate posts with a link name to start your library.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {librarySets.map((set) => {
+                  const open = openLibraryId === set.id
+                  return (
+                    <article
+                      key={set.id}
+                      className="overflow-hidden rounded-2xl border border-[var(--ds-line)] bg-card shadow-[var(--ds-shadow-card)]"
                     >
-                      <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
-                        <FolderOpen className="h-4 w-4" aria-hidden />
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-semibold text-ink">{set.name}</span>
-                        <span className="mt-0.5 block truncate text-xs text-text-secondary">
-                          {set.niche} · {set.posts.length} posts ·{" "}
-                          {new Date(set.updatedAt).toLocaleDateString()}
-                        </span>
-                      </span>
-                      <ChevronDown
-                        className={cn(
-                          "h-4 w-4 shrink-0 text-text-secondary transition-transform",
-                          open && "rotate-180",
-                        )}
-                        aria-hidden
-                      />
-                    </button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      disabled={deletingId === set.id}
-                      onClick={() => void handleDeleteSet(set.id)}
-                      className={cn("h-9 shrink-0", outlineCtaClass)}
-                      aria-label={`Delete ${set.name}`}
-                    >
-                      {deletingId === set.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Trash2 className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-
-                  {open ? (
-                    <div className="space-y-3 border-t border-[var(--ds-line)] bg-surface-nested/40 px-4 py-4 sm:px-5">
-                      <p className="truncate text-xs text-text-secondary">{set.affiliateUrl}</p>
-                      {set.posts.map((post, index) => (
-                        <div
-                          key={post.id}
-                          className="rounded-xl border border-[var(--ds-line)] bg-card p-4"
+                      <div className="flex flex-wrap items-center gap-3 px-4 py-3 sm:px-5">
+                        <button
+                          type="button"
+                          onClick={() => setOpenLibraryId(open ? null : set.id)}
+                          aria-expanded={open}
+                          className="flex min-w-0 flex-1 items-center gap-3 text-left"
                         >
-                          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-sapphire-700">
-                            Post #{index + 1}
-                          </p>
-                          <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink">
-                            {post.body}
-                          </p>
-                          <Button
-                            type="button"
-                            onClick={() => handleCopy(`${set.id}-${post.id}`, post.body)}
+                          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
+                            <FolderOpen className="h-4 w-4" aria-hidden />
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <span className="block truncate text-sm font-semibold text-ink">{set.name}</span>
+                            <span className="mt-0.5 block truncate text-xs text-text-secondary">
+                              {set.niche} · {set.posts.length} posts ·{" "}
+                              {new Date(set.updatedAt).toLocaleDateString()}
+                            </span>
+                          </span>
+                          <ChevronDown
                             className={cn(
-                              "mt-3 h-10 w-full text-sm",
-                              copiedId === `${set.id}-${post.id}`
-                                ? "rounded-xl bg-sapphire-500 font-medium text-white hover:bg-sapphire-500"
-                                : primaryCtaClass,
+                              "h-4 w-4 shrink-0 text-text-secondary transition-transform",
+                              open && "rotate-180",
                             )}
-                          >
-                            {copiedId === `${set.id}-${post.id}` ? (
-                              <>
-                                <CheckCircle2 className="mr-2 h-4 w-4" />
-                                Copied
-                              </>
-                            ) : (
-                              <>
-                                <Copy className="mr-2 h-4 w-4" />
-                                Copy this post
-                              </>
-                            )}
-                          </Button>
+                            aria-hidden
+                          />
+                        </button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          disabled={deletingId === set.id}
+                          onClick={() => void handleDeleteSet(set.id)}
+                          className={cn("h-9 shrink-0", outlineCtaClass)}
+                          aria-label={`Delete ${set.name}`}
+                        >
+                          {deletingId === set.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
+
+                      {open ? (
+                        <div className="space-y-3 border-t border-[var(--ds-line)] bg-surface-nested/40 px-4 py-4 sm:px-5">
+                          <p className="truncate text-xs text-text-secondary">{set.affiliateUrl}</p>
+                          {set.posts.map((post, index) => {
+                            const copyKey = `${set.id}-${post.id}`
+                            const markKey = copyKey
+                            const isUsed = Boolean(post.usedAt)
+                            const isMarking = markingPostKey === markKey
+
+                            return (
+                              <div
+                                key={post.id}
+                                className={cn(
+                                  "rounded-xl border border-[var(--ds-line)] bg-card p-4",
+                                  isUsed && "border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)]/40",
+                                )}
+                              >
+                                <div className="mb-2 flex flex-wrap items-center gap-2">
+                                  <p className="text-xs font-semibold uppercase tracking-wide text-sapphire-700">
+                                    Post #{index + 1}
+                                  </p>
+                                  {isUsed ? (
+                                    <span className="inline-flex items-center gap-1 rounded-full border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ds-offer-green-800)]">
+                                      <CheckCircle2 className="h-3 w-3" aria-hidden />
+                                      Used
+                                    </span>
+                                  ) : null}
+                                </div>
+                                <p
+                                  className={cn(
+                                    "whitespace-pre-wrap text-sm leading-relaxed text-ink",
+                                    isUsed && "text-ink-3",
+                                  )}
+                                >
+                                  {post.body}
+                                </p>
+                                <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                                  <Button
+                                    type="button"
+                                    onClick={() => handleCopy(copyKey, post.body)}
+                                    className={cn(
+                                      "h-10 flex-1 text-sm",
+                                      copiedId === copyKey
+                                        ? "rounded-xl bg-sapphire-500 font-medium text-white hover:bg-sapphire-500"
+                                        : primaryCtaClass,
+                                    )}
+                                  >
+                                    {copiedId === copyKey ? (
+                                      <>
+                                        <CheckCircle2 className="mr-2 h-4 w-4" />
+                                        Copied
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Copy className="mr-2 h-4 w-4" />
+                                        Copy this post
+                                      </>
+                                    )}
+                                  </Button>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    disabled={isUsed || isMarking}
+                                    onClick={() => void handleMarkPostUsed(set.id, post.id)}
+                                    className={cn(
+                                      "h-10 flex-1 text-sm",
+                                      isUsed
+                                        ? "border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] font-medium text-[var(--ds-offer-green-800)]"
+                                        : outlineCtaClass,
+                                    )}
+                                  >
+                                    {isMarking ? (
+                                      <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Saving…
+                                      </>
+                                    ) : isUsed ? (
+                                      <>
+                                        <CheckCircle2 className="mr-2 h-4 w-4" />
+                                        Marked as used
+                                      </>
+                                    ) : (
+                                      "Mark as used"
+                                    )}
+                                  </Button>
+                                </div>
+                              </div>
+                            )
+                          })}
                         </div>
-                      ))}
-                    </div>
-                  ) : null}
-                </article>
-              )
-            })}
+                      ) : null}
+                    </article>
+                  )
+                })}
+              </div>
+            )}
           </div>
-        )}
+        ) : null}
       </section>
 
       <PremiumControlCard
@@ -1510,53 +1605,117 @@ export function InstantIncomeContent({
             </div>
           </div>
 
+          {libraryError ? (
+            <p
+              role="alert"
+              className="rounded-xl border border-[#C53030]/30 bg-[#FDE4E4] px-3.5 py-2.5 text-sm font-medium text-[#C53030]"
+            >
+              {libraryError}
+            </p>
+          ) : null}
+
           <div className="grid grid-cols-1 gap-4">
-            {filteredPosts.map((post, index) => (
-              <article
-                key={post.id}
-                className="glass-card overflow-hidden p-0"
-              >
-                <div className="flex flex-wrap items-center gap-2 border-b border-[var(--ds-line)] px-5 py-3">
-                  <span className="rounded-full bg-grad-sapphire px-3 py-1 text-xs font-medium text-white">
-                    Post #{index + 1}
-                  </span>
-                  <span className="rounded-full border border-[var(--ds-line)] bg-surface-nested px-3 py-1 text-xs font-medium text-ink">
-                    {post.niche}
-                  </span>
-                </div>
-                <div className="px-5 py-5">
-                  <div className="rounded-xl border border-[var(--ds-line)] bg-surface-nested/80 p-4 sm:p-5">
-                    <p className="whitespace-pre-wrap text-[15px] font-normal leading-7 text-ink sm:text-base">
-                      {post.post.replace("[LINK]", affiliateLink)}
-                    </p>
+            {filteredPosts.map((post, index) => {
+              const savedPost = savedSetForResults?.posts.find((p) => p.id === post.id)
+              const isUsed = Boolean(savedPost?.usedAt)
+              const setId = savedSetForResults?.id
+              const markKey = setId ? `${setId}-${post.id}` : null
+              const isMarking = markKey != null && markingPostKey === markKey
+              const body = post.post.replace("[LINK]", affiliateLink)
+
+              return (
+                <article
+                  key={post.id}
+                  className={cn(
+                    "glass-card overflow-hidden p-0",
+                    isUsed && "ring-1 ring-[var(--ds-line-offer)]",
+                  )}
+                >
+                  <div className="flex flex-wrap items-center gap-2 border-b border-[var(--ds-line)] px-5 py-3">
+                    <span className="rounded-full bg-grad-sapphire px-3 py-1 text-xs font-medium text-white">
+                      Post #{index + 1}
+                    </span>
+                    <span className="rounded-full border border-[var(--ds-line)] bg-surface-nested px-3 py-1 text-xs font-medium text-ink">
+                      {post.niche}
+                    </span>
+                    {isUsed ? (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] px-2.5 py-1 text-xs font-semibold text-[var(--ds-offer-green-800)]">
+                        <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
+                        Used
+                      </span>
+                    ) : null}
                   </div>
-                  <Button
-                    onClick={() =>
-                      handleCopy(post.id, post.post.replace("[LINK]", affiliateLink))
-                    }
-                    className={cn(
-                      "mt-4 h-12 w-full text-base",
-                      copiedId === post.id
-                        ? "rounded-xl bg-sapphire-500 font-medium text-white hover:bg-sapphire-500"
-                        : primaryCtaClass,
-                    )}
-                    size="lg"
-                  >
-                    {copiedId === post.id ? (
-                      <>
-                        <CheckCircle2 className="mr-2 h-5 w-5" />
-                        Copied — now paste in Facebook
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="mr-2 h-5 w-5" />
-                        Copy this post
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </article>
-            ))}
+                  <div className="px-5 py-5">
+                    <div
+                      className={cn(
+                        "rounded-xl border border-[var(--ds-line)] bg-surface-nested/80 p-4 sm:p-5",
+                        isUsed && "opacity-90",
+                      )}
+                    >
+                      <p
+                        className={cn(
+                          "whitespace-pre-wrap text-[15px] font-normal leading-7 text-ink sm:text-base",
+                          isUsed && "text-ink-3",
+                        )}
+                      >
+                        {body}
+                      </p>
+                    </div>
+                    <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                      <Button
+                        onClick={() => handleCopy(post.id, body)}
+                        className={cn(
+                          "h-12 flex-1 text-base",
+                          copiedId === post.id
+                            ? "rounded-xl bg-sapphire-500 font-medium text-white hover:bg-sapphire-500"
+                            : primaryCtaClass,
+                        )}
+                        size="lg"
+                      >
+                        {copiedId === post.id ? (
+                          <>
+                            <CheckCircle2 className="mr-2 h-5 w-5" />
+                            Copied — now paste in Facebook
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="mr-2 h-5 w-5" />
+                            Copy this post
+                          </>
+                        )}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="lg"
+                        disabled={!setId || isUsed || isMarking}
+                        onClick={() => setId && void handleMarkPostUsed(setId, post.id)}
+                        className={cn(
+                          "h-12 flex-1 text-base",
+                          isUsed
+                            ? "border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] font-medium text-[var(--ds-offer-green-800)]"
+                            : outlineCtaClass,
+                        )}
+                      >
+                        {isMarking ? (
+                          <>
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            Saving…
+                          </>
+                        ) : isUsed ? (
+                          <>
+                            <CheckCircle2 className="mr-2 h-5 w-5" />
+                            Marked as used
+                          </>
+                        ) : (
+                          "Mark as used"
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </article>
+              )
+            })}
           </div>
         </div>
       )}

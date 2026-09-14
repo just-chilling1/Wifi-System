@@ -3,7 +3,8 @@
 import { FormEvent, useCallback, useEffect, useState } from "react"
 import { CheckCircle2, Clock, Headphones, Inbox, Loader2, Mail, ShieldCheck } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
-import { APP_SUPPORT_NAME, FREE_TRAINING_URL, SUPPORT_EMAIL } from "@/lib/support"
+import { APP_SUPPORT_NAME, SUPPORT_EMAIL } from "@/lib/support"
+import { usePromoLinks } from "@/context/PromoLinksContext"
 
 type FormState = "idle" | "submitting" | "success" | "error"
 
@@ -54,6 +55,9 @@ export function ContactSupportWidget() {
   const [submittedEmail, setSubmittedEmail] = useState("")
   const [sentViaMailto, setSentViaMailto] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
+  const { settings } = usePromoLinks()
+  const trainingUrl = settings.externalTrainingUrl
+  const trainingCta = settings.externalTrainingCtaLabel
 
   const supabase = createClient()
 
@@ -201,12 +205,12 @@ export function ContactSupportWidget() {
               Warning: this may be taken down soon
             </p>
             <a
-              href={FREE_TRAINING_URL}
+              href={trainingUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="bonus-training-cta mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-xl px-4 text-sm font-black"
             >
-              Watch the free training
+              {trainingCta}
             </a>
           </div>
         </div>

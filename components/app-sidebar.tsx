@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import {
+  Link2,
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
@@ -12,7 +13,10 @@ import {
 import { BrandLogo } from "@/components/brand-logo"
 import { createClient } from "@/lib/supabase/client"
 import { brand } from "@/config/brand.config"
-import { getExclusiveOffers } from "@/config/offers.config"
+import { usePromoLinks } from "@/context/PromoLinksContext"
+import { getVisibleExclusiveOffers } from "@/lib/promo-links"
+import { getCachedClientUser } from "@/lib/auth-client-cache"
+import { isAdminUser } from "@/lib/admin"
 import {
   mainSectionLabel,
   premiumSectionLabel,
@@ -40,6 +44,7 @@ function SidebarBody({
   onSignOut,
   displayName,
   userInitials,
+  isAdmin,
 }: {
   pathname: string
   collapsed: boolean
@@ -48,11 +53,13 @@ function SidebarBody({
   onSignOut: () => void
   displayName: string
   userInitials: string
+  isAdmin: boolean
 }) {
   const menuItems = getMainNav()
   const premiumItems = getVisiblePremiumNav()
   const supportItem = getSupportNav()
-  const exclusiveOffers = getExclusiveOffers()
+  const { settings: promoSettings } = usePromoLinks()
+  const exclusiveOffers = getVisibleExclusiveOffers(promoSettings)
 
   return (
     <div className="flex h-full min-h-0 w-full flex-col overflow-hidden border-r border-[var(--sidebar-border)] bg-[var(--sidebar-shell-bg,#fff)]">
@@ -147,6 +154,19 @@ function SidebarBody({
       </div>
 
       <div className="shrink-0 space-y-2 border-t border-[var(--ds-line)] p-2 md:p-4">
+        {isAdmin ? (
+          <Link
+            href="/admin"
+            onClick={onNavigate}
+            title="Promo Links"
+            className={`sidebar-nav-item flex items-center text-[15px] ${
+              collapsed ? "justify-center px-2 py-3" : "gap-3 px-3 py-3"
+            } ${pathname === "/admin" || pathname.startsWith("/admin/") ? "is-active" : "text-ink"}`}
+          >
+            <Link2 className="h-5 w-5 shrink-0" />
+            {!collapsed && <span className="sidebar-nav-label">Promo Links</span>}
+          </Link>
+        ) : null}
         {supportItem && (
           <Link
             href={supportItem.path}
@@ -197,6 +217,7 @@ export function AppSidebar() {
   const [collapsed, setCollapsed] = useState(false)
   const [displayName, setDisplayName] = useState("Member")
   const [userInitials, setUserInitials] = useState("WC")
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem(COLLAPSE_KEY) === "1"
@@ -205,8 +226,7 @@ export function AppSidebar() {
   }, [])
 
   useEffect(() => {
-    const supabase = createClient()
-    void supabase.auth.getUser().then(({ data: { user } }) => {
+    void getCachedClientUser().then((user) => {
       if (!user) return
       const handle = user.email?.split("@")[0] || "Member"
       const name =
@@ -214,6 +234,7 @@ export function AppSidebar() {
         handle.charAt(0).toUpperCase() + handle.slice(1)
       setDisplayName(name)
       setUserInitials(name.substring(0, 2).toUpperCase())
+      setIsAdmin(isAdminUser(user))
     })
   }, [])
 
@@ -245,6 +266,7 @@ export function AppSidebar() {
           onSignOut={handleSignOut}
           displayName={displayName}
           userInitials={userInitials}
+          isAdmin={isAdmin}
         />
       </aside>
 

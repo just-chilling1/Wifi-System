@@ -4,13 +4,17 @@ import {
   Menu,
   Sparkles,
   LogOut,
+  Link2,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { getExclusiveOffers } from "@/config/offers.config"
+import { usePromoLinks } from "@/context/PromoLinksContext"
+import { getVisibleExclusiveOffers } from "@/lib/promo-links"
+import { getCachedClientUser } from "@/lib/auth-client-cache"
+import { isAdminUser } from "@/lib/admin"
 import {
   mainSectionLabel,
   premiumSectionLabel,
@@ -29,12 +33,20 @@ export function BottomNav() {
   const pathname = usePathname()
   const router = useRouter()
   const [moreOpen, setMoreOpen] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   const tabs = getBottomNavTabs()
   const moreLinks = getBottomNavMoreLinks()
   const premiumItems = getVisiblePremiumNav()
   const supportItem = getSupportNav()
-  const exclusiveOffers = getExclusiveOffers()
+  const { settings: promoSettings } = usePromoLinks()
+  const exclusiveOffers = getVisibleExclusiveOffers(promoSettings)
+
+  useEffect(() => {
+    void getCachedClientUser().then((user) => {
+      setIsAdmin(isAdminUser(user))
+    })
+  }, [])
 
   const handleSignOut = async () => {
     const supabase = createClient()
@@ -149,6 +161,20 @@ export function BottomNav() {
               <ExclusiveOffersNavSection offers={exclusiveOffers} mobile />
 
               <div className="space-y-1.5 border-t border-[var(--ds-line)] pt-4">
+                {isAdmin ? (
+                  <Link
+                    href="/admin"
+                    onClick={() => setMoreOpen(false)}
+                    className={`flex items-center gap-3 rounded-[var(--ds-r-md)] px-4 py-3.5 text-[15px] font-medium ${
+                      pathname === "/admin" || pathname.startsWith("/admin/")
+                        ? "text-sapphire-700"
+                        : "text-ink-2 hover:bg-[rgba(15,23,42,0.04)]"
+                    }`}
+                  >
+                    <Link2 className="h-5 w-5" />
+                    Promo Links
+                  </Link>
+                ) : null}
                 {supportItem && (
                   <Link
                     href={supportItem.path}

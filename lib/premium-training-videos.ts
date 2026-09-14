@@ -4,16 +4,13 @@ import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
 import { getVideoThumbnail, type VideoThumbnailSlug } from "@/lib/video-thumbnails"
 
 export const PREMIUM_TRAINING_VIMEO_IDS = {
-  /** Swap in the real Vimeo ID when the Done-For-You Profit training is uploaded. */
-  dfyProfit: "",
-  accelerator: "1214134021",
-  recurringStreams: "1214136849",
-  socialPayouts: "1214140189",
-  protector: "1214142200",
-  /** Swap in the real Vimeo ID when the Reseller training is uploaded. */
-  licenseRights: "",
-  /** Swap in the real Vimeo ID when the High-Ticket Payouts training is uploaded. */
-  highTicketPayouts: "",
+  dfyProfit: "1226577445",
+  accelerator: "1226577449",
+  recurringStreams: "1226547482",
+  socialPayouts: "1226545479",
+  protector: "1226546051",
+  licenseRights: "1226547483",
+  highTicketPayouts: "1226546591",
 } as const
 
 export type PremiumTrainingKey = keyof typeof PREMIUM_TRAINING_VIMEO_IDS
@@ -33,36 +30,13 @@ export type PremiumTrainingVideo = {
 /** Flat roster for the Academy premium section — mindset then how-to per feature. */
 export const PREMIUM_TRAINING_VIDEOS: readonly PremiumTrainingVideo[] = [
   {
-    slug: "done-for-you-profit-mindset",
-    moduleKey: "dfyProfit",
-    title: `${PREMIUM_FEATURE_LABELS.dfyProfit} Mindset`,
-    description:
-      "Why one link and one niche is enough to ship a full promo kit — before you run Done-For-You Profit.",
-    duration: "6 min",
-    vimeoId: "",
-    thumbnailSlug: "done-for-you-profit-mindset",
-    feature: PREMIUM_FEATURE_LABELS.dfyProfit,
-    badge: "Mindset",
-  },
-  {
-    slug: "done-for-you-profit",
-    moduleKey: "dfyProfit",
-    title: `${PREMIUM_FEATURE_LABELS.dfyProfit} Training`,
-    description:
-      "Watch how to paste one affiliate link, pick a niche, and get 5 comment-ready videos, a hosted authority article, and Facebook posts in one run.",
-    duration: "10 min",
-    vimeoId: PREMIUM_TRAINING_VIMEO_IDS.dfyProfit,
-    thumbnailSlug: "done-for-you-profit",
-    feature: PREMIUM_FEATURE_LABELS.dfyProfit,
-  },
-  {
     slug: "unlimited-mindset",
     moduleKey: "accelerator",
     title: `${PREMIUM_FEATURE_LABELS.dfyVault} Mindset`,
     description:
       "Treat Unlimited like a library you visit every morning — not a shortcut you open once and forget.",
     duration: "6 min",
-    vimeoId: "",
+    vimeoId: "1226543582",
     thumbnailSlug: "unlimited-mindset",
     feature: PREMIUM_FEATURE_LABELS.dfyVault,
     badge: "Mindset",
@@ -85,7 +59,7 @@ export const PREMIUM_TRAINING_VIDEOS: readonly PremiumTrainingVideo[] = [
     description:
       "How to show up to Instant Income so copying posts feels like a daily habit, not a one-off experiment.",
     duration: "6 min",
-    vimeoId: "",
+    vimeoId: "1226543605",
     thumbnailSlug: "instant-income-mindset",
     feature: PREMIUM_FEATURE_LABELS.instantIncome,
     badge: "Mindset",
@@ -107,7 +81,7 @@ export const PREMIUM_TRAINING_VIDEOS: readonly PremiumTrainingVideo[] = [
     description:
       "Why Automated Profits is a set-and-forget traffic layer — and how winners think before they submit a link.",
     duration: "6 min",
-    vimeoId: "",
+    vimeoId: "1226544264",
     thumbnailSlug: "automated-profits-mindset",
     feature: PREMIUM_FEATURE_LABELS.automatedIncome,
     badge: "Mindset",
@@ -130,7 +104,7 @@ export const PREMIUM_TRAINING_VIDEOS: readonly PremiumTrainingVideo[] = [
     description:
       `Security habits before you touch a setting — why ${PREMIUM_FEATURE_LABELS.protector} protects the income you've already built.`,
     duration: "6 min",
-    vimeoId: "",
+    vimeoId: "1226544662",
     thumbnailSlug: "cyber-protection-mindset",
     feature: PREMIUM_FEATURE_LABELS.protector,
     badge: "Mindset",
@@ -152,7 +126,7 @@ export const PREMIUM_TRAINING_VIDEOS: readonly PremiumTrainingVideo[] = [
     description:
       "What reseller and license rights actually mean for your business — before you request activation.",
     duration: "6 min",
-    vimeoId: "",
+    vimeoId: "1226544973",
     thumbnailSlug: "reseller-license-rights-mindset",
     feature: PREMIUM_FEATURE_LABELS.licenseRights,
     badge: "Mindset",
@@ -175,7 +149,7 @@ export const PREMIUM_TRAINING_VIDEOS: readonly PremiumTrainingVideo[] = [
     description:
       "Why authority articles and high-ticket offers need a different headspace — before you pick your first template.",
     duration: "6 min",
-    vimeoId: "",
+    vimeoId: "1226545017",
     thumbnailSlug: "high-ticket-payouts-mindset",
     feature: PREMIUM_FEATURE_LABELS.highTicketPayouts,
     badge: "Mindset",
@@ -190,6 +164,29 @@ export const PREMIUM_TRAINING_VIDEOS: readonly PremiumTrainingVideo[] = [
     vimeoId: PREMIUM_TRAINING_VIMEO_IDS.highTicketPayouts,
     thumbnailSlug: "high-ticket-payouts",
     feature: PREMIUM_FEATURE_LABELS.highTicketPayouts,
+  },
+  {
+    slug: "done-for-you-profit-mindset",
+    moduleKey: "dfyProfit",
+    title: `${PREMIUM_FEATURE_LABELS.dfyProfit} Mindset`,
+    description:
+      "Why one link and one niche is enough to ship a full promo kit — before you run Done-For-You Profit.",
+    duration: "6 min",
+    vimeoId: "1226574609",
+    thumbnailSlug: "done-for-you-profit-mindset",
+    feature: PREMIUM_FEATURE_LABELS.dfyProfit,
+    badge: "Mindset",
+  },
+  {
+    slug: "done-for-you-profit",
+    moduleKey: "dfyProfit",
+    title: `${PREMIUM_FEATURE_LABELS.dfyProfit} Training`,
+    description:
+      "Watch how to paste one affiliate link, pick a niche, and get 5 comment-ready videos, a hosted authority article, and Facebook posts in one run.",
+    duration: "10 min",
+    vimeoId: PREMIUM_TRAINING_VIMEO_IDS.dfyProfit,
+    thumbnailSlug: "done-for-you-profit",
+    feature: PREMIUM_FEATURE_LABELS.dfyProfit,
   },
 ] as const
 

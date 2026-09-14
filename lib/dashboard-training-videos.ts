@@ -14,7 +14,7 @@ export type DashboardTrainingVideo = {
 
 export const DASHBOARD_TRAINING_VIDEOS: readonly DashboardTrainingVideo[] = [
   {
-    id: "1212736531",
+    id: "1225645049",
     title: "Watch This First",
     description:
       "Before you touch a single tool — watch this. It kills the night-one doubt and shows you exactly what you bought.",
@@ -24,7 +24,7 @@ export const DASHBOARD_TRAINING_VIDEOS: readonly DashboardTrainingVideo[] = [
     thumbnailSlug: "watch-this-first",
   },
   {
-    id: "1212736532",
+    id: "1225645048",
     title: "How The Money Flows",
     description:
       `Where the money comes from, who pays you, and what every word inside ${PRODUCT_NAME} actually means — in plain language.`,
@@ -33,7 +33,7 @@ export const DASHBOARD_TRAINING_VIDEOS: readonly DashboardTrainingVideo[] = [
     thumbnailSlug: "how-the-money-flows",
   },
   {
-    id: "1214125517",
+    id: "1226575133",
     title: "Your 5-Minute Tour",
     description:
       "A quick walkthrough of where everything lives in the app — so you never feel lost when you start working.",

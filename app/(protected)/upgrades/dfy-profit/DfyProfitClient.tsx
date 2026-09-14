@@ -1,9 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import {
   Check,
+  CheckCircle2,
+  Copy,
   Loader2,
   Package,
   Sparkles,
@@ -14,12 +16,24 @@ import { PremiumPageLayout } from "@/components/premium-page-layout"
 import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
 import { GenerationProgress } from "@/components/generation-progress"
 import { SavedLinksPicker } from "@/components/saved-links-picker"
+import { SavedGenerationsLibrary } from "@/components/saved-generations-library"
+import { MarkAsUsedButton, UsedBadge } from "@/components/mark-as-used-button"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { isValidAffiliateUrl } from "@/lib/affiliate-url"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
 import { getPremiumTrainingVimeoId } from "@/lib/premium-training-videos"
+import { commentUsedKey, defaultLabelFromUrl, postUsedKey } from "@/lib/generation-set-name"
+import { parseDfySavedKit, summarizeDfyKit } from "@/lib/dfy-profit/saved-kit"
+import { cn } from "@/lib/utils"
 import type { AffiliateLink } from "@/app/actions/affiliate-links"
+import {
+  deletePremiumGenerationSet,
+  markPremiumGenerationItemUsed,
+  upsertPremiumGenerationSet,
+  type PremiumGenerationSet,
+} from "@/app/actions/premium-generation-sets"
 import type { DfyArticleResult, DfyFacebookPost, DfyVideoResult } from "@/lib/dfy-profit/types"
 import { DfyResultPanel } from "./DfyResultPanel"
 
@@ -60,9 +74,20 @@ const STAGE_LABELS: Record<Exclude<Stage, "idle" | "done">, string> = {
   posts: "Generating Facebook posts…",
 }
 
-export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateLink[] }) {
+const primaryCtaClass =
+  "rounded-xl bg-grad-sapphire font-medium text-white shadow-sapphire transition-[background-color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:shadow-sapphire"
+
+export default function DfyProfitClient({
+  savedLinks,
+  initialSets = [],
+}: {
+  savedLinks: AffiliateLink[]
+  initialSets?: PremiumGenerationSet[]
+}) {
   const [affiliateUrl, setAffiliateUrl] = useState("")
   const [offerName, setOfferName] = useState("")
+  const [kitName, setKitName] = useState("")
+  const [nameTouched, setNameTouched] = useState(false)
   const [selectedLinkId, setSelectedLinkId] = useState<string | null>(null)
   const [niche, setNiche] = useState("")
   const [stage, setStage] = useState<Stage>("idle")
@@ -78,7 +103,127 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
   const [retryingArticle, setRetryingArticle] = useState(false)
   const [retryingPosts, setRetryingPosts] = useState(false)
 
+  const [librarySets, setLibrarySets] = useState<PremiumGenerationSet[]>(initialSets)
+  const [libraryOpen, setLibraryOpen] = useState(initialSets.length > 0)
+  const [openLibraryId, setOpenLibraryId] = useState<string | null>(null)
+  const [libraryError, setLibraryError] = useState("")
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [markingKey, setMarkingKey] = useState<string | null>(null)
+  const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [activeSetId, setActiveSetId] = useState<string | null>(null)
+  const [usedKeys, setUsedKeys] = useState<Record<string, string>>({})
+
   const generating = stage === "videos" || stage === "article" || stage === "posts"
+
+  useEffect(() => {
+    if (nameTouched) return
+    setKitName(offerName.trim() || defaultLabelFromUrl(affiliateUrl))
+  }, [affiliateUrl, offerName, nameTouched])
+
+  const persistKit = async (
+    nextVideos: DfyVideoResult[],
+    nextArticle: DfyArticleResult | null,
+    nextPosts: DfyFacebookPost[],
+    nextContext: { productName: string; productContext: string; niche: string },
+    nextUsedFallbackLink: boolean,
+  ) => {
+    const name = kitName.trim()
+    if (!name || !isValidAffiliateUrl(affiliateUrl)) return
+
+    const result = await upsertPremiumGenerationSet({
+      feature: "dfy_profit",
+      name,
+      affiliateUrl,
+      niche: nextContext.niche || niche,
+      payload: {
+        offerName,
+        productName: nextContext.productName,
+        productContext: nextContext.productContext,
+        videos: nextVideos,
+        article: nextArticle,
+        posts: nextPosts,
+        usedFallbackLink: nextUsedFallbackLink,
+      },
+    })
+
+    if (!result.success) {
+      setLibraryError(result.error)
+      return
+    }
+
+    setLibrarySets((prev) => {
+      const without = prev.filter(
+        (s) => s.id !== result.set.id && s.name.trim().toLowerCase() !== name.toLowerCase(),
+      )
+      return [result.set, ...without]
+    })
+    setActiveSetId(result.set.id)
+    setUsedKeys(result.set.usedKeys)
+    setLibraryOpen(true)
+    setOpenLibraryId(result.set.id)
+    setLibraryError("")
+  }
+
+  const restoreSet = (set: PremiumGenerationSet) => {
+    const kit = parseDfySavedKit(set.payload)
+    setAffiliateUrl(set.affiliateUrl)
+    setOfferName(kit.offerName || set.name)
+    setKitName(set.name)
+    setNameTouched(true)
+    setSelectedLinkId(null)
+    setNiche(set.niche || kit.productContext)
+    setVideos(kit.videos)
+    setArticle(kit.article)
+    setPosts(kit.posts)
+    setUsedFallbackLink(kit.usedFallbackLink)
+    setContext({
+      productName: kit.productName,
+      productContext: kit.productContext,
+      niche: set.niche,
+    })
+    setArticleError("")
+    setPostsError("")
+    setStage("done")
+    setActiveSetId(set.id)
+    setUsedKeys(set.usedKeys)
+  }
+
+  const handleCopy = (id: string, text: string) => {
+    navigator.clipboard.writeText(text)
+    setCopiedId(id)
+    setTimeout(() => setCopiedId(null), 2000)
+  }
+
+  const handleMarkUsed = async (itemKey: string, setId = activeSetId) => {
+    if (!setId) return
+    setMarkingKey(itemKey)
+    setLibraryError("")
+    const result = await markPremiumGenerationItemUsed(setId, itemKey)
+    setMarkingKey(null)
+    if (!result.success) {
+      setLibraryError(result.error)
+      return
+    }
+    setLibrarySets((prev) => prev.map((set) => (set.id === result.set.id ? result.set : set)))
+    if (activeSetId === result.set.id) setUsedKeys(result.set.usedKeys)
+  }
+
+  const handleDeleteSet = async (setId: string) => {
+    setDeletingId(setId)
+    setLibraryError("")
+    const result = await deletePremiumGenerationSet(setId)
+    setDeletingId(null)
+    if (!result.success) {
+      setLibraryError(result.error)
+      return
+    }
+    setLibrarySets((prev) => prev.filter((s) => s.id !== setId))
+    if (openLibraryId === setId) setOpenLibraryId(null)
+    if (activeSetId === setId) {
+      setActiveSetId(null)
+      setUsedKeys({})
+    }
+  }
 
   const runArticle = async (ctx: { productName: string; productContext: string; niche: string }) => {
     const response = await fetch("/api/premium/dfy-profit/article", {
@@ -111,6 +256,10 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
       setError("Pick a niche first.")
       return
     }
+    if (!kitName.trim()) {
+      setError("Add a name for this kit so we can save it in your library.")
+      return
+    }
 
     setError("")
     setArticleError("")
@@ -121,6 +270,7 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
     setStage("videos")
 
     let ctx = { productName: "", productContext: "", niche }
+    let nextVideos: DfyVideoResult[] = []
 
     try {
       const response = await fetch("/api/premium/dfy-profit/videos", {
@@ -131,6 +281,7 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || "Video search failed")
 
+      nextVideos = data.videos
       setVideos(data.videos)
       ctx = { productName: data.productName, productContext: data.productContext, niche: data.niche }
       setContext(ctx)
@@ -141,9 +292,11 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
     }
 
     setStage("article")
+    let nextArticle: DfyArticleResult | null = null
     let articleUrl: string | null = null
     try {
       const result = await runArticle(ctx)
+      nextArticle = result
       setArticle(result)
       articleUrl = result.url
     } catch (e) {
@@ -151,8 +304,12 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
     }
 
     setStage("posts")
+    let nextPosts: DfyFacebookPost[] = []
+    let nextUsedFallbackLink = false
     try {
       const result = await runPosts({ productName: ctx.productName, niche: ctx.niche }, articleUrl)
+      nextPosts = result.posts
+      nextUsedFallbackLink = result.usedFallbackLink
       setPosts(result.posts)
       setUsedFallbackLink(result.usedFallbackLink)
     } catch (e) {
@@ -160,13 +317,16 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
     }
 
     setStage("done")
+    await persistKit(nextVideos, nextArticle, nextPosts, ctx, nextUsedFallbackLink)
   }
 
   const handleRetryArticle = async () => {
     setArticleError("")
     setRetryingArticle(true)
     try {
-      setArticle(await runArticle(context))
+      const result = await runArticle(context)
+      setArticle(result)
+      await persistKit(videos, result, posts, context, usedFallbackLink)
     } catch (e) {
       setArticleError(e instanceof Error ? e.message : "Article generation failed")
     } finally {
@@ -184,6 +344,7 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
       )
       setPosts(result.posts)
       setUsedFallbackLink(result.usedFallbackLink)
+      await persistKit(videos, article, result.posts, context, result.usedFallbackLink)
     } catch (e) {
       setPostsError(e instanceof Error ? e.message : "Facebook post generation failed")
     } finally {
@@ -213,6 +374,146 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
       />
 
       <PremiumSteps title="How to Use This (3 Simple Steps)" steps={STEPS} />
+
+      <SavedGenerationsLibrary
+        title="Saved kits"
+        subtitle="Each generation is saved under the kit name you enter. Same name updates that kit."
+        emptyTitle="No saved kits yet"
+        emptyHint="Generate a kit with a name to start your library."
+        sets={librarySets}
+        libraryOpen={libraryOpen}
+        onLibraryOpenChange={setLibraryOpen}
+        openSetId={openLibraryId}
+        onOpenSetIdChange={(id) => {
+          setOpenLibraryId(id)
+          if (id) {
+            const match = librarySets.find((set) => set.id === id)
+            if (match) restoreSet(match)
+          }
+        }}
+        deletingId={deletingId}
+        error={libraryError}
+        onDelete={(id) => void handleDeleteSet(id)}
+        metaForSet={(set) =>
+          `${set.niche || "Kit"} · ${summarizeDfyKit(set.payload)} · ${new Date(set.updatedAt).toLocaleDateString()}`
+        }
+        renderSet={(set) => {
+          const kit = parseDfySavedKit(set.payload)
+          return (
+            <div className="space-y-3">
+              <Button
+                type="button"
+                onClick={() => restoreSet(set)}
+                className={cn("h-10 w-full text-sm", primaryCtaClass)}
+              >
+                Open this kit
+              </Button>
+              {kit.posts.map((post, index) => {
+                const copyKey = `${set.id}-${post.id}`
+                const itemKey = postUsedKey(post.id)
+                const isUsed = Boolean(set.usedKeys[itemKey])
+                return (
+                  <div
+                    key={post.id}
+                    className={cn(
+                      "rounded-xl border border-[var(--ds-line)] bg-card p-4",
+                      isUsed && "border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)]/40",
+                    )}
+                  >
+                    <div className="mb-2 flex flex-wrap items-center gap-2">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-sapphire-700">
+                        Post #{index + 1}
+                      </p>
+                      {isUsed ? <UsedBadge /> : null}
+                    </div>
+                    <p className={cn("whitespace-pre-wrap text-sm leading-relaxed text-ink", isUsed && "text-ink-3")}>
+                      {post.body}
+                    </p>
+                    <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                      <Button
+                        type="button"
+                        onClick={() => handleCopy(copyKey, post.body)}
+                        className={cn(
+                          "h-10 flex-1 text-sm",
+                          copiedId === copyKey
+                            ? "rounded-xl bg-sapphire-500 font-medium text-white hover:bg-sapphire-500"
+                            : primaryCtaClass,
+                        )}
+                      >
+                        {copiedId === copyKey ? (
+                          <>
+                            <CheckCircle2 className="mr-2 h-4 w-4" />
+                            Copied
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="mr-2 h-4 w-4" />
+                            Copy this post
+                          </>
+                        )}
+                      </Button>
+                      <MarkAsUsedButton
+                        used={isUsed}
+                        marking={markingKey === itemKey}
+                        onClick={() => void handleMarkUsed(itemKey, set.id)}
+                      />
+                    </div>
+                  </div>
+                )
+              })}
+              {kit.videos.map((video) => (
+                <div key={video.videoId} className="rounded-xl border border-[var(--ds-line)] bg-card p-4">
+                  <p className="truncate text-sm font-semibold text-ink">{video.title}</p>
+                  <p className="mt-0.5 truncate text-xs text-text-secondary">{video.channelTitle}</p>
+                  <div className="mt-3 space-y-2">
+                    {video.comments.map((comment, index) => {
+                      const itemKey = commentUsedKey(video.videoId, index)
+                      const isUsed = Boolean(set.usedKeys[itemKey])
+                      const copyKey = `${set.id}-${itemKey}`
+                      return (
+                        <div
+                          key={itemKey}
+                          className={cn(
+                            "rounded-lg border border-[var(--ds-line)] p-3",
+                            isUsed && "border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)]/40",
+                          )}
+                        >
+                          <div className="mb-1 flex items-center gap-2">
+                            <span className="text-[11px] font-semibold uppercase tracking-wide text-sapphire-700">
+                              Comment {index + 1}
+                            </span>
+                            {isUsed ? <UsedBadge /> : null}
+                          </div>
+                          <p className={cn("text-sm leading-relaxed text-ink", isUsed && "text-ink-3")}>{comment}</p>
+                          <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+                            <Button
+                              type="button"
+                              onClick={() => handleCopy(copyKey, comment)}
+                              className={cn(
+                                "h-10 flex-1 text-sm",
+                                copiedId === copyKey
+                                  ? "rounded-xl bg-sapphire-500 font-medium text-white hover:bg-sapphire-500"
+                                  : primaryCtaClass,
+                              )}
+                            >
+                              {copiedId === copyKey ? "Copied" : "Copy"}
+                            </Button>
+                            <MarkAsUsedButton
+                              used={isUsed}
+                              marking={markingKey === itemKey}
+                              onClick={() => void handleMarkUsed(itemKey, set.id)}
+                            />
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
+        }}
+      />
 
       <PremiumControlCard
         icon={Wallet}
@@ -255,6 +556,25 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
               disabled={generating}
               className="rounded-3xl"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="dfy-profit-kit-name">Kit name</Label>
+            <Input
+              id="dfy-profit-kit-name"
+              value={kitName}
+              onChange={(event) => {
+                setNameTouched(true)
+                setKitName(event.target.value)
+                setError("")
+              }}
+              placeholder="e.g. Weight Loss offer"
+              disabled={generating}
+              className="rounded-3xl"
+            />
+            <p className="text-xs text-muted-foreground">
+              Saved kits use this name. Generating again with the same name updates that kit.
+            </p>
           </div>
 
           <fieldset>
@@ -321,6 +641,9 @@ export default function DfyProfitClient({ savedLinks }: { savedLinks: AffiliateL
         retryingPosts={retryingPosts}
         onRetryArticle={() => void handleRetryArticle()}
         onRetryPosts={() => void handleRetryPosts()}
+        usedKeys={usedKeys}
+        markingKey={markingKey}
+        onMarkUsed={activeSetId ? (itemKey) => void handleMarkUsed(itemKey) : undefined}
       />
 
       <p className="pb-4 text-center text-sm text-muted-foreground">

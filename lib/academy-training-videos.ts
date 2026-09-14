@@ -24,7 +24,7 @@ export const ACADEMY_TRAINING_VIDEOS: readonly AcademyTrainingVideo[] = [
     description:
       "How to think before you click — the beliefs that turn Gold Rush from a slot machine into a daily craft.",
     duration: "6 min",
-    vimeoId: "",
+    vimeoId: "1225645047",
     thumbnailSlug: "gold-rush-mindset",
     badge: "Mindset",
   },
@@ -34,7 +34,7 @@ export const ACADEMY_TRAINING_VIDEOS: readonly AcademyTrainingVideo[] = [
     description:
       "Learn how to use the Gold Rush Generator to find viral opportunities and generate money-making comments.",
     duration: "10 min",
-    vimeoId: "1214128570",
+    vimeoId: "1226575131",
     thumbnailSlug: "gold-rush",
     step: 1,
   },
@@ -44,7 +44,7 @@ export const ACADEMY_TRAINING_VIDEOS: readonly AcademyTrainingVideo[] = [
     description:
       "Why My Vault is the memory of your operation — and how to treat saved packs like assets, not clutter.",
     duration: "6 min",
-    vimeoId: "",
+    vimeoId: "1225645046",
     thumbnailSlug: "my-vault-mindset",
     badge: "Mindset",
   },
@@ -54,7 +54,7 @@ export const ACADEMY_TRAINING_VIDEOS: readonly AcademyTrainingVideo[] = [
     description:
       "Master the My Vault system to manage your comment packs and track your results effectively.",
     duration: "12 min",
-    vimeoId: "1214131356",
+    vimeoId: "1226577448",
     thumbnailSlug: "my-vault",
     step: 2,
   },
@@ -64,7 +64,7 @@ export const ACADEMY_TRAINING_VIDEOS: readonly AcademyTrainingVideo[] = [
     description:
       "Your affiliate link is the coupon with your name on it — beliefs that make Your Links trustworthy before Gold Rush opens.",
     duration: "6 min",
-    vimeoId: "",
+    vimeoId: "1226573904",
     thumbnailSlug: "link-vault-mindset",
     badge: "Mindset",
   },
@@ -74,7 +74,7 @@ export const ACADEMY_TRAINING_VIDEOS: readonly AcademyTrainingVideo[] = [
     description:
       "Save, name, and reuse affiliate URLs in Your Links so Gold Rush always has a clean link ready to go.",
     duration: "8 min",
-    vimeoId: "",
+    vimeoId: "1226575132",
     thumbnailSlug: "link-vault",
     step: 3,
   },

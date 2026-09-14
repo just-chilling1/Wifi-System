@@ -1,35 +1,31 @@
-import Link from "next/link"
+"use client"
+
 import { PageHeader } from "@/components/page-header"
-import { PRODUCT_NAME } from "@/lib/brand"
+import { usePromoLinks } from "@/context/PromoLinksContext"
 
 export default function BonusTrainingPage() {
-  return (
-    <div className="min-h-screen bg-background py-12 px-4">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <PageHeader
-          eyebrow="Bonus"
-          title={
-            <>
-              Bonus training:{" "}
-              <span className="text-sapphire-700 font-black">
-                grow with {PRODUCT_NAME}
-              </span>
-            </>
-          }
-          subtitle="Watch this exclusive session to get more from the platform"
-        />
+  const { settings } = usePromoLinks()
+  const title = settings.scaleTrainingTitle
+  const ctaUrl = settings.scaleTrainingUrl
+  const ctaLabel = settings.scaleTrainingCtaLabel
 
-        {/* CTA Button */}
-        <div className="w-full">
-          <Link
-            href="https://www.jvzoo.com/c/86517/415009"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block w-full bg-gradient-to-r from-primary to-primary hover:from-primary-hover hover:to-primary-hover text-white text-2xl md:text-3xl font-black py-8 px-8 rounded-2xl text-center transition-all duration-300 shadow-2xl shadow-primary/30 hover:shadow-[var(--ds-sapphire-500)]/50 hover:scale-105"
-          >
-            Click Here To Access Training &gt;&gt;
-          </Link>
-        </div>
+  return (
+    <div className="page-container mx-auto w-full max-w-7xl">
+      <PageHeader
+        eyebrow="Bonus"
+        title={title}
+        subtitle="Watch this exclusive session to get more from the platform"
+      />
+
+      <div className="w-full">
+        <a
+          href={ctaUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block w-full rounded-2xl bg-gradient-to-r from-primary to-primary px-8 py-8 text-center text-2xl font-black text-white shadow-2xl shadow-primary/30 transition-all duration-300 hover:scale-105 hover:from-primary-hover hover:to-primary-hover hover:shadow-[var(--ds-sapphire-500)]/50 md:text-3xl"
+        >
+          {ctaLabel}
+        </a>
       </div>
     </div>
   )

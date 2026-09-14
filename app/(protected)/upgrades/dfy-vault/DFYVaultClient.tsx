@@ -25,6 +25,12 @@ import {
   ChevronDown,
 } from "lucide-react"
 import { fetchDFYLibrary, type DFYVideo } from "@/app/actions/fetch-dfy-library"
+import {
+  deletePremiumGenerationSet,
+  markPremiumGenerationItemUsed,
+  upsertPremiumGenerationSet,
+  type PremiumGenerationSet,
+} from "@/app/actions/premium-generation-sets"
 import { GenerationProgress } from "@/components/generation-progress"
 import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
 import {
@@ -34,10 +40,13 @@ import {
 } from "@/components/premium-feature-chrome"
 import { PremiumPageLayout } from "@/components/premium-page-layout"
 import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
+import { SavedGenerationsLibrary } from "@/components/saved-generations-library"
+import { MarkAsUsedButton, UsedBadge } from "@/components/mark-as-used-button"
 import { useScrollToResults } from "@/lib/use-scroll-to-results"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
 import { getPremiumTrainingVimeoId } from "@/lib/premium-training-videos"
 import { isValidAffiliateUrl } from "@/lib/affiliate-url"
+import { commentUsedKey } from "@/lib/generation-set-name"
 import { cn } from "@/lib/utils"
 
 const UNLIMITED_STEPS = [
@@ -73,7 +82,11 @@ function viralBarClass(score: number) {
 type FieldKey = "productName" | "productLink"
 type FieldErrors = Partial<Record<FieldKey, string>>
 
-export default function DFYVaultClient() {
+export default function DFYVaultClient({
+  initialSets = [],
+}: {
+  initialSets?: PremiumGenerationSet[]
+}) {
   const [loading, setLoading] = useState(true)
   const [videos, setVideos] = useState<DFYVideo[]>([])
   const [filteredVideos, setFilteredVideos] = useState<DFYVideo[]>([])
@@ -97,6 +110,14 @@ export default function DFYVaultClient() {
   const [openCommentsByVideoId, setOpenCommentsByVideoId] = useState<
     Record<string, boolean>
   >({})
+  const [librarySets, setLibrarySets] = useState<PremiumGenerationSet[]>(initialSets)
+  const [libraryOpen, setLibraryOpen] = useState(initialSets.length > 0)
+  const [openLibraryId, setOpenLibraryId] = useState<string | null>(null)
+  const [libraryError, setLibraryError] = useState("")
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [markingKey, setMarkingKey] = useState<string | null>(null)
+  const [activeSetId, setActiveSetId] = useState<string | null>(null)
+  const [usedKeys, setUsedKeys] = useState<Record<string, string>>({})
 
   useEffect(() => {
     loadLibrary()
@@ -152,6 +173,77 @@ export default function DFYVaultClient() {
     return next
   }
 
+  const persistProduct = async (name: string, link: string) => {
+    const result = await upsertPremiumGenerationSet({
+      feature: "dfy_vault",
+      name,
+      affiliateUrl: link,
+      payload: { productName: name },
+    })
+    if (!result.success) {
+      setLibraryError(result.error)
+      return null
+    }
+    setLibrarySets((prev) => {
+      const without = prev.filter(
+        (s) => s.id !== result.set.id && s.name.trim().toLowerCase() !== name.toLowerCase(),
+      )
+      return [result.set, ...without]
+    })
+    setActiveSetId(result.set.id)
+    setUsedKeys(result.set.usedKeys)
+    setLibraryOpen(true)
+    setOpenLibraryId(result.set.id)
+    setLibraryError("")
+    return result.set
+  }
+
+  const restoreSet = (set: PremiumGenerationSet) => {
+    const savedName =
+      typeof set.payload.productName === "string" && set.payload.productName.trim()
+        ? set.payload.productName
+        : set.name
+    setProductName(savedName)
+    setProductLink(set.affiliateUrl)
+    setFieldErrors({})
+    setProductError(null)
+    setProductSelected(true)
+    setActiveSetId(set.id)
+    setUsedKeys(set.usedKeys)
+    setOpenLibraryId(set.id)
+  }
+
+  const handleMarkUsed = async (itemKey: string, setId = activeSetId) => {
+    if (!setId) return
+    setMarkingKey(itemKey)
+    setLibraryError("")
+    const result = await markPremiumGenerationItemUsed(setId, itemKey)
+    setMarkingKey(null)
+    if (!result.success) {
+      setLibraryError(result.error)
+      return
+    }
+    setLibrarySets((prev) => prev.map((row) => (row.id === result.set.id ? result.set : row)))
+    if (activeSetId === result.set.id) setUsedKeys(result.set.usedKeys)
+  }
+
+  const handleDeleteSet = async (setId: string) => {
+    setDeletingId(setId)
+    setLibraryError("")
+    const result = await deletePremiumGenerationSet(setId)
+    setDeletingId(null)
+    if (!result.success) {
+      setLibraryError(result.error)
+      return
+    }
+    setLibrarySets((prev) => prev.filter((s) => s.id !== setId))
+    if (openLibraryId === setId) setOpenLibraryId(null)
+    if (activeSetId === setId) {
+      setActiveSetId(null)
+      setUsedKeys({})
+    }
+  }
+
   const handleSelectProduct = (event?: FormEvent) => {
     event?.preventDefault()
     const nextErrors = validateProduct()
@@ -166,6 +258,7 @@ export default function DFYVaultClient() {
     setTimeout(() => {
       setUnlocking(false)
       setProductSelected(true)
+      void persistProduct(productName.trim(), productLink.trim())
     }, 4000)
   }
 
@@ -225,6 +318,51 @@ export default function DFYVaultClient() {
         title="Ready-made viral videos"
         description="Lock your offer once. Every comment already includes the product name and your link."
         chip={videos.length > 0 ? `${videos.length} videos loaded` : "Library ready"}
+      />
+
+      <SavedGenerationsLibrary
+        title="Saved generations"
+        subtitle="Each unlock is saved under your product name. Same name updates that set."
+        emptyTitle="No saved generations yet"
+        emptyHint="Unlock the library with a product name to start saving."
+        sets={librarySets}
+        libraryOpen={libraryOpen}
+        onLibraryOpenChange={setLibraryOpen}
+        openSetId={openLibraryId}
+        onOpenSetIdChange={(id) => {
+          setOpenLibraryId(id)
+          if (id) {
+            const match = librarySets.find((set) => set.id === id)
+            if (match) restoreSet(match)
+          }
+        }}
+        deletingId={deletingId}
+        error={libraryError}
+        onDelete={(id) => void handleDeleteSet(id)}
+        metaForSet={(set) => {
+          const usedCount = Object.keys(set.usedKeys).length
+          return `${usedCount} comment${usedCount === 1 ? "" : "s"} used · ${new Date(set.updatedAt).toLocaleDateString()}`
+        }}
+        renderSet={(set) => {
+          const usedCount = Object.keys(set.usedKeys).length
+          return (
+            <div className="space-y-3">
+              <p className="text-sm text-ink">
+                {typeof set.payload.productName === "string" ? set.payload.productName : set.name}
+              </p>
+              <p className="text-xs text-text-secondary">
+                {usedCount} comment{usedCount === 1 ? "" : "s"} marked as used.
+              </p>
+              <Button
+                type="button"
+                onClick={() => restoreSet(set)}
+                className={cn("h-10 w-full text-sm", primaryCtaClass)}
+              >
+                Open this generation
+              </Button>
+            </div>
+          )
+        }}
       />
 
       {!productSelected ? (
@@ -560,43 +698,67 @@ export default function DFYVaultClient() {
                               .replace(/\[PRODUCT\]/g, productName)
                               .replace(/\[LINK\]/g, productLink)
                             const copied = copiedComment === `${video.videoId}-${index}`
+                            const itemKey = commentUsedKey(video.videoId, index)
+                            const isUsed = Boolean(usedKeys[itemKey])
 
                             return (
                               <div
                                 key={index}
-                                className="flex flex-col gap-2.5 rounded-xl border border-[var(--ds-line)] bg-white p-3 transition-colors hover:border-[var(--ds-line-sapphire)] sm:flex-row sm:items-start sm:gap-3 sm:p-3.5"
+                                className={cn(
+                                  "flex flex-col gap-2.5 rounded-xl border border-[var(--ds-line)] bg-white p-3 transition-colors hover:border-[var(--ds-line-sapphire)] sm:p-3.5",
+                                  isUsed && "border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)]/40",
+                                )}
                               >
                                 <div className="flex min-w-0 flex-1 items-start gap-2.5">
                                   <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sapphire-200 text-[11px] font-bold text-sapphire-700">
                                     {index + 1}
                                   </span>
-                                  <p className="line-clamp-2 min-w-0 flex-1 text-sm font-medium leading-relaxed text-ink">
-                                    {preview}
-                                  </p>
+                                  <div className="min-w-0 flex-1">
+                                    <div className="mb-1 flex flex-wrap items-center gap-2">
+                                      {isUsed ? <UsedBadge /> : null}
+                                    </div>
+                                    <p
+                                      className={cn(
+                                        "line-clamp-2 min-w-0 text-sm font-medium leading-relaxed text-ink",
+                                        isUsed && "text-ink-3",
+                                      )}
+                                    >
+                                      {preview}
+                                    </p>
+                                  </div>
                                 </div>
-                                <Button
-                                  type="button"
-                                  onClick={() => handleCopyComment(template, video.videoId, index)}
-                                  size="sm"
-                                  className={cn(
-                                    "h-9 w-full shrink-0 rounded-lg px-3 font-bold transition-all sm:w-auto",
-                                    copied
-                                      ? "bg-[#16875c] text-white hover:bg-[#16875c]"
-                                      : "bg-gradient-to-r from-primary to-primary-hover text-white hover:from-primary-hover hover:to-primary-hover",
-                                  )}
-                                >
-                                  {copied ? (
-                                    <>
-                                      <Check className="mr-1 h-3.5 w-3.5" />
-                                      Copied
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Copy className="mr-1 h-3.5 w-3.5" />
-                                      Copy
-                                    </>
-                                  )}
-                                </Button>
+                                <div className="flex flex-col gap-2 sm:flex-row">
+                                  <Button
+                                    type="button"
+                                    onClick={() => handleCopyComment(template, video.videoId, index)}
+                                    size="sm"
+                                    className={cn(
+                                      "h-9 w-full shrink-0 rounded-lg px-3 font-bold transition-all sm:flex-1",
+                                      copied
+                                        ? "bg-[#16875c] text-white hover:bg-[#16875c]"
+                                        : "bg-gradient-to-r from-primary to-primary-hover text-white hover:from-primary-hover hover:to-primary-hover",
+                                    )}
+                                  >
+                                    {copied ? (
+                                      <>
+                                        <Check className="mr-1 h-3.5 w-3.5" />
+                                        Copied
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Copy className="mr-1 h-3.5 w-3.5" />
+                                        Copy
+                                      </>
+                                    )}
+                                  </Button>
+                                  <MarkAsUsedButton
+                                    used={isUsed}
+                                    marking={markingKey === itemKey}
+                                    disabled={!activeSetId}
+                                    onClick={() => void handleMarkUsed(itemKey)}
+                                    className="h-9 sm:flex-1"
+                                  />
+                                </div>
                               </div>
                             )
                           })}

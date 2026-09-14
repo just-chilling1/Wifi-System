@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass"
+import { isAdminUser } from "@/lib/admin"
 
 function isSpecialistPublicPath(pathname: string) {
   return (
@@ -8,7 +9,9 @@ function isSpecialistPublicPath(pathname: string) {
     pathname.startsWith("/embed/") ||
     pathname.startsWith("/api/eligibility/") ||
     pathname === "/api/track/specialist-popup" ||
-    pathname.startsWith("/api/track/specialist-popup/")
+    pathname.startsWith("/api/track/specialist-popup/") ||
+    pathname === "/api/auth/ensure-admin" ||
+    pathname.startsWith("/api/auth/ensure-admin/")
   )
 }
 
@@ -75,6 +78,10 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  const isAdmin = isAdminUser(user)
+  const postLoginPath = isAdmin ? "/admin" : "/dashboard"
+  const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/")
+
   if (
     !user &&
     !pathname.startsWith("/auth") &&
@@ -97,12 +104,27 @@ export async function updateSession(request: NextRequest) {
     )
     if (!isAllowed) {
       const url = request.nextUrl.clone()
-      url.pathname = "/onboarding"
+      url.pathname = isAdmin ? "/admin" : "/onboarding"
       return NextResponse.redirect(url)
     }
   }
 
+  if (user && isAdminRoute && !isAdmin) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/dashboard"
+    return NextResponse.redirect(url)
+  }
+
   const isOnboardingRoute = request.nextUrl.pathname.startsWith("/onboarding")
+
+  if (user && isAdmin) {
+    if (isOnboardingRoute) {
+      const url = request.nextUrl.clone()
+      url.pathname = "/admin"
+      return NextResponse.redirect(url)
+    }
+    return supabaseResponse
+  }
 
   if (
     user &&
@@ -139,7 +161,7 @@ export async function updateSession(request: NextRequest) {
 
     if (profile?.onboarding_completed_at) {
       const url = request.nextUrl.clone()
-      url.pathname = "/dashboard"
+      url.pathname = postLoginPath
       return NextResponse.redirect(url)
     }
   }

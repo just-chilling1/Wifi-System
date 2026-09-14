@@ -1015,16 +1015,12 @@ html[data-sidebar="collapsed"] {
     transform: translateY(-2px) scale(1.01);
   }
 
-  .premium-upgrade-card:hover:not(.is-active) .premium-upgrade-icon,
-  .premium-upgrade-card:hover:not(.is-active) .premium-upgrade-thumb {
+  .premium-upgrade-card:hover:not(.is-active) .premium-upgrade-icon {
+    background: var(--ds-grad-sapphire);
+    border-color: transparent;
     box-shadow: var(--ds-shadow-sapphire);
-    transform: scale(1.04);
-  }
-
-  .premium-upgrade-thumb {
-    transition:
-      transform var(--ds-dur) var(--ds-ease),
-      box-shadow var(--ds-dur) var(--ds-ease);
+    color: #ffffff;
+    transform: scale(1.08);
   }
 
   .premium-upgrade-card.is-active {
@@ -1035,14 +1031,28 @@ html[data-sidebar="collapsed"] {
   }
 
   .premium-upgrade-icon {
-    @apply flex shrink-0 items-center justify-center rounded-md bg-sapphire-200 text-sapphire-700;
-    width: 32px;
-    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+    border-radius: var(--ds-r-md);
+    background: var(--ds-sapphire-200);
+    border: 1px solid var(--ds-line-sapphire);
+    color: var(--ds-sapphire-700);
     transition:
       background var(--ds-dur) var(--ds-ease),
-      color var(--ds-dur) var(--ds-ease),
+      border-color var(--ds-dur) var(--ds-ease),
       box-shadow var(--ds-dur) var(--ds-ease),
+      color var(--ds-dur) var(--ds-ease),
       transform var(--ds-dur) var(--ds-ease);
+  }
+
+  .premium-upgrade-card.is-active .premium-upgrade-icon {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #f8fafc;
   }
 
   .premium-stagger-item {
@@ -1187,6 +1197,35 @@ html[data-sidebar="collapsed"] {
 
   .exclusive-offers-nav-item div > span {
     font-weight: 700;
+    color: var(--ds-offer-green-800);
+  }
+
+  .exclusive-offers-nav-copy {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.125rem;
+    line-height: 1.35;
+  }
+
+  .exclusive-offers-nav-title {
+    display: block;
+    color: var(--ds-ink-strong);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  .exclusive-offers-nav-subtitle {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--ds-offer-green-700);
+    transition: color var(--ds-dur) var(--ds-ease);
+  }
+
+  .exclusive-offers-nav-item:hover .exclusive-offers-nav-subtitle {
     color: var(--ds-offer-green-800);
   }
 

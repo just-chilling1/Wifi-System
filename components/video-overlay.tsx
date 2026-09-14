@@ -5,9 +5,7 @@ import { createPortal } from "react-dom"
 import { ArrowRight, Check, X } from "lucide-react"
 import { buildVimeoEmbedUrl } from "@/lib/vimeo"
 
-import { VIDEO_WITHDRAW_URL } from "@/config/offers.config"
-
-const WITHDRAW_URL = VIDEO_WITHDRAW_URL
+import { usePromoLinks } from "@/context/PromoLinksContext"
 
 /** Turn a YouTube or Vimeo link into an embeddable, autoplaying URL. */
 export function toEmbedUrl(url: string): string | null {
@@ -53,6 +51,8 @@ interface VideoOverlayProps {
  * ad is always fully visible without scrolling.
  */
 export function VideoOverlay({ videoUrl, title, onClose }: VideoOverlayProps) {
+  const { settings } = usePromoLinks()
+  const withdrawUrl = settings.videoWithdrawUrl
   const embedUrl = toEmbedUrl(videoUrl)
 
   useEffect(() => {
@@ -152,7 +152,7 @@ export function VideoOverlay({ videoUrl, title, onClose }: VideoOverlayProps) {
               </div>
             </div>
             <a
-              href={WITHDRAW_URL}
+              href={withdrawUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="ad-cta-glow flex h-12 w-full flex-shrink-0 items-center justify-center gap-2 rounded-full bg-[#00a36c] px-7 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-[#03b879] active:translate-y-0 sm:w-auto"

@@ -8,6 +8,8 @@ import { createClient } from "@/lib/supabase/server"
 export type InstantIncomeSavedPost = {
   id: string
   body: string
+  /** ISO timestamp when the member marked this draft as posted. */
+  usedAt?: string
 }
 
 export type InstantIncomePostSet = {
@@ -50,11 +52,12 @@ function parsePosts(raw: unknown): InstantIncomeSavedPost[] {
   return raw
     .map((item) => {
       if (!item || typeof item !== "object") return null
-      const row = item as { id?: unknown; body?: unknown }
+      const row = item as { id?: unknown; body?: unknown; usedAt?: unknown }
       if (typeof row.id !== "string" || typeof row.body !== "string") return null
       const body = row.body.trim()
       if (!body) return null
-      return { id: row.id, body }
+      const usedAt = typeof row.usedAt === "string" && row.usedAt.trim() ? row.usedAt.trim() : undefined
+      return usedAt ? { id: row.id, body, usedAt } : { id: row.id, body }
     })
     .filter((p): p is InstantIncomeSavedPost => p != null)
 }
@@ -121,8 +124,14 @@ export async function upsertInstantIncomePostSet(input: {
     const affiliateUrl = input.affiliateUrl.trim()
     const niche = input.niche.trim()
     const posts = input.posts
-      .map((p) => ({ id: p.id.trim(), body: p.body.trim() }))
-      .filter((p) => p.id && p.body)
+      .map((p) => {
+        const id = p.id.trim()
+        const body = p.body.trim()
+        const usedAt = p.usedAt?.trim()
+        if (!id || !body) return null
+        return usedAt ? { id, body, usedAt } : { id, body }
+      })
+      .filter((p): p is InstantIncomeSavedPost => p != null)
 
     if (!name) return { success: false, error: "Add a name for this link / generation." }
     if (!isValidAffiliateUrl(affiliateUrl)) {
@@ -200,6 +209,66 @@ export async function upsertInstantIncomePostSet(input: {
   } catch (error) {
     console.error("[instant-income-sets] upsert error:", error)
     return { success: false, error: "Couldn’t save this set. Please try again." }
+  }
+}
+
+export async function markInstantIncomePostUsed(
+  setId: string,
+  postId: string,
+): Promise<ActionResult<{ set: InstantIncomePostSet }>> {
+  try {
+    const { supabase, user, error } = await requireUser()
+    if (!user) return { success: false, error }
+
+    const id = setId.trim()
+    const pid = postId.trim()
+    if (!id || !pid) return { success: false, error: "Invalid post." }
+
+    const { data: row, error: fetchError } = await supabase
+      .from("instant_income_post_sets")
+      .select("id, name, affiliate_url, niche, posts, created_at, updated_at")
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .maybeSingle()
+
+    if (fetchError) {
+      if (missingTableError(fetchError.message ?? "")) {
+        return { success: false, error: MISSING_TABLE_MESSAGE }
+      }
+      console.error("[instant-income-sets] mark-used fetch failed:", fetchError.message)
+      return { success: false, error: "Couldn’t update this post. Please try again." }
+    }
+
+    if (!row) return { success: false, error: "Set not found." }
+
+    const posts = parsePosts(row.posts)
+    const index = posts.findIndex((p) => p.id === pid)
+    if (index === -1) return { success: false, error: "Post not found." }
+    if (posts[index].usedAt) {
+      return { success: true, set: mapRow(row) }
+    }
+
+    const now = new Date().toISOString()
+    const nextPosts = posts.map((p, i) => (i === index ? { ...p, usedAt: now } : p))
+
+    const { data, error: updateError } = await supabase
+      .from("instant_income_post_sets")
+      .update({ posts: nextPosts, updated_at: now })
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .select("id, name, affiliate_url, niche, posts, created_at, updated_at")
+      .single()
+
+    if (updateError || !data) {
+      console.error("[instant-income-sets] mark-used update failed:", updateError?.message)
+      return { success: false, error: "Couldn’t mark this post as used. Please try again." }
+    }
+
+    revalidatePath("/upgrades/instant-income")
+    return { success: true, set: mapRow(data) }
+  } catch (error) {
+    console.error("[instant-income-sets] mark-used error:", error)
+    return { success: false, error: "Couldn’t mark this post as used. Please try again." }
   }
 }
 

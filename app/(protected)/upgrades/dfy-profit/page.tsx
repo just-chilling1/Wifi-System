@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass"
 import { listAffiliateLinks, type AffiliateLink } from "@/app/actions/affiliate-links"
+import { listPremiumGenerationSets } from "@/app/actions/premium-generation-sets"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
 import DfyProfitClient from "./DfyProfitClient"
 
@@ -23,6 +24,8 @@ export default async function DfyProfitPage() {
 
   const linksResult = await listAffiliateLinks().catch(() => ({ success: false as const, error: "failed" }))
   const links: AffiliateLink[] = linksResult.success ? linksResult.links : []
+  const libraryResult = await listPremiumGenerationSets("dfy_profit")
+  const initialSets = libraryResult.success ? libraryResult.sets : []
 
-  return <DfyProfitClient savedLinks={links} />
+  return <DfyProfitClient savedLinks={links} initialSets={initialSets} />
 }

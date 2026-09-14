@@ -13,7 +13,9 @@ import {
   Youtube,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { MarkAsUsedButton, UsedBadge } from "@/components/mark-as-used-button"
 import type { DfyArticleResult, DfyFacebookPost, DfyVideoResult } from "@/lib/dfy-profit/types"
+import { commentUsedKey, postUsedKey } from "@/lib/generation-set-name"
 import { cn } from "@/lib/utils"
 import { sanitizeArticleHtml } from "@/lib/sanitize-html"
 
@@ -55,6 +57,9 @@ interface DfyResultPanelProps {
   retryingPosts: boolean
   onRetryArticle: () => void
   onRetryPosts: () => void
+  usedKeys?: Record<string, string>
+  markingKey?: string | null
+  onMarkUsed?: (itemKey: string) => void
 }
 
 function KitSection({
@@ -157,6 +162,9 @@ export function DfyResultPanel({
   retryingPosts,
   onRetryArticle,
   onRetryPosts,
+  usedKeys = {},
+  markingKey = null,
+  onMarkUsed,
 }: DfyResultPanelProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null)
 
@@ -250,20 +258,44 @@ export function DfyResultPanel({
                   {video.comments.map((comment, index) => {
                     const id = `${video.videoId}-${index}`
                     const copied = copiedId === id
+                    const itemKey = commentUsedKey(video.videoId, index)
+                    const isUsed = Boolean(usedKeys[itemKey])
                     return (
                       <div
                         key={id}
-                        className="flex flex-col gap-3 rounded-xl border-2 border-[var(--ds-line-strong)] border-l-4 border-l-primary bg-white p-3.5 shadow-sm sm:flex-row sm:items-start"
+                        className={cn(
+                          "flex flex-col gap-3 rounded-xl border-2 border-[var(--ds-line-strong)] border-l-4 border-l-primary bg-white p-3.5 shadow-sm",
+                          isUsed && "border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)]/40",
+                        )}
                       >
                         <div className="flex min-w-0 flex-1 items-start gap-3">
                           <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sapphire-200 text-[11px] font-bold text-sapphire-700">
                             {index + 1}
                           </span>
-                          <p className="whitespace-pre-wrap text-sm font-medium leading-relaxed text-ink">
-                            {comment}
-                          </p>
+                          <div className="min-w-0 flex-1">
+                            <div className="mb-1 flex flex-wrap items-center gap-2">
+                              {isUsed ? <UsedBadge /> : null}
+                            </div>
+                            <p
+                              className={cn(
+                                "whitespace-pre-wrap text-sm font-medium leading-relaxed text-ink",
+                                isUsed && "text-ink-3",
+                              )}
+                            >
+                              {comment}
+                            </p>
+                          </div>
                         </div>
-                        <CopyButton copied={copied} onClick={() => void copyText(id, comment)} />
+                        <div className="flex flex-col gap-2 sm:flex-row">
+                          <CopyButton copied={copied} onClick={() => void copyText(id, comment)} />
+                          {onMarkUsed ? (
+                            <MarkAsUsedButton
+                              used={isUsed}
+                              marking={markingKey === itemKey}
+                              onClick={() => onMarkUsed(itemKey)}
+                            />
+                          ) : null}
+                        </div>
                       </div>
                     )
                   })}
@@ -274,110 +306,125 @@ export function DfyResultPanel({
         )}
       </KitSection>
 
-      {isGeneratingArticle || retryingArticle ? (
-        <section className="overflow-hidden rounded-2xl border-2 border-[var(--ds-line-strong)] bg-card shadow-[var(--ds-shadow-card)]">
-          <div className="flex items-center gap-3 border-b border-[var(--ds-line)] bg-sapphire-100 px-5 py-4 text-ink md:px-6">
-            <FileText className="h-5 w-5 shrink-0 text-sapphire-700" aria-hidden />
-            <p className="text-sm font-semibold">Writing your authority article…</p>
-          </div>
-          <p className="inline-flex items-center gap-2 px-5 py-6 text-sm font-medium text-ink">
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            Generating a long-form guide with your offer woven in.
-          </p>
-        </section>
-      ) : articleError ? (
-        <section className="overflow-hidden rounded-2xl border-2 border-[var(--ds-line-strong)] bg-card p-5 shadow-[var(--ds-shadow-card)]">
-          <p className="text-sm font-medium text-destructive">{articleError}</p>
-          <Button
-            type="button"
-            disabled={retryingArticle}
-            onClick={onRetryArticle}
-            variant="outline"
-            className={cn("mt-3 h-11 px-4 disabled:opacity-50", outlineCtaClass)}
-          >
-            <RefreshCw className="mr-2 h-3.5 w-3.5" />
-            Retry article
-          </Button>
-        </section>
-      ) : article ? (
-        <section className="overflow-hidden rounded-2xl border-2 border-[var(--ds-line-strong)] bg-card shadow-[var(--ds-shadow-card)]">
-          {article.saveWarning ? (
-            <p className="border-b border-[var(--ds-line)] bg-[#FDE4E4] px-5 py-3 text-sm font-medium text-[#C53030]">
-              {article.saveWarning}
-            </p>
-          ) : null}
-          <div className="flex items-start justify-between gap-3 border-b border-[var(--ds-line)] bg-sapphire-100 px-5 py-4 text-ink md:px-6">
-            <div className="min-w-0">
-              <p className="text-[13px] font-medium uppercase tracking-[0.12em] text-sapphire-700">
-                {niche || "Authority article"}
-              </p>
-              <h3 className="mt-1 text-lg font-medium leading-snug text-ink">{article.title}</h3>
-              {article.excerpt ? (
-                <p className="mt-2 text-sm leading-relaxed text-ink-3">{article.excerpt}</p>
-              ) : null}
+      {isGeneratingArticle || retryingArticle || articleError || article ? (
+        <KitSection
+          title="Authority article"
+          count={article ? 1 : undefined}
+          defaultOpen={isGeneratingArticle || retryingArticle || !!articleError || !!article}
+          tone="neutral"
+        >
+          <div className="flex items-center gap-3 rounded-xl border border-[var(--ds-line-strong)] bg-white px-3 py-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
+              <FileText className="h-[18px] w-[18px]" aria-hidden />
             </div>
-            <FileText className="mt-1 h-5 w-5 shrink-0 text-sapphire-700" aria-hidden />
+            <p className="text-sm font-medium text-ink">
+              {isGeneratingArticle || retryingArticle
+                ? "Writing your authority article…"
+                : articleError
+                  ? "We couldn't finish your article."
+                  : article
+                    ? "Long-form guide with your offer woven in."
+                    : "Your authority article will appear here."}
+            </p>
           </div>
-          <div
-            className="article-body max-h-[min(70vh,720px)] max-w-none overflow-y-auto bg-card px-5 py-6 md:px-8 md:py-8"
-            dangerouslySetInnerHTML={{ __html: sanitizeArticleHtml(article.html) }}
-          />
-          <div className="flex flex-wrap gap-2 border-t-2 border-[var(--ds-line-strong)] bg-surface-nested px-5 py-4 md:px-6">
-            {article.url ? (
-              <Button asChild className={cn("h-11 px-4", primaryCtaClass)}>
-                <a href={article.url} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                  Open live article
-                </a>
-              </Button>
-            ) : null}
-            {article.url ? (
+
+          {isGeneratingArticle || retryingArticle ? (
+            <p className="inline-flex items-center gap-2 text-sm font-medium text-ink">
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              Generating a long-form guide with your offer woven in.
+            </p>
+          ) : articleError ? (
+            <>
+              <p className="text-sm font-medium text-destructive">{articleError}</p>
               <Button
                 type="button"
+                disabled={retryingArticle}
+                onClick={onRetryArticle}
                 variant="outline"
-                onClick={() => void copyText("article-url", article.url!)}
-                className={cn("h-11 px-4", outlineCtaClass)}
+                className={cn("h-11 px-4 disabled:opacity-50", outlineCtaClass)}
               >
-                {copiedId === "article-url" ? (
-                  <Check className="mr-2 h-4 w-4" />
-                ) : (
-                  <Copy className="mr-2 h-4 w-4" />
-                )}
-                {copiedId === "article-url" ? "Copied" : "Copy URL"}
+                <RefreshCw className="mr-2 h-3.5 w-3.5" />
+                Retry article
               </Button>
-            ) : null}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => void copyText("article-text", `${article.title}\n\n${htmlToText(article.html)}`)}
-              className={cn("h-11 px-4", outlineCtaClass)}
-            >
-              {copiedId === "article-text" ? (
-                <Check className="mr-2 h-4 w-4" />
-              ) : (
-                <Copy className="mr-2 h-4 w-4" />
-              )}
-              {copiedId === "article-text" ? "Copied" : "Copy plain text"}
-            </Button>
-            <Button
-              type="button"
-              onClick={() => void copyText("article-html", article.html)}
-              className={cn(
-                "h-11 px-4",
-                copiedId === "article-html"
-                  ? "rounded-xl bg-sapphire-500 font-semibold text-white hover:bg-sapphire-500"
-                  : primaryCtaClass,
-              )}
-            >
-              {copiedId === "article-html" ? (
-                <Check className="mr-2 h-4 w-4" />
-              ) : (
-                <Copy className="mr-2 h-4 w-4" />
-              )}
-              {copiedId === "article-html" ? "Copied" : "Copy HTML"}
-            </Button>
-          </div>
-        </section>
+            </>
+          ) : article ? (
+            <article className="overflow-hidden rounded-2xl border-2 border-[var(--ds-line-strong)] bg-card shadow-[var(--ds-shadow-card)]">
+              {article.saveWarning ? (
+                <p className="border-b border-[var(--ds-line)] bg-[#FDE4E4] px-5 py-3 text-sm font-medium text-[#C53030]">
+                  {article.saveWarning}
+                </p>
+              ) : null}
+              <div className="border-b border-[var(--ds-line)] bg-sapphire-100 px-5 py-4 text-ink md:px-6">
+                <p className="text-[13px] font-medium uppercase tracking-[0.12em] text-sapphire-700">
+                  {niche || "Authority article"}
+                </p>
+                <h3 className="mt-1 text-lg font-medium leading-snug text-ink">{article.title}</h3>
+                {article.excerpt ? (
+                  <p className="mt-2 text-sm leading-relaxed text-ink-3">{article.excerpt}</p>
+                ) : null}
+              </div>
+              <div
+                className="article-body max-h-[min(70vh,720px)] max-w-none overflow-y-auto bg-card px-5 py-6 md:px-8 md:py-8"
+                dangerouslySetInnerHTML={{ __html: sanitizeArticleHtml(article.html) }}
+              />
+              <div className="flex flex-wrap gap-2 border-t-2 border-[var(--ds-line-strong)] bg-surface-nested px-5 py-4 md:px-6">
+                {article.url ? (
+                  <Button asChild className={cn("h-11 px-4", primaryCtaClass)}>
+                    <a href={article.url} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Open live article
+                    </a>
+                  </Button>
+                ) : null}
+                {article.url ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => void copyText("article-url", article.url!)}
+                    className={cn("h-11 px-4", outlineCtaClass)}
+                  >
+                    {copiedId === "article-url" ? (
+                      <Check className="mr-2 h-4 w-4" />
+                    ) : (
+                      <Copy className="mr-2 h-4 w-4" />
+                    )}
+                    {copiedId === "article-url" ? "Copied" : "Copy URL"}
+                  </Button>
+                ) : null}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => void copyText("article-text", `${article.title}\n\n${htmlToText(article.html)}`)}
+                  className={cn("h-11 px-4", outlineCtaClass)}
+                >
+                  {copiedId === "article-text" ? (
+                    <Check className="mr-2 h-4 w-4" />
+                  ) : (
+                    <Copy className="mr-2 h-4 w-4" />
+                  )}
+                  {copiedId === "article-text" ? "Copied" : "Copy plain text"}
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => void copyText("article-html", article.html)}
+                  className={cn(
+                    "h-11 px-4",
+                    copiedId === "article-html"
+                      ? "rounded-xl bg-sapphire-500 font-semibold text-white hover:bg-sapphire-500"
+                      : primaryCtaClass,
+                  )}
+                >
+                  {copiedId === "article-html" ? (
+                    <Check className="mr-2 h-4 w-4" />
+                  ) : (
+                    <Copy className="mr-2 h-4 w-4" />
+                  )}
+                  {copiedId === "article-html" ? "Copied" : "Copy HTML"}
+                </Button>
+              </div>
+            </article>
+          ) : null}
+        </KitSection>
       ) : null}
 
       <KitSection
@@ -426,29 +473,46 @@ export function DfyResultPanel({
             {posts.map((post, index) => {
               const copied = copiedId === post.id
               const accent = POST_ACCENTS[index % POST_ACCENTS.length]
+              const itemKey = postUsedKey(post.id)
+              const isUsed = Boolean(usedKeys[itemKey])
               return (
                 <article
                   key={post.id}
                   className={cn(
                     "flex flex-col gap-3 rounded-2xl border-2 border-[var(--ds-line-strong)] border-l-4 p-4 shadow-[var(--ds-shadow-card)]",
                     accent.bar,
-                    accent.card,
+                    isUsed ? "bg-[var(--ds-offer-green-100)]/50" : accent.card,
                   )}
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <p
-                      className={cn(
-                        "rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider",
-                        accent.chip,
-                      )}
-                    >
-                      Variant {index + 1}
-                    </p>
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p
+                        className={cn(
+                          "rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider",
+                          accent.chip,
+                        )}
+                      >
+                        Variant {index + 1}
+                      </p>
+                      {isUsed ? <UsedBadge /> : null}
+                    </div>
                     <CopyButton copied={copied} onClick={() => void copyText(post.id, post.body)} />
                   </div>
-                  <p className="whitespace-pre-wrap text-sm font-medium leading-relaxed text-ink">
+                  <p
+                    className={cn(
+                      "whitespace-pre-wrap text-sm font-medium leading-relaxed text-ink",
+                      isUsed && "text-ink-3",
+                    )}
+                  >
                     {post.body}
                   </p>
+                  {onMarkUsed ? (
+                    <MarkAsUsedButton
+                      used={isUsed}
+                      marking={markingKey === itemKey}
+                      onClick={() => onMarkUsed(itemKey)}
+                    />
+                  ) : null}
                 </article>
               )
             })}

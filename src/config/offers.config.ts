@@ -15,17 +15,21 @@ export const offers = {
   videoWithdrawUrl: "https://jvz1.com/c/3547097/442055/",
 } as const
 
+export type ExclusiveOfferIcon = "UserPlus" | "Play" | "Wallet"
+
 export interface ExclusiveOffer {
   title: string
   href: string
   cta?: string
-  icon: "UserPlus" | "Play" | "Wallet"
+  icon: ExclusiveOfferIcon
 }
 
 export const exclusiveOffersEnabled = true
 
-export function getExclusiveOffers(): ExclusiveOffer[] {
-  if (!exclusiveOffersEnabled) return []
+export const EXCLUSIVE_OFFER_ICONS: ExclusiveOfferIcon[] = ["UserPlus", "Play", "Wallet"]
+
+/** Always returns the three default partner slots (used by admin + promo-link defaults). */
+export function getDefaultExclusiveOffers(): ExclusiveOffer[] {
   return [
     {
       title: "Create your Q-LAPS2000 account",
@@ -46,6 +50,11 @@ export function getExclusiveOffers(): ExclusiveOffer[] {
       icon: "Wallet",
     },
   ]
+}
+
+export function getExclusiveOffers(): ExclusiveOffer[] {
+  if (!exclusiveOffersEnabled) return []
+  return getDefaultExclusiveOffers()
 }
 
 export const FREE_TRAINING_URL = offers.exclusiveOffer2
