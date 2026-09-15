@@ -6,7 +6,7 @@ export const SUPPORT_EMAIL =
   process.env.NEXT_PUBLIC_SUPPORT_EMAIL ||
   process.env.SUPPORT_EMAIL ||
   "wificode@neoai.freshdesk.com"
-export const SUPPORT_PORTAL_URL = "https://neoaifreshdesk.freshdesk.com/"
+export const SUPPORT_PORTAL_URL = "https://neoai.freshdesk.com/support/home"
 export const SUPPORT_MAILTO = `mailto:${SUPPORT_EMAIL}`
 
 export const APP_SUPPORT_NAME = brand.productName

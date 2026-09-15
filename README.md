@@ -46,6 +46,9 @@ Copy `env.example` → `.env.local` and configure:
 
 Get these from: Supabase Dashboard → Project Settings → API
 
+#### Admin login (optional, but required for `/admin`):
+- `ADMIN_EMAIL` / `ADMIN_PASSWORD` - Seeded when you open `/auth/login`. See [LOGIN.md](LOGIN.md).
+
 #### Optional (AI & Video):
 - `OPENAI_API_KEY` - Enables real AI comment generation (falls back to templates if not set)
 - `OPENAI_MODEL` - Defaults to `gpt-4o`
@@ -68,7 +71,7 @@ Run these SQL scripts in your Supabase SQL Editor (in order):
 NEXT_DISABLE_TURBOPACK=1 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3000](http://localhost:3000). Unauthenticated visits redirect to `/auth/login`. How to sign in, create a member, use the admin panel, and bypass auth locally is in [LOGIN.md](LOGIN.md). Current product caveats (API fallbacks, geo gates, unlock behavior) are in [LIMITATIONS.md](LIMITATIONS.md).
 
 ## Design System
 
@@ -104,6 +107,13 @@ p55account/
 NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
 SUPABASE_SERVICE_ROLE_KEY=eyJxxx...
+
+# Admin panel (seeded on /auth/login — do not commit real values)
+ADMIN_EMAIL=
+ADMIN_PASSWORD=
+
+# Local UI preview only — never set in production
+# BYPASS_AUTH=true
 
 # OpenAI (Optional - enables AI generation)
 OPENAI_API_KEY=sk-xxxxx

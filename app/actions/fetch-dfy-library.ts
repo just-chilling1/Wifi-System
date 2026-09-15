@@ -15,12 +15,15 @@ export interface DFYVideo {
 }
 
 const NICHES = [
-  "weight loss",
-  "make money online",
-  "crypto trading",
-  "fitness motivation",
-  "side hustle",
-  "passive income"
+  "Health & Wellness",
+  "Finance & Investing",
+  "Fitness & Sports",
+  "Digital Marketing",
+  "Self-Help & Personal Development",
+  "Beauty & Skincare",
+  "Education & Learning",
+  "Business & Entrepreneurship",
+  "Travel & Lifestyle",
 ]
 
 // Cache the library in memory so we don't hammer the APIs (RapidAPI rate-limits

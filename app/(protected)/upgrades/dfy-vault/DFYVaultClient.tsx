@@ -525,7 +525,7 @@ export default function DFYVaultClient({
             </div>
 
             <div className="glass-card p-6">
-              <div className="flex gap-2 overflow-x-auto">
+              <div className="flex flex-wrap gap-2">
                   {niches.map((niche) => (
                     <Button
                       key={niche}

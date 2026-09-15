@@ -77,6 +77,7 @@ table.
 
 ## Notes
 
+- Other product caveats (auth bypass, API fallbacks, public routes) are in [LIMITATIONS.md](LIMITATIONS.md).
 - The dismiss is per browser session (sessionStorage inside the iframe).
 - `tel:` links work from iframes on phones — tapping the button opens the dialer.
 - Do not add `X-Frame-Options`/`frame-ancestors` restrictions to the RH
