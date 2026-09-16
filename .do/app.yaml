@@ -23,6 +23,6 @@ services:
       # Set these as SECRET in the DO UI (do not commit real values):
       # NEXT_PUBLIC_SUPABASE_URL
       # NEXT_PUBLIC_SUPABASE_ANON_KEY
-      # NEXT_PUBLIC_SITE_URL=https://rhmemberarea.com
+      # NEXT_PUBLIC_SITE_URL=https://wificodemembers.com
       # SUPABASE_SERVICE_ROLE_KEY (if used)
       # RAPIDAPI_KEY / RESEND / FRESHDESK as needed

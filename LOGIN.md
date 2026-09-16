@@ -11,7 +11,7 @@ Auth is Supabase email/password. Do not commit real passwords — keep them in `
 
 Whether sign-up requires email confirmation is a Supabase Auth setting (Authentication → Providers → Email). If confirmation is on, the user must verify before they can stay signed in.
 
-There is no shared demo login in the repo. Use your own test user, or create one in the Supabase dashboard (Authentication → Users).
+There is no shared demo login in the repo. Use your own test user, or create one in the Supabase dashboard (Authentication → Users). Role table and QA fill-in: [TEST_CREDENTIALS.md](TEST_CREDENTIALS.md).
 
 ## Admin (Promo Links panel)
 

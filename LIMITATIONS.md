@@ -92,7 +92,9 @@ Estimated click counts and viral scores on video cards are **heuristic** (view-c
 
 ## Related docs
 
+- [FEATURES.md](FEATURES.md) — what each module does
 - [LOGIN.md](LOGIN.md) — sign-in, admin seed, local bypass
+- [TEST_CREDENTIALS.md](TEST_CREDENTIALS.md) — QA roles and how to get accounts
 - [EMBED.md](EMBED.md) — specialist iframe, preview secret, click tracking
 - [MOBILE_GUIDE.md](MOBILE_GUIDE.md) — viewport, PWA, chrome
 - [README.md](README.md) — setup and env overview

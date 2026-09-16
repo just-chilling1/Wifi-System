@@ -11,12 +11,7 @@ RH is a neural engagement system that helps creators discover trending YouTube S
 
 ## Features
 
-- 🤖 **AI Content Scout**: Discovers trending YouTube Shorts in real-time
-- ✨ **Neural Comment Generator**: Creates natural, human-like engagement comments
-- 📦 **Pack Management**: Save and organize your generated comment packs
-- 🎯 **Smart Distribution**: Tools to help you deploy comments strategically
-- 📊 **Analytics Dashboard**: Track your engagement metrics
-- 🔒 **Secure Authentication**: Built on Supabase Auth
+Member-facing modules, routes, and what each page actually does: [FEATURES.md](FEATURES.md). Intentional constraints: [LIMITATIONS.md](LIMITATIONS.md).
 
 ## Tech Stack
 
@@ -47,7 +42,7 @@ Copy `env.example` → `.env.local` and configure:
 Get these from: Supabase Dashboard → Project Settings → API
 
 #### Admin login (optional, but required for `/admin`):
-- `ADMIN_EMAIL` / `ADMIN_PASSWORD` - Seeded when you open `/auth/login`. See [LOGIN.md](LOGIN.md).
+- `ADMIN_EMAIL` / `ADMIN_PASSWORD` - Seeded when you open `/auth/login`. See [LOGIN.md](LOGIN.md) and [TEST_CREDENTIALS.md](TEST_CREDENTIALS.md).
 
 #### Optional (AI & Video):
 - `OPENAI_API_KEY` - Enables real AI comment generation (falls back to templates if not set)
@@ -71,7 +66,7 @@ Run these SQL scripts in your Supabase SQL Editor (in order):
 NEXT_DISABLE_TURBOPACK=1 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Unauthenticated visits redirect to `/auth/login`. How to sign in, create a member, use the admin panel, and bypass auth locally is in [LOGIN.md](LOGIN.md). Current product caveats (API fallbacks, geo gates, unlock behavior) are in [LIMITATIONS.md](LIMITATIONS.md).
+Open [http://localhost:3000](http://localhost:3000). Unauthenticated visits redirect to `/auth/login`. How to sign in, create a member, use the admin panel, and bypass auth locally is in [LOGIN.md](LOGIN.md). Test accounts: [TEST_CREDENTIALS.md](TEST_CREDENTIALS.md). Feature map: [FEATURES.md](FEATURES.md). Caveats: [LIMITATIONS.md](LIMITATIONS.md).
 
 ## Design System
 
