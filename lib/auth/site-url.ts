@@ -1,5 +1,6 @@
 export const APP_ORIGINS = [
   "https://wificodemembers.com",
+  "https://www.wificodemembers.com",
 ] as const
 
 const DEFAULT_SITE_URL = APP_ORIGINS[0]

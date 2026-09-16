@@ -11,7 +11,8 @@ function isSpecialistPublicPath(pathname: string) {
     pathname === "/api/track/specialist-popup" ||
     pathname.startsWith("/api/track/specialist-popup/") ||
     pathname === "/api/auth/ensure-admin" ||
-    pathname.startsWith("/api/auth/ensure-admin/")
+    pathname.startsWith("/api/auth/ensure-admin/") ||
+    pathname === "/api/auth/forgot-password"
   )
 }
 

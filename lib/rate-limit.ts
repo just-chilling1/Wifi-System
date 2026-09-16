@@ -26,3 +26,8 @@ function consume(key: string, limit: number, windowMs: number): boolean {
 export function consumeSupportQuota(userId: string): boolean {
   return consume(`support:${userId}`, SUPPORT_LIMIT, SUPPORT_WINDOW_MS)
 }
+
+/** 5 password-reset emails per address per hour. */
+export function consumePasswordResetQuota(email: string): boolean {
+  return consume(`password-reset:${email.trim().toLowerCase()}`, 5, SUPPORT_WINDOW_MS)
+}
