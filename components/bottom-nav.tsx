@@ -69,7 +69,7 @@ export function BottomNav() {
             <Link
               key={tab.path}
               href={tab.path}
-              className={`relative flex flex-1 flex-col items-center justify-center gap-0.5 transition-colors ${
+              className={`relative flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-0.5 transition-colors ${
                 isActive ? "text-sapphire-700" : "text-ink-3 hover:bg-surface-hover hover:text-ink active:text-ink"
               }`}
             >
@@ -77,7 +77,7 @@ export function BottomNav() {
                 <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-grad-sapphire" />
               )}
               <Icon className="h-6 w-6" />
-              <span className="text-[11px] font-semibold leading-none">{tab.label}</span>
+              <span className="bottom-nav-label text-[11px] font-semibold leading-none">{tab.label}</span>
             </Link>
           )
         })}
@@ -94,7 +94,7 @@ export function BottomNav() {
                 <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-grad-sapphire" />
               )}
               <Menu className="h-6 w-6" />
-              <span className="text-[11px] font-semibold leading-none">More</span>
+              <span className="bottom-nav-label text-[11px] font-semibold leading-none">More</span>
             </button>
           </SheetTrigger>
           <SheetContent

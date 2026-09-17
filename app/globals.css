@@ -378,6 +378,8 @@ html[data-sidebar="collapsed"] {
     min-width: 0;
     overscroll-behavior-y: none;
     -webkit-tap-highlight-color: transparent;
+    overflow-wrap: break-word;
+    word-break: normal;
   }
 
   input,
@@ -429,9 +431,15 @@ html[data-sidebar="collapsed"] {
       radial-gradient(ellipse 75% 55% at 12% -8%, color-mix(in srgb, var(--primary) 14%, transparent), transparent 62%),
       radial-gradient(ellipse 60% 45% at 92% 6%, color-mix(in srgb, var(--foreground) 8%, transparent), transparent 60%),
       radial-gradient(ellipse 80% 60% at 50% 112%, color-mix(in srgb, var(--surface-soft) 80%, transparent), transparent 62%);
-    background-attachment: fixed;
+    background-attachment: scroll;
     min-height: 100dvh;
     overflow-x: clip;
+  }
+
+  @media (min-width: 1024px) {
+    .app-bg {
+      background-attachment: fixed;
+    }
   }
 
   .glass,
@@ -492,6 +500,8 @@ html[data-sidebar="collapsed"] {
     font-family: var(--font-ui);
     font-size: 15px;
     font-weight: 500;
+    white-space: normal;
+    text-align: center;
     @apply inline-flex items-center justify-center gap-2 cursor-pointer transition-[background,box-shadow] duration-[160ms];
   }
 
@@ -520,6 +530,8 @@ html[data-sidebar="collapsed"] {
     padding: 0 24px;
     font-size: 15px;
     font-weight: 500;
+    white-space: normal;
+    text-align: center;
     @apply inline-flex items-center justify-center gap-2 cursor-pointer transition-[background-color,border-color,color,box-shadow,transform] duration-[160ms];
   }
 
@@ -756,7 +768,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .ds-h1 {
-    font-size: 34px;
+    font-size: clamp(1.75rem, 1.35rem + 1.6vw, 34px);
     font-weight: 400;
     line-height: 1.2;
     letter-spacing: -0.012em;
@@ -764,7 +776,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .ds-h2 {
-    font-size: 24px;
+    font-size: clamp(1.25rem, 1.1rem + 0.7vw, 24px);
     font-weight: 400;
     line-height: 1.25;
     letter-spacing: -0.012em;
@@ -772,7 +784,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .ds-h3 {
-    font-size: 19px;
+    font-size: clamp(1.0625rem, 1rem + 0.35vw, 19px);
     font-weight: 400;
     line-height: 1.3;
     letter-spacing: -0.01em;
@@ -780,7 +792,7 @@ html[data-sidebar="collapsed"] {
   }
 
   .ds-h4 {
-    font-size: 19px;
+    font-size: clamp(1.0625rem, 1rem + 0.35vw, 19px);
     font-weight: 400;
     line-height: 1.3;
     color: var(--ds-ink);
@@ -795,7 +807,7 @@ html[data-sidebar="collapsed"] {
 
   .ds-page-title {
     font-family: var(--font-brand);
-    font-size: 34px;
+    font-size: clamp(1.75rem, 1.35rem + 1.6vw, 34px);
     font-weight: 400;
     letter-spacing: -0.012em;
     color: var(--text-primary);
@@ -803,7 +815,7 @@ html[data-sidebar="collapsed"] {
 
   .ds-hero-title {
     font-family: var(--font-brand);
-    font-size: 34px;
+    font-size: clamp(1.75rem, 1.35rem + 1.6vw, 34px);
     font-weight: 400;
     letter-spacing: -0.012em;
     color: var(--text-primary);
@@ -844,7 +856,7 @@ html[data-sidebar="collapsed"] {
 
   .page-stack,
   .page-container {
-    @apply flex w-full min-w-0 flex-col gap-5 sm:gap-8;
+    @apply flex w-full min-w-0 flex-col gap-4 sm:gap-8;
   }
 
   .page-loading {
@@ -1724,7 +1736,7 @@ html[data-sidebar="collapsed"] {
 
   .support-cta-banner__title {
     font-family: var(--font-ui);
-    font-size: 1rem;
+    font-size: clamp(0.9375rem, 0.9rem + 0.25vw, 1rem);
     font-weight: 600;
     letter-spacing: -0.02em;
     line-height: 1.3;
@@ -1860,7 +1872,7 @@ html[data-sidebar="collapsed"] {
 
   .dashboard-support-banner__title {
     font-family: var(--font-heading);
-    font-size: clamp(1.5rem, 1.3rem + 0.7vw, 1.875rem);
+    font-size: clamp(1.25rem, 1.1rem + 0.9vw, 1.875rem);
     font-weight: 600;
     letter-spacing: -0.03em;
     line-height: 1.15;
@@ -2018,6 +2030,51 @@ html[data-sidebar="collapsed"] {
   min-width: 0;
   max-width: var(--layout-content-max);
   margin-inline: auto;
+}
+
+/* Media and preformatted blocks must never force horizontal page scroll. */
+.app-content-layer img,
+.app-content-layer video,
+.app-content-layer svg,
+.app-content-layer canvas,
+.app-content-layer iframe {
+  max-width: 100%;
+}
+
+.app-content-layer pre,
+.app-content-layer code,
+.app-content-layer table {
+  max-width: 100%;
+}
+
+.app-content-layer pre,
+.app-content-layer table {
+  overflow-x: auto;
+}
+
+/* Keep dense UI readable on narrow phones without horizontal scroll. */
+@media (max-width: 379px) {
+  .app-bottom-nav .bottom-nav-label {
+    font-size: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .dashboard-support-banner {
+    padding: 1.1rem 1rem;
+  }
+
+  .dashboard-support-banner__icon {
+    height: 2.75rem;
+    width: 2.75rem;
+  }
+
+  .earnings-banner-cta {
+    max-width: 100%;
+    padding-inline: 1rem;
+    font-size: 0.875rem;
+    white-space: normal;
+    text-align: center;
+  }
 }
 
 @media (min-width: 1024px) {

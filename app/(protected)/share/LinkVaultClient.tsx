@@ -182,7 +182,7 @@ export default function LinkVaultClient() {
   const deletingLink = links.find((link) => link.id === deleteId)
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
+    <div className="mx-auto max-w-7xl space-y-5 sm:space-y-6">
       <PageHeader
         eyebrow="Money Link Storage"
         title="Link Vault"
@@ -198,7 +198,8 @@ export default function LinkVaultClient() {
         actions={
           <Button size="lg" className="w-full sm:w-auto" onClick={openCreate}>
             <Plus className="h-5 w-5" />
-            Add New Affiliate Link
+            <span className="sm:hidden">Add Link</span>
+            <span className="hidden sm:inline">Add New Affiliate Link</span>
           </Button>
         }
       />

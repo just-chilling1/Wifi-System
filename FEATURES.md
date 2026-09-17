@@ -6,7 +6,7 @@ Wifi Code is a signed-in member area for promoting an affiliate offer: find YouT
 
 ## Member path
 
-1. Sign up or sign in at `/auth/login` (email/password via Supabase). New members complete `/onboarding`, then land on `/dashboard`.
+1. Sign up or sign in at `/auth/login` (email/password via Supabase). Members land on `/dashboard`.
 2. Dashboard **Start Here** plays three Vimeo videos in order: *Watch This First*, *How The Money Flows*, *Your 5-Minute Tour*. Bonus-training cards sit between them. Primary CTAs go to Gold Rush and the Academy.
 3. Day-to-day work: Gold Rush → My Vault / Your Links → Academy. Premium tools live under `/upgrades/*`.
 4. Desktop uses the sidebar. Mobile uses a four-tab bar (Home, Gold Rush, Vault, Academy) plus a More sheet (Your Links, Support).

@@ -18,13 +18,17 @@ interface PageHeaderProps {
  */
 export function PageHeader({ eyebrow, title, subtitle, actions, titleClassName }: PageHeaderProps) {
   return (
-    <div className="mb-8 flex flex-col gap-4 page-enter sm:flex-row sm:items-end sm:justify-between">
-      <div className="min-w-0">
+    <div className="mb-5 flex flex-col gap-2 page-enter sm:mb-8 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
+      <div className="min-w-0 flex-1">
         <p className="page-eyebrow mb-2">{eyebrow}</p>
-        <h1 className={cn("ds-h1", titleClassName)}>{title}</h1>
+        <h1 className={cn("ds-h1 break-words", titleClassName)}>{title}</h1>
         {subtitle ? <p className="ds-subtitle mt-2 max-w-2xl">{subtitle}</p> : null}
       </div>
-      {actions ? <div className="flex shrink-0 items-center gap-3">{actions}</div> : null}
+      {actions ? (
+        <div className="flex min-w-0 w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end sm:gap-3">
+          {actions}
+        </div>
+      ) : null}
     </div>
   )
 }

@@ -9,7 +9,9 @@ function isLocalHostname(hostname?: string): boolean {
 /** Local dev only — never enable in production. */
 export function isDevAuthBypassEnabled(hostname?: string): boolean {
   const flagEnabled =
-    process.env.BYPASS_AUTH === "true" || process.env.NEXT_PUBLIC_DEV_BYPASS_AUTH === "true"
+    process.env.BYPASS_AUTH === "true" ||
+    process.env.NEXT_PUBLIC_DEV_BYPASS_AUTH === "true" ||
+    process.env.DEV_BYPASS_AUTH === "true"
 
   if (!flagEnabled) return false
 

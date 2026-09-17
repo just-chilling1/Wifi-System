@@ -47,7 +47,7 @@ export default function LoginPage() {
         password,
       })
       if (error) throw error
-      router.push(isAdminUser(data.user) ? "/admin" : "/onboarding")
+      router.push(isAdminUser(data.user) ? "/admin" : "/dashboard")
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {

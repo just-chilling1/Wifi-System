@@ -9,7 +9,7 @@ Operator notes for current product behavior. These are intentional constraints o
 - `BYPASS_AUTH` / `NEXT_PUBLIC_DEV_BYPASS_AUTH` only apply on localhost / private LAN, or when `NODE_ENV=development`. Never set these in production.
 - `/dev/*` preview routes are blocked outside development (redirect to `/dashboard`).
 - Missing Supabase env vars fail closed in production (redirect to `/auth/login`). In local development the request may continue without a session.
-- Signed-in members who have not finished onboarding are sent to `/onboarding` on every protected route. Admins skip onboarding and go to `/admin`.
+- Admins skip member chrome and go to `/admin`. Non-admins who hit `/admin` are redirected to `/dashboard`.
 - Upgrade unlock URLs (`/unlock/dfy-vault`, `/unlock/instant-income`, `/unlock/automated-income`) confirm the session and revalidate pages. They do **not** persist `upgrade_level`. Members already receive full feature access on signup. There is no FeatureGuard: a bookmarked premium route still loads if the member is signed in.
 - `/admin` is role-gated (`app_metadata.role = admin`). Non-admins are redirected to `/dashboard`.
 

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
+import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass"
 import { PageHeader } from "@/components/page-header"
 import { ContactSupportWidget } from "@/components/contact-support-widget"
 import { DashboardTipsWidget } from "@/components/dashboard-tips-widget"
@@ -23,17 +24,19 @@ export default async function DashboardPage() {
       data: { user },
     } = await supabase.auth.getUser()
 
-    if (!user) {
+    if (!user && !isDevAuthBypassEnabled()) {
       redirect("/auth/login")
     }
 
     let profile = null
 
-    try {
-      const { data: profileData } = await supabase.from("users").select("*").eq("id", user.id).single()
-      profile = profileData
-    } catch (error) {
-      console.error("[robinhood] Error fetching profile:", error)
+    if (user) {
+      try {
+        const { data: profileData } = await supabase.from("users").select("*").eq("id", user.id).single()
+        profile = profileData
+      } catch (error) {
+        console.error("[robinhood] Error fetching profile:", error)
+      }
     }
 
     const firstName = profile?.full_name ? profile.full_name.split(" ")[0] : ""
@@ -72,17 +75,19 @@ export default async function DashboardPage() {
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/create"
-                className="btn-primary inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 px-6 text-[15px]"
+                className="btn-primary inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 px-4 text-center text-[14px] leading-snug sm:px-6 sm:text-[15px]"
               >
-                <Brain className="h-5 w-5" strokeWidth={1.75} />
-                Get Started Now with Gold Rush
+                <Brain className="h-5 w-5 shrink-0" strokeWidth={1.75} />
+                <span className="sm:hidden">Start with Gold Rush</span>
+                <span className="hidden sm:inline">Get Started Now with Gold Rush</span>
               </Link>
               <Link
                 href="/training"
-                className="btn-secondary inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 px-6 text-[15px]"
+                className="btn-secondary inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 px-4 text-center text-[14px] leading-snug sm:px-6 sm:text-[15px]"
               >
-                <BookOpen className="h-5 w-5" strokeWidth={1.75} />
-                Know More from the Academy
+                <BookOpen className="h-5 w-5 shrink-0" strokeWidth={1.75} />
+                <span className="sm:hidden">Open the Academy</span>
+                <span className="hidden sm:inline">Know More from the Academy</span>
               </Link>
             </div>
           </div>
@@ -97,6 +102,18 @@ export default async function DashboardPage() {
     )
   } catch (error) {
     console.error("[robinhood] Dashboard error:", error)
-    redirect("/auth/login")
+    if (!isDevAuthBypassEnabled()) {
+      redirect("/auth/login")
+    }
+    return (
+      <div className="page-container mx-auto w-full max-w-7xl">
+        <PageHeader
+          eyebrow={dashboard.eyebrow}
+          title={<>Welcome to {brand.productName}</>}
+          subtitle={dashboard.subtitle}
+        />
+        <p className="text-sm text-text-secondary">Preview mode — dashboard data unavailable.</p>
+      </div>
+    )
   }
 }

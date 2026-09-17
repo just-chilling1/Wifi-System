@@ -15,7 +15,7 @@ Sign-up: `/auth/sign-up` (password minimum 6 characters). Password reset: `/auth
 
 | Role | How you get it | Lands on | Can open |
 |---|---|---|---|
-| Member | Create at `/auth/sign-up`, or add a user in Supabase → Authentication → Users | `/onboarding` then `/dashboard` | All member routes. `/admin` redirects to `/dashboard`. |
+| Member | Create at `/auth/sign-up`, or add a user in Supabase → Authentication → Users | `/dashboard` | All member routes. `/admin` redirects to `/dashboard`. |
 | Admin | `ADMIN_EMAIL` + `ADMIN_PASSWORD` + `SUPABASE_SERVICE_ROLE_KEY` in `.env.local`. Open `/auth/login` once so `POST /api/auth/ensure-admin` seeds or updates the user (email confirmed, onboarding complete, `app_metadata.role = admin`). Sign in with those same values. | `/admin` | Promo Links panel. Also treated as admin if the signed-in email matches `ADMIN_EMAIL`. |
 | Local bypass | `BYPASS_AUTH=true` or `NEXT_PUBLIC_DEV_BYPASS_AUTH=true` | Protected pages without a session | UI walkthroughs only. Localhost / private LAN, or `NODE_ENV=development`. Never enable in production. |
 
@@ -28,7 +28,7 @@ Copy this table into a note or password manager. Leave the committed copy empty.
 | Account | Email | Password | Notes |
 |---|---|---|---|
 | Admin | value of `ADMIN_EMAIL` | value of `ADMIN_PASSWORD` | Seeded when `/auth/login` loads. Requires `SUPABASE_SERVICE_ROLE_KEY`. |
-| Member (create your own) | | | Use a disposable inbox. Finish onboarding before testing Gold Rush. |
+| Member (create your own) | | | Use a disposable inbox. |
 | Member (Supabase dashboard) | | | Authentication → Users → Add user. Confirm email if your project requires it. |
 
 ## Other QA secrets (env names only)

@@ -30,8 +30,8 @@ export function BrandLogo({
         width={width}
         height={height}
         priority={priority}
-        className={cn("h-auto w-auto object-contain", className)}
-        style={{ width, height: "auto" }}
+        className={cn("h-auto max-w-full object-contain", className)}
+        style={{ width, maxWidth: "100%", height: "auto" }}
       />
     )
   }

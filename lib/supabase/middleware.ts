@@ -96,7 +96,6 @@ export async function updateSession(request: NextRequest) {
   }
 
   const authPathsAllowedWhenLoggedIn = ["/auth/callback", "/auth/reset-password"]
-  const isResetPasswordRoute = request.nextUrl.pathname.startsWith("/auth/reset-password")
 
   // Redirect authenticated users away from auth pages (except password reset flow)
   if (user && request.nextUrl.pathname.startsWith("/auth")) {
@@ -105,7 +104,7 @@ export async function updateSession(request: NextRequest) {
     )
     if (!isAllowed) {
       const url = request.nextUrl.clone()
-      url.pathname = isAdmin ? "/admin" : "/onboarding"
+      url.pathname = postLoginPath
       return NextResponse.redirect(url)
     }
   }
@@ -116,55 +115,11 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  const isOnboardingRoute = request.nextUrl.pathname.startsWith("/onboarding")
-
-  if (user && isAdmin) {
-    if (isOnboardingRoute) {
-      const url = request.nextUrl.clone()
-      url.pathname = "/admin"
-      return NextResponse.redirect(url)
-    }
-    return supabaseResponse
-  }
-
-  if (
-    user &&
-    !isOnboardingRoute &&
-    !isResetPasswordRoute
-  ) {
-    const { data: profile, error: profileError } = await supabase
-      .from("users")
-      .select("onboarding_completed_at")
-      .eq("id", user.id)
-      .single()
-
-    if (profileError) {
-      return supabaseResponse
-    }
-
-    if (!profile?.onboarding_completed_at) {
-      const url = request.nextUrl.clone()
-      url.pathname = "/onboarding"
-      return NextResponse.redirect(url)
-    }
-  }
-
-  if (user && isOnboardingRoute) {
-    const { data: profile, error: profileError } = await supabase
-      .from("users")
-      .select("onboarding_completed_at")
-      .eq("id", user.id)
-      .single()
-
-    if (profileError) {
-      return supabaseResponse
-    }
-
-    if (profile?.onboarding_completed_at) {
-      const url = request.nextUrl.clone()
-      url.pathname = postLoginPath
-      return NextResponse.redirect(url)
-    }
+  // Onboarding route removed — send any leftover bookmarks to the post-login home.
+  if (pathname === "/onboarding" || pathname.startsWith("/onboarding/")) {
+    const url = request.nextUrl.clone()
+    url.pathname = user ? postLoginPath : "/auth/login"
+    return NextResponse.redirect(url)
   }
 
   return supabaseResponse

@@ -210,7 +210,7 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
 
       <PremiumSteps title="What stays protected" steps={PROTECTION_LAYERS} />
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
         {[
           {
             label: "Protection",
@@ -227,13 +227,13 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
         ].map((metric) => (
           <div
             key={metric.label}
-            className="glass-card p-5"
+            className="glass-card p-3.5 sm:p-5"
           >
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-text-muted">
+            <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-text-muted sm:mb-2 sm:text-[11px]">
               {metric.label}
             </p>
             <p
-              className="text-2xl font-semibold lg:text-3xl"
+              className="break-words text-lg font-semibold leading-tight sm:text-2xl lg:text-3xl"
               style={{ color: metric.ok ? SUCCESS : WARNING }}
             >
               {metric.value}

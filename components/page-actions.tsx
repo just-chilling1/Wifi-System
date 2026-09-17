@@ -122,8 +122,8 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
 
       {expanded && (
         <div className="space-y-2.5 rounded-xl border border-[var(--ds-line-sapphire)] bg-[var(--ds-sapphire-100)] p-3 sm:p-4">
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-sm font-semibold text-ink">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+            <p className="min-w-0 text-sm font-semibold leading-snug text-ink">
               {comments.length} comment{comments.length === 1 ? "" : "s"} — copy and paste on the video
             </p>
             <Button
@@ -131,7 +131,7 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
               onClick={handleCopyAll}
               variant="outline"
               size="sm"
-              className="h-8 rounded-lg text-xs font-semibold"
+              className="h-8 w-full rounded-lg text-xs font-semibold sm:w-auto"
             >
               {copiedAll ? <Check className="h-3.5 w-3.5 text-[#16875c]" /> : <Copy className="h-3.5 w-3.5" />}
               {copiedAll ? "Copied" : "Copy All"}

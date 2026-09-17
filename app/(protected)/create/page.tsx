@@ -43,7 +43,7 @@ import { useScrollToResults, useScrollToId } from "@/lib/use-scroll-to-results"
 import { cn } from "@/lib/utils"
 
 const primaryCtaClass =
-  "rounded-xl bg-grad-sapphire font-black text-white shadow-sapphire transition-[transform,box-shadow,background] duration-[160ms] hover:-translate-y-px hover:bg-grad-sapphire-hover hover:shadow-sapphire active:translate-y-0"
+  "rounded-xl bg-grad-sapphire font-semibold text-white shadow-sapphire transition-[transform,box-shadow,background] duration-[160ms] hover:-translate-y-px hover:bg-grad-sapphire-hover hover:shadow-sapphire active:translate-y-0"
 
 const outlineCtaClass =
   "glass rounded-xl border-2 border-[var(--ds-line-strong)] font-bold text-ink shadow-sm transition-[transform,box-shadow,background,border-color,color] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:text-sapphire-700 hover:shadow-hover active:translate-y-0"
@@ -259,7 +259,7 @@ export default function GoldRushPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
+    <div className="mx-auto w-full min-w-0 max-w-7xl space-y-5 sm:space-y-6">
       <PageHeader
         eyebrow="Gold Rush"
         title="Gold Rush Generator"
@@ -277,8 +277,8 @@ export default function GoldRushPage() {
       {step === "product" && (
         <div className="space-y-6">
           <div className="grid items-stretch gap-4 md:grid-cols-2">
-            <Card className="glass-strong border border-[var(--ds-line)] p-6">
-              <div className="mb-5 flex items-center gap-2">
+            <Card className="glass-strong border border-[var(--ds-line)] p-4 sm:p-6">
+              <div className="mb-4 flex items-center gap-2 sm:mb-5">
                 <Clock className="h-5 w-5 text-sapphire-700" />
                 <h3 className={cn(uiTitleClass, "text-base sm:text-lg")}>How it works</h3>
               </div>
@@ -313,7 +313,7 @@ export default function GoldRushPage() {
               </ol>
             </Card>
 
-            <Card className="border border-[var(--ds-line-sapphire)] bg-gradient-to-br from-[var(--ds-sapphire-100)] to-white p-6">
+            <Card className="border border-[var(--ds-line-sapphire)] bg-gradient-to-br from-[var(--ds-sapphire-100)] to-white p-4 sm:p-6">
               <div className="mb-3 flex items-center gap-2">
                 <Rocket className="h-5 w-5 text-sapphire-700" />
                 <h3 className={cn(uiTitleClass, "text-base sm:text-lg")}>What you walk away with</h3>
@@ -326,15 +326,15 @@ export default function GoldRushPage() {
             </Card>
           </div>
 
-          <Card className="glass-strong border border-[var(--ds-line)] p-6 sm:p-8">
-            <form className="space-y-6" onSubmit={handleProductSubmit} noValidate>
-              <div className="flex items-start justify-between gap-4 border-b border-[var(--ds-line)] pb-4">
-                <div className="flex items-center gap-3">
+          <Card className="glass-strong border border-[var(--ds-line)] p-4 sm:p-8">
+            <form className="space-y-5 sm:space-y-6" onSubmit={handleProductSubmit} noValidate>
+              <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[var(--ds-line)] pb-4">
+                <div className="flex min-w-0 flex-1 items-center gap-3">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700 sm:h-12 sm:w-12">
                     <Zap className="h-5 w-5 sm:h-6 sm:w-6" />
                   </div>
-                  <div>
-                    <h2 className={cn(uiTitleClass, "text-xl sm:text-2xl")}>What are you promoting?</h2>
+                  <div className="min-w-0">
+                    <h2 className={cn(uiTitleClass, "text-lg sm:text-2xl")}>What are you promoting?</h2>
                     <p className="mt-0.5 text-sm font-medium text-text-secondary">Name the offer, then drop in your money link.</p>
                   </div>
                 </div>
@@ -477,10 +477,11 @@ export default function GoldRushPage() {
 
               <Button
                 type="submit"
-                className={cn("h-16 w-full text-xl", primaryCtaClass)}
+                className={cn("h-auto min-h-14 w-full px-4 py-3 text-base sm:h-16 sm:text-xl", primaryCtaClass)}
               >
-                Find Viral Opportunities
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <span className="sm:hidden">Find Opportunities</span>
+                <span className="hidden sm:inline">Find Viral Opportunities</span>
+                <ArrowRight className="h-5 w-5" />
               </Button>
             </form>
           </Card>
@@ -490,14 +491,14 @@ export default function GoldRushPage() {
       {step === "videos" && (
         <>
           <Card className="glass-card overflow-hidden p-0">
-            <div className="flex flex-col gap-4 border-b border-[var(--ds-line)] px-5 py-5 sm:flex-row sm:items-start sm:justify-between sm:px-6">
+            <div className="flex flex-col gap-3 border-b border-[var(--ds-line)] px-4 py-4 sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:px-6 sm:py-5">
               <div className="flex min-w-0 items-start gap-3">
                 <div className="dashboard-section-icon">
                   <Zap className="h-5 w-5" aria-hidden />
                 </div>
                 <div className="min-w-0">
                   <p className="page-eyebrow mb-1">Promoting</p>
-                  <h2 className={cn(uiTitleClass, "truncate text-[1.375rem] sm:text-[1.625rem]")}>{productName}</h2>
+                  <h2 className={cn(uiTitleClass, "break-words text-xl sm:truncate sm:text-[1.625rem]")}>{productName}</h2>
                   {affiliateLink ? (
                     <a
                       href={affiliateLink}
@@ -523,7 +524,7 @@ export default function GoldRushPage() {
               </Button>
             </div>
 
-            <div className="space-y-5 p-5 sm:p-6">
+            <div className="space-y-4 p-4 sm:space-y-5 sm:p-6">
               <Tabs value={searchMode} onValueChange={(v) => setSearchMode(v as "trending" | "niche")} className="w-full gap-5">
                 <TabsList className="grid h-12 w-full grid-cols-2 rounded-xl border border-[var(--ds-line)] bg-[var(--ds-surface-sub)] p-1 sm:h-14">
                   <TabsTrigger
@@ -572,22 +573,24 @@ export default function GoldRushPage() {
                     type="button"
                     onClick={handleFindVideos}
                     disabled={loadingVideos}
-                    className={cn("h-14 w-full text-lg sm:h-16 sm:text-xl", primaryCtaClass)}
+                    className={cn("h-auto min-h-14 w-full px-4 py-3 text-base sm:h-16 sm:text-xl", primaryCtaClass)}
                   >
                     {loadingVideos ? (
                       <>
-                        <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-                        AI finding videos for your niche...
+                        <Loader2 className="h-5 w-5 animate-spin sm:h-6 sm:w-6" />
+                        <span className="sm:hidden">Finding videos...</span>
+                        <span className="hidden sm:inline">AI finding videos for your niche...</span>
                       </>
                     ) : searched ? (
                       <>
-                        <RotateCw className="mr-2 h-6 w-6" />
+                        <RotateCw className="h-5 w-5 sm:h-6 sm:w-6" />
                         Find New Videos
                       </>
                     ) : (
                       <>
-                        <Flame className="mr-2 h-6 w-6" />
-                        Find Viral Videos for My Product
+                        <Flame className="h-5 w-5 sm:h-6 sm:w-6" />
+                        <span className="sm:hidden">Find Videos for My Product</span>
+                        <span className="hidden sm:inline">Find Viral Videos for My Product</span>
                       </>
                     )}
                   </Button>
@@ -619,21 +622,22 @@ export default function GoldRushPage() {
                     type="button"
                     onClick={handleFindVideos}
                     disabled={loadingVideos || !nicheKeyword.trim()}
-                    className={cn("h-14 w-full text-lg sm:h-16 sm:text-xl", primaryCtaClass)}
+                    className={cn("h-auto min-h-14 w-full px-4 py-3 text-base sm:h-16 sm:text-xl", primaryCtaClass)}
                   >
                     {loadingVideos ? (
                       <>
-                        <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-                        AI finding videos for your niche...
+                        <Loader2 className="h-5 w-5 animate-spin sm:h-6 sm:w-6" />
+                        <span className="sm:hidden">Finding videos...</span>
+                        <span className="hidden sm:inline">AI finding videos for your niche...</span>
                       </>
                     ) : searched ? (
                       <>
-                        <RotateCw className="mr-2 h-6 w-6" />
+                        <RotateCw className="h-5 w-5 sm:h-6 sm:w-6" />
                         Search Again
                       </>
                     ) : (
                       <>
-                        <Search className="mr-2 h-6 w-6" />
+                        <Search className="h-5 w-5 sm:h-6 sm:w-6" />
                         Search Viral Videos
                       </>
                     )}
@@ -645,16 +649,16 @@ export default function GoldRushPage() {
 
           {videos.length > 0 && (
             <div ref={videoResultsRef} className="space-y-4">
-              <div className="glass-card flex flex-col gap-4 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-                <div className="flex items-start gap-3">
+              <div className="glass-card flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-6">
+                <div className="flex min-w-0 items-start gap-3">
                   <div className="dashboard-section-icon">
                     <Flame className="h-5 w-5" aria-hidden />
                   </div>
-                  <div>
-                    <h3 className={cn(uiTitleClass, "text-[1.5rem] sm:text-[1.625rem]")}>
+                  <div className="min-w-0">
+                    <h3 className={cn(uiTitleClass, "text-xl sm:text-[1.625rem]")}>
                       {videos.length} videos to comment on
                     </h3>
-                    <p className="mt-0.5 text-sm font-medium text-text-secondary">
+                    <p className="mt-0.5 text-sm font-medium leading-relaxed text-text-secondary">
                       Pick a Short, generate comments, and post your link
                     </p>
                   </div>

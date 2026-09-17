@@ -40,10 +40,10 @@ export function UnlockUpgradeClient({ upgradeLevel, upgradeName, upgradeValue, f
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="flex min-h-dvh items-center justify-center bg-background px-4">
         <div className="text-center">
-          <Loader2 className="w-16 h-16 text-sapphire-500 animate-spin mx-auto mb-4" />
-          <p className="text-xl text-ink-4">Unlocking your upgrade...</p>
+          <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-sapphire-500 sm:h-16 sm:w-16" />
+          <p className="text-base text-ink-4 sm:text-xl">Unlocking your upgrade...</p>
         </div>
       </div>
     )
@@ -51,17 +51,17 @@ export function UnlockUpgradeClient({ upgradeLevel, upgradeName, upgradeValue, f
 
   if (status === "error") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-6">
-        <div className="max-w-md w-full bg-card rounded-3xl p-8 border border-[var(--border)] text-center shadow-[var(--shadow-lg)]">
-          <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-3xl">❌</span>
+      <div className="flex min-h-dvh items-center justify-center bg-background p-4 sm:p-6">
+        <div className="w-full max-w-md rounded-3xl border border-[var(--border)] bg-card p-5 text-center shadow-[var(--shadow-lg)] sm:p-8">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-red-500/20 sm:h-16 sm:w-16">
+            <span className="text-2xl sm:text-3xl">❌</span>
           </div>
-          <h1 className="text-2xl font-bold text-ink mb-2">Unlock Failed</h1>
-          <p className="text-ink-4 mb-6">
-            We couldn't unlock your upgrade. Please make sure you're logged in and try again.
+          <h1 className="mb-2 text-xl font-bold text-ink sm:text-2xl">Unlock Failed</h1>
+          <p className="mb-6 text-sm text-ink-4 sm:text-base">
+            We couldn&apos;t unlock your upgrade. Please make sure you&apos;re logged in and try again.
           </p>
           <Link href="/dashboard">
-            <Button className="w-full bg-primary hover:bg-primary-hover text-white font-bold">
+            <Button className="w-full bg-primary font-bold text-white hover:bg-primary-hover">
               Go to Dashboard
             </Button>
           </Link>
@@ -71,31 +71,31 @@ export function UnlockUpgradeClient({ upgradeLevel, upgradeName, upgradeValue, f
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6">
+    <div className="flex min-h-dvh items-center justify-center bg-background p-4 sm:p-6">
       {showConfetti && <Confetti recycle={false} numberOfPieces={500} />}
 
-      <div className="max-w-2xl w-full bg-card rounded-3xl p-8 border border-[var(--border)] shadow-[var(--shadow-lg)]">
+      <div className="w-full max-w-2xl rounded-3xl border border-[var(--border)] bg-card p-5 shadow-[var(--shadow-lg)] sm:p-8">
         {/* Success Icon */}
-        <div className="flex justify-center mb-6">
+        <div className="mb-5 flex justify-center sm:mb-6">
           <div className="relative">
-            <div className="w-24 h-24 bg-gradient-to-br from-primary to-primary rounded-full flex items-center justify-center animate-pulse">
-              <CheckCircle2 className="w-12 h-12 text-white" />
+            <div className="flex h-20 w-20 animate-pulse items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary sm:h-24 sm:w-24">
+              <CheckCircle2 className="h-10 w-10 text-white sm:h-12 sm:w-12" />
             </div>
-            <Sparkles className="absolute -top-2 -right-2 w-8 h-8 text-sapphire-500 animate-bounce" />
+            <Sparkles className="absolute -right-2 -top-2 h-7 w-7 animate-bounce text-sapphire-500 sm:h-8 sm:w-8" />
           </div>
         </div>
 
         {/* Success Message */}
-        <h1 className="text-4xl font-bold text-center text-ink mb-3">🎉 Congratulations!</h1>
-        <p className="text-xl text-center text-sapphire-700 mb-6">
-          You've unlocked <span className="font-bold">{upgradeName}</span>!
+        <h1 className="mb-3 text-center text-2xl font-bold text-ink sm:text-4xl">🎉 Congratulations!</h1>
+        <p className="mb-5 text-center text-base text-sapphire-700 sm:mb-6 sm:text-xl">
+          You&apos;ve unlocked <span className="font-bold">{upgradeName}</span>!
         </p>
 
         {/* Upgrade Value */}
-        <div className="bg-card rounded-2xl p-6 mb-6 border border-[var(--border)]">
-          <div className="text-center mb-4">
-            <span className="text-ink-4 text-sm">Upgrade Value</span>
-            <p className="text-5xl font-bold text-sapphire-700">{upgradeValue}</p>
+        <div className="mb-5 rounded-2xl border border-[var(--border)] bg-card p-4 sm:mb-6 sm:p-6">
+          <div className="mb-4 text-center">
+            <span className="text-sm text-ink-4">Upgrade Value</span>
+            <p className="text-3xl font-bold text-sapphire-700 sm:text-5xl">{upgradeValue}</p>
           </div>
 
           {/* Features */}

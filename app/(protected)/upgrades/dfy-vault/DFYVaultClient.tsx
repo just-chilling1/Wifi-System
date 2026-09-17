@@ -524,14 +524,14 @@ export default function DFYVaultClient({
               </div>
             </div>
 
-            <div className="glass-card p-6">
-              <div className="flex flex-wrap gap-2">
+            <div className="glass-card p-4 sm:p-6">
+              <div className="flex max-w-full flex-wrap gap-2">
                   {niches.map((niche) => (
                     <Button
                       key={niche}
                       onClick={() => setSelectedNiche(niche)}
                       variant={selectedNiche === niche ? "default" : "outline"}
-                      className={`whitespace-nowrap font-medium ${
+                      className={`max-w-full font-medium ${
                         selectedNiche === niche
                           ? "bg-grad-sapphire !text-white hover:bg-grad-sapphire"
                           : outlineCtaClass

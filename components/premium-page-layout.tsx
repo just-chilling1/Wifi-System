@@ -27,7 +27,7 @@ export function PremiumPageLayout({
   animate = true,
 }: PremiumPageLayoutProps) {
   const content = (
-    <div className={clsx("page-container", className)}>
+    <div className={clsx("page-container mx-auto w-full max-w-7xl", className)}>
       <PageHeader eyebrow="Premium" title={title} subtitle={subtitle} actions={actions} />
       {children}
       {footer ?? <PremiumFooter />}
@@ -37,7 +37,11 @@ export function PremiumPageLayout({
   if (!animate) return content
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+    <motion.div
+      className="min-w-0 w-full"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
       {content}
     </motion.div>
   )

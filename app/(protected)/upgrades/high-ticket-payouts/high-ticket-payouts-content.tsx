@@ -649,7 +649,7 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
                   onClick={() => setNiche("all")}
                   aria-pressed={niche === "all"}
                   className={cn(
-                    "h-10 px-4 text-sm",
+                    "h-auto min-h-10 px-3 py-2 text-left text-xs sm:px-4 sm:text-sm",
                     niche === "all" ? primaryCtaClass : outlineCtaClass,
                   )}
                 >
@@ -662,7 +662,7 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
                     onClick={() => setNiche(n)}
                     aria-pressed={niche === n}
                     className={cn(
-                      "h-10 px-4 text-sm",
+                      "h-auto min-h-10 px-3 py-2 text-left text-xs sm:px-4 sm:text-sm",
                       niche === n ? primaryCtaClass : outlineCtaClass,
                     )}
                   >

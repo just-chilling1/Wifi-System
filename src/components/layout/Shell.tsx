@@ -24,8 +24,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
   const isAuthPage =
-    pathname === "/onboarding" ||
-    pathname.startsWith("/onboarding/") ||
     pathname.startsWith("/auth/") ||
     pathname.startsWith("/reset-password") ||
     pathname.startsWith("/setup") ||
@@ -41,25 +39,44 @@ export function Shell({ children }: { children: React.ReactNode }) {
     pathname === "/admin" ||
     pathname.startsWith("/admin/")
 
-  if (isAuthPage || isPublicPage) {
-    return <>{children}</>
-  }
+  // Mount on login/sign-up + app so SIGNED_IN can open the popup, then survive
+  // the redirect into the dashboard. Embed/dev render their own copy.
+  const hideSpecialistPopup =
+    pathname === "/embed" ||
+    pathname.startsWith("/embed/") ||
+    pathname.startsWith("/article/") ||
+    pathname.startsWith("/dev/") ||
+    pathname.startsWith("/legal/") ||
+    pathname.startsWith("/auth/callback") ||
+    pathname.startsWith("/auth/reset-password") ||
+    pathname.startsWith("/auth/forgot-password")
+
+  const specialistPopup = hideSpecialistPopup ? null : <SpecialistWelcomePopupHost />
+
+  const chrome =
+    isAuthPage || isPublicPage ? (
+      children
+    ) : (
+      <div className="app-bg flex min-h-dvh min-w-0 overflow-x-clip">
+        <AppSidebar />
+
+        <div className="relative z-10 flex min-w-0 flex-1 flex-col">
+          <main className="app-main-canvas relative min-w-0 flex-1 overflow-x-clip overflow-y-auto scroll-smooth px-3 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] pt-[calc(var(--mobile-header-h,3.5rem)+env(safe-area-inset-top,0px))] transition-[padding] duration-300 sm:px-6 lg:pb-8 lg:pl-[calc(var(--sidebar-w)+var(--sidebar-gap))] lg:pr-8 lg:pt-8">
+            <div className="app-content-layer flex min-h-full w-full min-w-0 flex-col gap-0">
+              {children}
+              {!hideSupportBanner ? <SupportCtaBanner className="mx-auto mt-6 w-full max-w-7xl sm:mt-8" /> : null}
+            </div>
+          </main>
+        </div>
+
+        <BottomNav />
+      </div>
+    )
 
   return (
-    <div className="app-bg flex min-h-dvh min-w-0 overflow-x-clip">
-      <AppSidebar />
-
-      <div className="relative z-10 flex min-w-0 flex-1 flex-col">
-        <main className="app-main-canvas relative min-w-0 flex-1 overflow-x-clip overflow-y-auto scroll-smooth px-3 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] pt-[calc(var(--mobile-header-h,3.5rem)+env(safe-area-inset-top,0px))] transition-[padding] duration-300 sm:px-6 lg:pb-8 lg:pl-[calc(var(--sidebar-w)+var(--sidebar-gap))] lg:pr-8 lg:pt-8">
-          <div className="app-content-layer flex min-h-full w-full min-w-0 flex-col">
-            {children}
-            {!hideSupportBanner ? <SupportCtaBanner className="mx-auto mt-8 w-full max-w-7xl" /> : null}
-          </div>
-        </main>
-      </div>
-
-      <BottomNav />
-      <SpecialistWelcomePopupHost />
-    </div>
+    <>
+      {chrome}
+      {specialistPopup}
+    </>
   )
 }

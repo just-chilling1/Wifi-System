@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 
 import { createClient } from "@/lib/supabase/server"
+import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass"
 import { Button } from "@/components/ui/button"
 import { InfoHint } from "@/components/ui/info-hint"
 import { EarningsBanner } from "@/components/earnings-banner"
@@ -56,25 +57,27 @@ export default async function MyVaultPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) {
+  if (!user && !isDevAuthBypassEnabled()) {
     redirect("/auth/login")
   }
 
-  const { data: pages } = await supabase
-    .from("pages")
-    .select(
-      `
+  const { data: pages } = user
+    ? await supabase
+        .from("pages")
+        .select(
+          `
       *,
       niches (name, icon)
     `,
-    )
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false })
+        )
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+    : { data: null }
 
   const isEmpty = !pages || pages.length === 0
 
   return (
-    <div className="w-full space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-5 sm:space-y-6">
       <PageHeader
         eyebrow="My Vault"
         title="Your Comment Vault"

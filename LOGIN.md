@@ -6,7 +6,7 @@ Auth is Supabase email/password. Do not commit real passwords — keep them in `
 
 1. Open `/auth/login` (local: [http://localhost:3000/auth/login](http://localhost:3000/auth/login); production follows `NEXT_PUBLIC_SITE_URL`).
 2. Sign in with an existing member email and password, **or** create one at `/auth/sign-up` (minimum 6 characters).
-3. New members go to `/onboarding`. After onboarding they land on `/dashboard`.
+3. After sign-in, members land on `/dashboard`. Admins go to `/admin`.
 4. Password reset: `/auth/forgot-password` → email from Resend with a `wificodemembers.com` link → `/auth/callback` → `/auth/reset-password`. Requires `RESEND_API_KEY` and `SUPABASE_SERVICE_ROLE_KEY` on the host.
 
 Whether sign-up requires email confirmation is a Supabase Auth setting (Authentication → Providers → Email). If confirmation is on, the user must verify before they can stay signed in.
@@ -21,7 +21,7 @@ Set these in `.env.local`:
 - `ADMIN_PASSWORD`
 - `SUPABASE_SERVICE_ROLE_KEY` (required to seed/update the admin user)
 
-Opening `/auth/login` calls `POST /api/auth/ensure-admin`, which creates or updates that admin user, confirms the email, marks onboarding complete, and sets `app_metadata.role = admin`. Sign in with those same credentials. Admins skip onboarding and go to `/admin`. Non-admins who hit `/admin` are redirected to `/dashboard`.
+Opening `/auth/login` calls `POST /api/auth/ensure-admin`, which creates or updates that admin user, confirms the email, marks onboarding complete, and sets `app_metadata.role = admin`. Sign in with those same credentials. Admins go to `/admin`. Non-admins who hit `/admin` are redirected to `/dashboard`.
 
 ## Local preview without a session
 

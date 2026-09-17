@@ -1,7 +1,6 @@
 "use client"
 
-import { Suspense, useCallback, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
+import { useCallback, useEffect } from "react"
 import { SpecialistWelcomePopup } from "@/components/ui/specialist-welcome-popup"
 
 /**
@@ -10,21 +9,11 @@ import { SpecialistWelcomePopup } from "@/components/ui/specialist-welcome-popup
  * Usage on any external website:
  *   <iframe src="https://rhmemberarea.com/embed/specialist-popup" ...>
  *
- * Runs the exact production gate (US/CA IP + Mon–Fri 08:30–17:30 PT via the
- * eligibility API), the 10-minute countdown, and CTA click tracking. Posts
+ * Opens immediately (no geo/hours gate). Posts
  * `{ type: "rh-specialist-popup", open: boolean }` to the parent window
  * so the host page can show/hide the iframe. See EMBED.md for the snippet.
  */
-
-function EmbedInner() {
-  const searchParams = useSearchParams()
-  const previewParam = searchParams.get("preview")
-  // Local: ?preview=1 — Production: ?preview=<NEXT_PUBLIC_SPECIALIST_POPUP_PREVIEW_SECRET>
-  const previewSecret = process.env.NEXT_PUBLIC_SPECIALIST_POPUP_PREVIEW_SECRET
-  const preview =
-    (process.env.NODE_ENV === "development" && previewParam === "1") ||
-    (!!previewSecret && previewParam === previewSecret)
-
+export default function SpecialistPopupEmbedPage() {
   useEffect(() => {
     // Keep the iframe transparent so only the popup is visible on the host page.
     document.documentElement.style.background = "transparent"
@@ -39,13 +28,5 @@ function EmbedInner() {
     }
   }, [])
 
-  return <SpecialistWelcomePopup forceOpen={preview} onOpenChange={notifyParent} />
-}
-
-export default function SpecialistPopupEmbedPage() {
-  return (
-    <Suspense fallback={null}>
-      <EmbedInner />
-    </Suspense>
-  )
+  return <SpecialistWelcomePopup forceOpen onOpenChange={notifyParent} />
 }

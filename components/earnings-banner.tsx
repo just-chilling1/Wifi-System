@@ -32,10 +32,10 @@ export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
         className={cn(
           "earnings-banner-card__body relative z-[1] flex flex-col items-center text-center",
           compact
-            ? "px-4 py-4 md:px-5 md:py-5"
+            ? "px-3 py-3.5 md:px-5 md:py-5"
             : prominent
-              ? "px-5 py-5 pr-10 md:px-8 md:py-6"
-              : "px-6 py-8 pr-10 md:px-12 md:py-10",
+              ? "px-4 py-4 pr-10 md:px-8 md:py-6"
+              : "px-4 py-6 pr-10 sm:px-6 sm:py-8 md:px-12 md:py-10",
         )}
       >
         <button
@@ -66,8 +66,8 @@ export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
             compact
               ? "mb-2 max-w-2xl text-sm md:text-base"
               : prominent
-                ? "mb-3 max-w-3xl text-xl md:text-2xl lg:text-[1.85rem]"
-                : "mb-4 max-w-4xl text-3xl md:text-5xl",
+                ? "mb-3 max-w-3xl text-lg sm:text-xl md:text-2xl lg:text-[1.85rem]"
+                : "mb-3 max-w-4xl text-2xl leading-tight sm:mb-4 sm:text-3xl md:text-5xl",
           )}
         >
           {title}
@@ -78,8 +78,8 @@ export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
             className={cn(
               "mx-auto font-bold leading-snug text-ink-4",
               prominent
-                ? "mb-5 max-w-2xl text-base md:text-lg"
-                : "mb-8 max-w-3xl text-lg md:text-2xl",
+                ? "mb-5 max-w-2xl text-sm sm:text-base md:text-lg"
+                : "mb-6 max-w-3xl text-base sm:mb-8 sm:text-lg md:text-2xl",
             )}
           >
             Discover how to scale to $1,000&ndash;$5,000 every single day &mdash; without doing any extra work.
@@ -91,12 +91,12 @@ export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            "earnings-banner-cta inline-flex items-center justify-center rounded-xl bg-gold-grad font-black uppercase text-white no-underline shadow-[0_12px_36px_-12px_rgba(183,121,31,0.58)] transition-[background,transform,box-shadow] hover:bg-gold-grad-hover hover:-translate-y-px",
+            "earnings-banner-cta inline-flex max-w-full items-center justify-center rounded-xl bg-gold-grad font-black uppercase text-white no-underline shadow-[0_12px_36px_-12px_rgba(183,121,31,0.58)] transition-[background,transform,box-shadow] hover:bg-gold-grad-hover hover:-translate-y-px",
             compact
-              ? "px-4 py-2 text-xs md:text-sm"
+              ? "px-4 py-2 text-xs whitespace-normal text-center md:text-sm"
               : prominent
-                ? "min-h-[3.25rem] w-full px-6 py-3.5 text-sm sm:w-auto md:min-h-[3.5rem] md:px-8 md:text-base"
-                : "px-10 py-5 text-xl md:text-2xl",
+                ? "min-h-[3.25rem] w-full px-6 py-3.5 text-sm whitespace-normal text-center sm:w-auto sm:whitespace-nowrap md:min-h-[3.5rem] md:px-8 md:text-base"
+                : "min-h-12 w-full px-6 py-3.5 text-base whitespace-normal text-center sm:w-auto sm:whitespace-nowrap sm:px-10 sm:py-5 sm:text-xl md:text-2xl",
           )}
         >
           {ctaLabel}

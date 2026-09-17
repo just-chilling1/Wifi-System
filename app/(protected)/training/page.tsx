@@ -4,6 +4,7 @@ import type { LucideIcon } from "lucide-react"
 import { ArrowRight, CheckCircle2, Lightbulb, Play, Star } from "lucide-react"
 
 import { createClient } from "@/lib/supabase/server"
+import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass"
 import { PageHeader } from "@/components/page-header"
 import { TrainingVideoCard } from "@/components/training-video-card"
 import { ACADEMY_TRAINING_VIDEOS } from "@/lib/academy-training-videos"
@@ -25,11 +26,11 @@ function TrainingSectionHeader({
   subtitle: string
 }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex min-w-0 items-center gap-3">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-200">
         <Icon className="h-5 w-5 text-sapphire-700" />
       </div>
-      <div>
+      <div className="min-w-0">
         <h2 className="text-lg font-medium text-ink">{title}</h2>
         <p className="text-sm text-text-muted">{subtitle}</p>
       </div>
@@ -43,7 +44,7 @@ export default async function TrainingPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) {
+  if (!user && !isDevAuthBypassEnabled()) {
     redirect("/auth/login")
   }
 
@@ -165,7 +166,10 @@ export default async function TrainingPage() {
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-text-secondary">{TRAINING_CTA.subcopy}</p>
           </div>
           <div className="flex flex-col gap-3 p-5 sm:flex-row sm:px-8">
-            <Link href={TRAINING_CTA.href} className="btn-primary min-h-[48px] flex-1 text-sm sm:text-base">
+            <Link
+              href={TRAINING_CTA.href}
+              className="btn-primary min-h-[48px] flex-1 whitespace-normal px-4 text-center text-sm leading-snug sm:px-6 sm:text-base"
+            >
               <CtaIcon className="h-5 w-5 shrink-0" />
               {TRAINING_CTA.buttonLabel}
             </Link>

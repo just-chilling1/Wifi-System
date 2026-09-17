@@ -1,8 +1,9 @@
 import type { User } from "@supabase/supabase-js"
 import { getServiceRoleClient } from "@/lib/api-auth"
-import { ONBOARDING_META_KEY } from "@/config/onboarding-content"
 import { getAdminEmail, ADMIN_ROLE } from "@/lib/admin"
 import { getAdminPassword } from "@/lib/admin-credentials"
+
+const ONBOARDING_META_KEY = "onboarding_completed" as const
 
 let adminUserEnsured = false
 

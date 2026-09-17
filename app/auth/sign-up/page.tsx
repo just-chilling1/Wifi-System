@@ -29,11 +29,11 @@ export default function SignUpPage() {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
         },
       })
       if (error) throw error
-      router.push("/onboarding")
+      router.push("/dashboard")
     } catch (error: unknown) {
       const message =
         error && typeof error === "object" && "message" in error

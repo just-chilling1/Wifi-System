@@ -1,7 +1,8 @@
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { buildProtectorViewModel } from "@/lib/protector/build-protector-data"
+import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass"
+import { buildProtectorViewModel, type ProtectorViewModel } from "@/lib/protector/build-protector-data"
 import { ProtectorContent } from "./protector-content"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
 
@@ -12,6 +13,30 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic"
 
+const PREVIEW_VIEW_MODEL: ProtectorViewModel = {
+  account: {
+    email: "preview@localhost",
+    fullName: "Preview Member",
+    membership: "Active",
+    premiumTier: "Free",
+    memberSince: "Today",
+    lastLogin: "Now",
+    authProtection: "Enabled",
+    accountId: "dev-preview",
+    pagesGenerated: 0,
+  },
+  activities: [
+    {
+      id: "session",
+      label: "Secure session active",
+      time: "Now",
+      sortAt: Date.now(),
+    },
+  ],
+  accountStatus: "Preview",
+  isEmailVerified: true,
+}
+
 export default async function ProtectorPage() {
   const supabase = await createClient()
 
@@ -19,8 +44,12 @@ export default async function ProtectorPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) {
+  if (!user && !isDevAuthBypassEnabled()) {
     redirect("/auth/login")
+  }
+
+  if (!user) {
+    return <ProtectorContent data={PREVIEW_VIEW_MODEL} />
   }
 
   const { data: profile } = await supabase

@@ -42,7 +42,7 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
         transition={cardTransition}
         className="relative z-10 w-full max-w-md"
       >
-        <div className="glass-card relative flex flex-col gap-5 border border-[var(--ds-line-sapphire)] p-5 shadow-[var(--ds-shadow-card),0_28px_64px_-28px_rgba(13,148,136,0.38)] sm:gap-6 sm:p-6 lg:p-8">
+        <div className="glass-card relative flex flex-col gap-4 border border-[var(--ds-line-sapphire)] p-4 shadow-[var(--ds-shadow-card),0_28px_64px_-28px_rgba(13,148,136,0.38)] sm:gap-6 sm:p-6 lg:p-8">
           <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]" aria-hidden>
             <motion.div
               className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white/40 to-transparent"
@@ -52,7 +52,7 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
             />
           </div>
           <div className="flex w-full flex-col items-center gap-3 text-center">
-            <BrandLogo variant="wordmark" width={280} priority />
+            <BrandLogo variant="wordmark" width={220} priority className="w-full max-w-[13.75rem] sm:max-w-[17.5rem]" />
             {subtitle ? <p className="text-[15px] font-medium text-ink-3">{subtitle}</p> : null}
             <div className="h-px w-16 bg-gradient-to-r from-transparent via-[var(--ds-sapphire-300)] to-transparent" />
           </div>

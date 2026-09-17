@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass"
 import { Button } from "@/components/ui/button"
 import { Check, Crown, Zap, Rocket, ShieldCheck, FileText, BookOpen, Package } from "lucide-react"
 import Link from "next/link"
@@ -121,11 +122,13 @@ export default async function UpgradesPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) {
+  if (!user && !isDevAuthBypassEnabled()) {
     redirect("/auth/login")
   }
 
-  const { data: profile } = await supabase.from("users").select("*").eq("id", user.id).single()
+  const { data: profile } = user
+    ? await supabase.from("users").select("*").eq("id", user.id).single()
+    : { data: null }
 
   return (
     <PremiumPageLayout

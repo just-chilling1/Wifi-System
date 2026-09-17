@@ -20,7 +20,7 @@ import {
 } from "lucide-react"
 
 const generateCtaClass =
-  "rounded-xl bg-grad-sapphire font-black text-white shadow-sapphire transition-[transform,box-shadow,background] duration-[160ms] hover:-translate-y-px hover:bg-grad-sapphire-hover hover:shadow-sapphire active:translate-y-0"
+  "rounded-xl bg-grad-sapphire font-semibold text-white shadow-sapphire transition-[transform,box-shadow,background] duration-[160ms] hover:-translate-y-px hover:bg-grad-sapphire-hover hover:shadow-sapphire active:translate-y-0"
 
 type Props = {
   video: VideoOpportunity
@@ -78,14 +78,14 @@ export function GoldRushVideoCard({
         hasComments && "border-[var(--ds-line-sapphire)] shadow-[0_8px_24px_-8px_rgba(13,148,136,0.35)]",
       )}
     >
-      <div className="flex gap-4 p-4 sm:gap-5 sm:p-5">
+      <div className="flex gap-3 p-3.5 sm:gap-5 sm:p-5">
         {video.thumbnailUrl ? (
           <a
             href={watchUrl}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Watch ${video.title} on YouTube`}
-            className="group relative block aspect-[9/16] w-[5.75rem] shrink-0 self-start overflow-hidden rounded-[12px] bg-ink sm:w-[7.75rem]"
+            className="group relative block aspect-[9/16] w-[4.75rem] shrink-0 self-start overflow-hidden rounded-[12px] bg-ink sm:w-[7.75rem]"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -137,7 +137,7 @@ export function GoldRushVideoCard({
             </div>
           ) : null}
 
-          <h4 className="line-clamp-2 !font-sans text-[1.05rem] font-semibold leading-snug tracking-tight text-ink sm:text-[1.1875rem]">
+          <h4 className="line-clamp-2 break-words !font-sans text-[0.975rem] font-semibold leading-snug tracking-tight text-ink sm:text-[1.1875rem]">
             {video.title}
           </h4>
           <p className="mt-1 truncate text-sm font-medium text-text-secondary">
@@ -145,7 +145,7 @@ export function GoldRushVideoCard({
             {published ? <span className="text-text-muted"> · {published}</span> : null}
           </p>
 
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+          <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[13px] sm:mt-3 sm:gap-x-4 sm:gap-y-2 sm:text-sm">
             <span className="inline-flex items-center gap-1.5 font-semibold text-ink">
               <Eye className="h-4 w-4 text-sapphire-700" aria-hidden />
               {formatNumber(video.viewCount)}
@@ -188,42 +188,42 @@ export function GoldRushVideoCard({
           </div>
 
           {generating ? (
-            <div className="mt-4">
+            <div className="mt-3 sm:mt-4">
               <GenerationProgress label="AI writing your money-making comments..." />
             </div>
           ) : null}
-
-          <div className="mt-auto flex gap-2 pt-4">
-            <Button
-              type="button"
-              onClick={onGenerate}
-              disabled={generating}
-              className={cn("h-12 flex-1 text-base sm:h-14 sm:text-lg", generateCtaClass)}
-            >
-              {generating ? (
-                <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Zap className="mr-2 h-5 w-5 fill-current" />
-                  {hasComments ? "Regenerate Comments" : "Generate Comments"}
-                </>
-              )}
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              className="glass h-12 w-12 shrink-0 border-2 border-[var(--border)] px-0 font-bold text-ink sm:h-14 sm:w-auto sm:px-4"
-            >
-              <a href={watchUrl} target="_blank" rel="noopener noreferrer" aria-label="Open video on YouTube">
-                <ExternalLink className="h-5 w-5" />
-                <span className="ml-2 hidden sm:inline">Open</span>
-              </a>
-            </Button>
-          </div>
         </div>
+      </div>
+
+      <div className="flex gap-2 px-3.5 pb-3.5 sm:px-5 sm:pb-5">
+        <Button
+          type="button"
+          onClick={onGenerate}
+          disabled={generating}
+          className={cn("h-auto min-h-12 min-w-0 flex-1 px-3 py-2.5 text-sm sm:h-14 sm:text-lg", generateCtaClass)}
+        >
+          {generating ? (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              Generating...
+            </>
+          ) : (
+            <>
+              <Zap className="h-5 w-5 fill-current" />
+              {hasComments ? "Regenerate Comments" : "Generate Comments"}
+            </>
+          )}
+        </Button>
+        <Button
+          asChild
+          variant="outline"
+          className="glass h-12 w-12 shrink-0 border-2 border-[var(--border)] px-0 font-bold text-ink sm:h-14 sm:w-auto sm:px-4"
+        >
+          <a href={watchUrl} target="_blank" rel="noopener noreferrer" aria-label="Open video on YouTube">
+            <ExternalLink className="h-5 w-5" />
+            <span className="ml-2 hidden sm:inline">Open</span>
+          </a>
+        </Button>
       </div>
 
       {hasComments && comments ? (
@@ -231,8 +231,8 @@ export function GoldRushVideoCard({
           id={`comments-${video.videoId}`}
           className="space-y-3 border-t border-[var(--ds-line-sapphire)] bg-[var(--ds-sapphire-100)] px-4 py-5 sm:px-5"
         >
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="text-lg font-semibold text-ink sm:text-xl">Your generated comments</h3>
+          <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
+            <h3 className="min-w-0 text-base font-semibold text-ink sm:text-xl">Your generated comments</h3>
             <Button
               asChild
               size="sm"

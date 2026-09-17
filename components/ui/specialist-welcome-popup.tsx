@@ -1,12 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useId, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Clock3, FastForward, Phone, TrendingUp, Vault, Wallet, X } from "lucide-react";
 import { PRODUCT_NAME } from "@/lib/brand";
+import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass";
+import { createClient } from "@/lib/supabase/client";
 
 const SESSION_DISMISS_KEY = "rh_specialist_popup_dismissed";
+/** Set on login/sign-up so the popup still opens after navigating into the app. */
+const SESSION_SHOW_KEY = "rh_specialist_popup_show";
 const COUNTDOWN_MS = 10 * 60 * 1000;
 const PHONE_DISPLAY = "425-458-1656";
 const PHONE_TEL = "tel:+14254581656";
@@ -17,13 +21,41 @@ const BENEFITS = [
     { icon: TrendingUp, text: "Scale your results to $1,000 - $2,000 per day" },
 ] as const;
 
-type EligibilityResponse = {
-    eligible: boolean;
-    country: string | null;
-    closesInMs?: number;
-};
-
 type TrackEvent = "cta_call_click" | "popup_open";
+
+function readDismissed(): boolean {
+    try {
+        return sessionStorage.getItem(SESSION_DISMISS_KEY) === "1";
+    } catch {
+        return false;
+    }
+}
+
+function writeDismissed(value: boolean) {
+    try {
+        if (value) sessionStorage.setItem(SESSION_DISMISS_KEY, "1");
+        else sessionStorage.removeItem(SESSION_DISMISS_KEY);
+    } catch {
+        // ignore
+    }
+}
+
+function readShowFlag(): boolean {
+    try {
+        return sessionStorage.getItem(SESSION_SHOW_KEY) === "1";
+    } catch {
+        return false;
+    }
+}
+
+function writeShowFlag(value: boolean) {
+    try {
+        if (value) sessionStorage.setItem(SESSION_SHOW_KEY, "1");
+        else sessionStorage.removeItem(SESSION_SHOW_KEY);
+    } catch {
+        // ignore
+    }
+}
 
 /** Best-effort analytics; never throws / never blocks navigation. */
 function trackPopupEvent(event: TrackEvent) {
@@ -58,7 +90,7 @@ function useIsClient() {
 }
 
 type SpecialistWelcomePopupProps = {
-    /** Dev/preview only — skip geo/hours fetch and open immediately. */
+    /** Preview/embed — open immediately, skip auth-event gating. */
     forceOpen?: boolean;
     /** Notified whenever the popup becomes visible/hidden (used by the embed). */
     onOpenChange?: (open: boolean) => void;
@@ -71,101 +103,105 @@ export function SpecialistWelcomePopup({
     const titleId = useId();
     const isClient = useIsClient();
     const reduceMotion = useReducedMotion();
-    const [eligibleOpen, setEligibleOpen] = useState(false);
+    const [authOpen, setAuthOpen] = useState(false);
     const [dismissed, setDismissed] = useState(false);
     const [remainingMs, setRemainingMs] = useState(COUNTDOWN_MS);
-    const [windowClosesInMs, setWindowClosesInMs] = useState<number | null>(null);
-    const open = !dismissed && (forceOpen || eligibleOpen);
+    const trackedOpen = useRef(false);
+    const lastUserId = useRef<string | null>(null);
+    const open = !dismissed && (forceOpen || authOpen);
 
     useEffect(() => {
         onOpenChange?.(open);
     }, [open, onOpenChange]);
 
-    useEffect(() => {
-        if (!isClient || forceOpen) return;
+    const reveal = useCallback((opts?: { resetDismiss?: boolean; persistShow?: boolean }) => {
+        if (opts?.resetDismiss) {
+            writeDismissed(false);
+            setDismissed(false);
+        }
+        if (opts?.persistShow) writeShowFlag(true);
+        setRemainingMs(COUNTDOWN_MS);
+        setAuthOpen(true);
+        if (!trackedOpen.current) {
+            trackedOpen.current = true;
+            trackPopupEvent("popup_open");
+        }
+    }, []);
 
-        try {
-            if (sessionStorage.getItem(SESSION_DISMISS_KEY) === "1") return;
-        } catch {
-            // sessionStorage may be blocked; continue and gate on eligibility only
+    useEffect(() => {
+        if (!isClient) return;
+        if (forceOpen) {
+            reveal();
+            return;
+        }
+
+        const onAuthRoute = window.location.pathname.startsWith("/auth/");
+        // Local auth-bypass preview only (no real login event).
+        if (
+            isDevAuthBypassEnabled(window.location.hostname) &&
+            !onAuthRoute &&
+            !readDismissed()
+        ) {
+            reveal();
+        } else if (readShowFlag() && !readDismissed()) {
+            // Login/sign-up set this flag; keep showing after route change into the app.
+            reveal();
         }
 
         let cancelled = false;
-        const controller = new AbortController();
+        let unsubscribe: (() => void) | undefined;
 
-        (async () => {
-            try {
-                const res = await fetch("/api/eligibility/specialist-popup", {
-                    method: "GET",
-                    cache: "no-store",
-                    signal: controller.signal,
-                });
-                if (!res.ok || cancelled) return;
+        try {
+            const supabase = createClient();
+            const {
+                data: { subscription },
+            } = supabase.auth.onAuthStateChange((event, session) => {
+                if (cancelled) return;
 
-                const data = (await res.json()) as EligibilityResponse;
-                if (cancelled || !data.eligible) return;
+                if (event === "SIGNED_OUT") {
+                    lastUserId.current = null;
+                    trackedOpen.current = false;
+                    setAuthOpen(false);
+                    setDismissed(false);
+                    writeDismissed(false);
+                    writeShowFlag(false);
+                    return;
+                }
 
-                setRemainingMs(COUNTDOWN_MS);
-                setWindowClosesInMs(
-                    typeof data.closesInMs === "number" ? data.closesInMs : null
-                );
-                setEligibleOpen(true);
-                trackPopupEvent("popup_open");
-            } catch {
-                // Network/abort — never show on failure (safe default)
-            }
-        })();
+                if (event === "INITIAL_SESSION") {
+                    lastUserId.current = session?.user?.id ?? null;
+                    // Do not open on refresh — only after login/sign-up (show flag or SIGNED_IN).
+                    return;
+                }
+
+                // Covers password login and sign-up (both emit SIGNED_IN).
+                if (event === "SIGNED_IN") {
+                    const id = session?.user?.id ?? null;
+                    if (id && id !== lastUserId.current) {
+                        trackedOpen.current = false;
+                        reveal({ resetDismiss: true, persistShow: true });
+                    }
+                    lastUserId.current = id;
+                }
+            });
+            unsubscribe = () => subscription.unsubscribe();
+        } catch {
+            // Missing Supabase env — bypass path above still covers local chrome.
+        }
 
         return () => {
             cancelled = true;
-            controller.abort();
+            unsubscribe?.();
         };
-    }, [forceOpen, isClient]);
-
-    // Hard stop: auto-hide the moment the PT business window ends (e.g. user
-    // opened it at 17:29 and kept the page open past 17:30).
-    useEffect(() => {
-        if (!eligibleOpen || forceOpen || windowClosesInMs == null) return;
-        const id = window.setTimeout(
-            () => setEligibleOpen(false),
-            Math.max(0, windowClosesInMs)
-        );
-        return () => window.clearTimeout(id);
-    }, [eligibleOpen, forceOpen, windowClosesInMs]);
-
-    // Re-validate when the tab regains focus (background timers can be
-    // throttled; a user returning next morning must not see a stale popup).
-    useEffect(() => {
-        if (!eligibleOpen || forceOpen) return;
-
-        const revalidate = async () => {
-            if (document.visibilityState !== "visible") return;
-            try {
-                const res = await fetch("/api/eligibility/specialist-popup", {
-                    method: "GET",
-                    cache: "no-store",
-                });
-                if (!res.ok) return;
-                const data = (await res.json()) as EligibilityResponse;
-                if (!data.eligible) setEligibleOpen(false);
-            } catch {
-                // keep current state on network failure
-            }
-        };
-
-        document.addEventListener("visibilitychange", revalidate);
-        return () =>
-            document.removeEventListener("visibilitychange", revalidate);
-    }, [eligibleOpen, forceOpen]);
+    }, [forceOpen, isClient, reveal]);
 
     const dismiss = useCallback(() => {
         setDismissed(true);
+        setAuthOpen(false);
+        trackedOpen.current = false;
         if (forceOpen) return;
-        try {
-            sessionStorage.setItem(SESSION_DISMISS_KEY, "1");
-        } catch {
-            // ignore
-        }
+        writeDismissed(true);
+        writeShowFlag(false);
     }, [forceOpen]);
 
     // Fire-and-forget tracking; must never delay or block the tel: call.
@@ -267,22 +303,22 @@ export function SpecialistWelcomePopup({
                         transition={{ type: "spring", stiffness: 340, damping: 30 }}
                     >
                         <div className="relative flex max-h-[min(96dvh,46rem)] flex-col overflow-hidden max-sm:rounded-t-3xl sm:rounded-3xl">
-                            {/* Soft emerald wash behind the hero */}
+                            {/* Soft brand wash behind the hero */}
                             <div
                                 aria-hidden
-                                className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(80%_100%_at_50%_0%,rgba(16,185,129,0.07),transparent_75%)]"
+                                className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-primary/10 to-transparent"
                             />
 
                             {/* Header: icon tile + close (headline carries the brand) */}
                             <div className="relative z-10 flex shrink-0 items-center justify-between px-4 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-5 sm:pt-4">
-                                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-sapphire-500 text-white shadow-[0_4px_12px_rgba(13,148,136,0.3)]">
+                                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-[0_4px_12px_rgba(13,148,136,0.3)]">
                                     <Wallet size={16} strokeWidth={2.4} />
                                 </span>
                                 <button
                                     type="button"
                                     onClick={dismiss}
                                     aria-label="Close"
-                                    className="flex h-10 w-10 items-center justify-center rounded-full text-ink-5 transition-colors hover:bg-sapphire-100 hover:text-ink active:bg-sapphire-100 touch-manipulation"
+                                    className="flex h-10 w-10 items-center justify-center rounded-full text-ink-5 transition-colors hover:bg-primary-light hover:text-ink active:bg-primary-light touch-manipulation"
                                 >
                                     <X size={18} />
                                 </button>
@@ -302,7 +338,7 @@ export function SpecialistWelcomePopup({
                                         id={titleId}
                                         className="brand-font mt-1 text-center text-[1.9rem] font-black uppercase leading-none tracking-tight text-ink sm:text-left sm:text-[2.6rem]"
                                     >
-                                        <span className="text-sapphire-700">{PRODUCT_NAME}</span>
+                                        <span className="text-primary">{PRODUCT_NAME}</span>
                                     </h2>
 
                                     <div className="mx-auto mt-3 max-w-[22rem] space-y-0.5 text-center text-[14px] leading-[1.5] text-ink-4 sm:mx-0 sm:mt-4 sm:max-w-none sm:space-y-1 sm:text-left sm:text-[15.5px] sm:leading-[1.6]">
@@ -325,7 +361,7 @@ export function SpecialistWelcomePopup({
                                 </div>
 
                                 {/* Right column: benefits + vault */}
-                                <div className="sm:border-l sm:border-[#E7F1F6] sm:pl-10">
+                                <div className="sm:border-l sm:border-[var(--ds-line-sapphire)] sm:pl-10">
                                     <div className="mx-auto mt-3.5 max-w-[22rem] sm:mx-0 sm:mt-0 sm:max-w-none">
                                         <p className="text-[11.5px] font-bold uppercase tracking-[0.18em] text-ink-4 sm:text-[12px]">
                                             Who will help you
@@ -336,7 +372,7 @@ export function SpecialistWelcomePopup({
                                                     key={text}
                                                     className="flex items-center gap-3"
                                                 >
-                                                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--ds-offer-green-100)] text-sapphire-700 sm:h-10 sm:w-10 sm:rounded-xl">
+                                                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--ds-line-sapphire)] bg-sapphire-100 text-sapphire-700 sm:h-10 sm:w-10 sm:rounded-xl">
                                                         <Icon
                                                             size={16}
                                                             strokeWidth={2.2}
@@ -356,21 +392,21 @@ export function SpecialistWelcomePopup({
                                         </ul>
                                     </div>
 
-                                    <div className="mx-auto mt-2.5 flex max-w-[22rem] items-center gap-3 rounded-2xl border border-[var(--border)] bg-[#F7FBFD] px-3.5 py-2.5 sm:mx-0 sm:mt-4 sm:max-w-none sm:px-4 sm:py-3.5">
-                                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-card shadow-[0_2px_8px_rgba(0,0,0,0.08)] sm:h-12 sm:w-12">
+                                    <div className="mx-auto mt-2.5 flex max-w-[22rem] items-center gap-3 rounded-2xl border border-[var(--ds-line-sapphire)] bg-primary-light px-3.5 py-2.5 sm:mx-0 sm:mt-4 sm:max-w-none sm:px-4 sm:py-3.5">
+                                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--ds-line-sapphire)] bg-card text-sapphire-700 shadow-sm sm:h-12 sm:w-12">
                                             <Vault
                                                 size={22}
                                                 strokeWidth={1.8}
-                                                className="text-sapphire-700 sm:hidden"
+                                                className="sm:hidden"
                                             />
                                             <Vault
                                                 size={26}
                                                 strokeWidth={1.8}
-                                                className="hidden text-sapphire-700 sm:block"
+                                                className="hidden sm:block"
                                             />
                                         </span>
                                         <div className="min-w-0">
-                                            <p className="text-[10.5px] font-black uppercase tracking-[0.18em] text-sapphire-700 sm:text-[11px]">
+                                            <p className="text-[10.5px] font-black uppercase tracking-[0.18em] text-primary sm:text-[11px]">
                                                 Plus
                                             </p>
                                             <p className="mt-0.5 text-[14px] font-bold leading-snug text-ink sm:text-[15px]">
@@ -390,21 +426,21 @@ export function SpecialistWelcomePopup({
                             </div>
 
                             {/* Action zone: horizontal bar on desktop */}
-                            <div className="relative z-10 shrink-0 border-t border-[#E7F1F6] bg-[#F7FBFD] px-6 pt-3 pb-[max(1.15rem,env(safe-area-inset-bottom))] sm:px-10 sm:pt-4 sm:pb-5">
+                            <div className="relative z-10 shrink-0 border-t border-[var(--ds-line-sapphire)] bg-primary-light px-6 pt-3 pb-[max(1.15rem,env(safe-area-inset-bottom))] sm:px-10 sm:pt-4 sm:pb-5">
                                 <div className="sm:flex sm:items-center sm:gap-8">
-                                    {/* Urgency strip — red countdown */}
+                                    {/* Urgency strip — danger countdown */}
                                     <div className="mx-auto max-w-[22rem] sm:mx-0 sm:max-w-none sm:flex-1">
                                         <div className="flex items-center justify-between">
                                             <span className="text-[11.5px] font-bold uppercase tracking-[0.16em] text-ink-4 sm:text-[12px]">
                                                 Your code expires in
                                             </span>
-                                            <span className="brand-font rounded-lg bg-[#FDE4E4] px-2 py-1 text-[1.25rem] font-black leading-none tabular-nums text-[#C53030] sm:text-[1.5rem]">
+                                            <span className="brand-font rounded-lg bg-[var(--danger-light)] px-2 py-1 text-[1.25rem] font-black leading-none tabular-nums text-[var(--danger)] sm:text-[1.5rem]">
                                                 {mm}:{ss}
                                             </span>
                                         </div>
-                                        <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-[#FDE4E4]">
+                                        <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-[var(--danger-light)]">
                                             <div
-                                                className="h-full rounded-full bg-[#C53030] transition-[width] duration-300 ease-linear"
+                                                className="h-full rounded-full bg-[var(--danger)] transition-[width] duration-300 ease-linear"
                                                 style={{ width: `${progressPct}%` }}
                                             />
                                         </div>
@@ -413,18 +449,18 @@ export function SpecialistWelcomePopup({
                                     <a
                                         href={PHONE_TEL}
                                         onClick={trackCallClick}
-                                        className="group relative mt-3 flex w-full min-h-[58px] items-center justify-center gap-2.5 overflow-hidden rounded-2xl bg-sapphire-500 px-5 text-white transition-all hover:bg-sapphire-700 active:scale-[0.985] touch-manipulation select-none motion-safe:animate-[cta-pulse-green_2.2s_ease-in-out_infinite] shadow-[0_8px_24px_rgba(13,148,136,0.35)] sm:mt-0 sm:w-auto sm:min-w-[19rem] sm:flex-1 sm:min-h-[62px]"
+                                        className="group relative mt-3 flex w-full min-h-[64px] items-center justify-center gap-3 overflow-hidden rounded-2xl bg-grad-sapphire px-5 text-white shadow-sapphire transition-all hover:bg-grad-sapphire-hover hover:shadow-sapphire active:scale-[0.985] touch-manipulation select-none motion-safe:animate-[cta-pulse-green_2.2s_ease-in-out_infinite] sm:mt-0 sm:w-auto sm:min-w-[19rem] sm:flex-1 sm:min-h-[72px]"
                                     >
                                         <span
                                             aria-hidden
                                             className="absolute inset-y-0 -left-1/3 w-1/4 -skew-x-12 bg-card/20 blur-md motion-safe:animate-[sheen_3s_ease-in-out_infinite]"
                                         />
-                                        <Phone size={20} strokeWidth={2.4} className="shrink-0" />
+                                        <Phone size={22} strokeWidth={2.4} className="shrink-0 text-white" />
                                         <span className="flex flex-col items-start leading-none">
-                                            <span className="text-[10.5px] font-bold uppercase tracking-[0.18em] opacity-95">
+                                            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/90 sm:text-[10.5px]">
                                                 Call now · tap to call
                                             </span>
-                                            <span className="brand-font mt-[3px] text-[1.4rem] font-black tabular-nums tracking-tight sm:text-[1.55rem]">
+                                            <span className="mt-1 font-sans text-[1.85rem] font-black tabular-nums tracking-tight text-white sm:text-[2.15rem]">
                                                 {PHONE_DISPLAY}
                                             </span>
                                         </span>

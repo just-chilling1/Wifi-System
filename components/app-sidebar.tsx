@@ -274,8 +274,8 @@ export function AppSidebar() {
         className="mobile-header-glass fixed inset-x-0 top-0 z-40 flex items-center justify-center lg:hidden"
         style={{ paddingTop: "env(safe-area-inset-top)", height: "calc(var(--mobile-header-h, 3.5rem) + env(safe-area-inset-top))" }}
       >
-        <Link href="/dashboard" className="min-w-0 px-4">
-          <BrandLogo variant="wordmark" width={180} priority />
+        <Link href="/dashboard" className="flex min-w-0 max-w-[min(100%,11.5rem)] items-center px-4">
+          <BrandLogo variant="wordmark" width={148} priority />
         </Link>
       </div>
     </>
