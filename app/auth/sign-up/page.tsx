@@ -10,8 +10,13 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { brand } from "@/config/brand.config"
+import {
+  clearSpecialistPopupFromSignup,
+  markSpecialistPopupFromSignup,
+} from "@/lib/specialist-popup-session"
 
 export default function SignUpPage() {
+  const [firstName, setFirstName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -24,17 +29,27 @@ export default function SignUpPage() {
     setIsLoading(true)
     setError(null)
 
+    const trimmedName = firstName.trim()
+    if (!trimmedName) {
+      setError("Please enter your first name")
+      setIsLoading(false)
+      return
+    }
+
     try {
+      markSpecialistPopupFromSignup()
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+          data: { full_name: trimmedName },
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
         },
       })
       if (error) throw error
-      router.push("/dashboard")
+      router.push("/onboarding")
     } catch (error: unknown) {
+      clearSpecialistPopupFromSignup()
       const message =
         error && typeof error === "object" && "message" in error
           ? String((error as { message: unknown }).message)
@@ -54,6 +69,22 @@ export default function SignUpPage() {
         <p className="mt-1 text-sm font-medium text-ink-3">{brand.signupTagline}</p>
       </div>
       <form onSubmit={handleSignUp} className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="first-name" className="text-sm font-medium text-ink">
+            First Name
+          </Label>
+          <Input
+            id="first-name"
+            type="text"
+            placeholder="Your first name"
+            required
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            className="input-base h-12"
+            autoComplete="given-name"
+            autoFocus
+          />
+        </div>
         <div className="space-y-2">
           <Label htmlFor="email" className="text-sm font-medium text-ink">
             Email Address

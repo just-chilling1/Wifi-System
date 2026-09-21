@@ -10,7 +10,7 @@ const SpecialistWelcomePopup = dynamic(
   { ssr: false },
 )
 
-/** Client mount point for the specialist popup (login, sign-out, and member chrome). */
+/** Client mount point for the specialist popup (sign-in and member chrome). */
 export function SpecialistWelcomePopupHost() {
   return <SpecialistWelcomePopup />
 }

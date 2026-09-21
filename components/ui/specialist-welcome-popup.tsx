@@ -7,13 +7,18 @@ import { Clock3, FastForward, Phone, TrendingUp, Vault, Wallet, X } from "lucide
 import { PRODUCT_NAME } from "@/lib/brand";
 import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass";
 import { createClient } from "@/lib/supabase/client";
+import { specialist } from "@/config/specialist.config";
+import {
+    clearSpecialistPopupFromSignup,
+    readSpecialistPopupDismissed,
+    readSpecialistPopupFromSignup,
+    readSpecialistPopupShowFlag,
+    suppressSpecialistPopup,
+    writeSpecialistPopupDismissed,
+    writeSpecialistPopupShowFlag,
+} from "@/lib/specialist-popup-session";
 
-const SESSION_DISMISS_KEY = "rh_specialist_popup_dismissed";
-/** Set on login/sign-up so the popup still opens after navigating into the app. */
-const SESSION_SHOW_KEY = "rh_specialist_popup_show";
 const COUNTDOWN_MS = 10 * 60 * 1000;
-const PHONE_DISPLAY = "425-458-1656";
-const PHONE_TEL = "tel:+14254581656";
 
 const BENEFITS = [
     { icon: FastForward, text: "Skip all the learning curve and all the wait" },
@@ -22,40 +27,6 @@ const BENEFITS = [
 ] as const;
 
 type TrackEvent = "cta_call_click" | "popup_open";
-
-function readDismissed(): boolean {
-    try {
-        return sessionStorage.getItem(SESSION_DISMISS_KEY) === "1";
-    } catch {
-        return false;
-    }
-}
-
-function writeDismissed(value: boolean) {
-    try {
-        if (value) sessionStorage.setItem(SESSION_DISMISS_KEY, "1");
-        else sessionStorage.removeItem(SESSION_DISMISS_KEY);
-    } catch {
-        // ignore
-    }
-}
-
-function readShowFlag(): boolean {
-    try {
-        return sessionStorage.getItem(SESSION_SHOW_KEY) === "1";
-    } catch {
-        return false;
-    }
-}
-
-function writeShowFlag(value: boolean) {
-    try {
-        if (value) sessionStorage.setItem(SESSION_SHOW_KEY, "1");
-        else sessionStorage.removeItem(SESSION_SHOW_KEY);
-    } catch {
-        // ignore
-    }
-}
 
 /** Best-effort analytics; never throws / never blocks navigation. */
 function trackPopupEvent(event: TrackEvent) {
@@ -116,10 +87,10 @@ export function SpecialistWelcomePopup({
 
     const reveal = useCallback((opts?: { resetDismiss?: boolean; persistShow?: boolean }) => {
         if (opts?.resetDismiss) {
-            writeDismissed(false);
+            writeSpecialistPopupDismissed(false);
             setDismissed(false);
         }
-        if (opts?.persistShow) writeShowFlag(true);
+        if (opts?.persistShow) writeSpecialistPopupShowFlag(true);
         setRemainingMs(COUNTDOWN_MS);
         setAuthOpen(true);
         if (!trackedOpen.current) {
@@ -136,15 +107,21 @@ export function SpecialistWelcomePopup({
         }
 
         const onAuthRoute = window.location.pathname.startsWith("/auth/");
+        const fromSignup = readSpecialistPopupFromSignup();
         // Local auth-bypass preview only (no real login event).
         if (
             isDevAuthBypassEnabled(window.location.hostname) &&
             !onAuthRoute &&
-            !readDismissed()
+            !fromSignup &&
+            !readSpecialistPopupDismissed()
         ) {
             reveal();
-        } else if (readShowFlag() && !readDismissed()) {
-            // Login/sign-up set this flag; keep showing after route change into the app.
+        } else if (
+            !fromSignup &&
+            readSpecialistPopupShowFlag() &&
+            !readSpecialistPopupDismissed()
+        ) {
+            // Sign-in set this flag; keep showing after route change into the app.
             reveal();
         }
 
@@ -163,23 +140,38 @@ export function SpecialistWelcomePopup({
                     trackedOpen.current = false;
                     setAuthOpen(false);
                     setDismissed(false);
-                    writeDismissed(false);
-                    writeShowFlag(false);
+                    writeSpecialistPopupDismissed(false);
+                    writeSpecialistPopupShowFlag(false);
+                    clearSpecialistPopupFromSignup();
                     return;
                 }
 
                 if (event === "INITIAL_SESSION") {
                     lastUserId.current = session?.user?.id ?? null;
-                    // Do not open on refresh — only after login/sign-up (show flag or SIGNED_IN).
+                    // Do not open on refresh — only after sign-in (show flag or SIGNED_IN).
                     return;
                 }
 
-                // Covers password login and sign-up (both emit SIGNED_IN).
+                // Password sign-in emits SIGNED_IN. Sign-up does too — skip that path.
                 if (event === "SIGNED_IN") {
                     const id = session?.user?.id ?? null;
                     if (id && id !== lastUserId.current) {
+                        lastUserId.current = id;
+                        const path = window.location.pathname;
+                        const isSignUpFlow =
+                            readSpecialistPopupFromSignup() ||
+                            path === "/auth/sign-up" ||
+                            path.startsWith("/auth/sign-up/") ||
+                            path === "/onboarding" ||
+                            path.startsWith("/onboarding/");
+                        if (isSignUpFlow) {
+                            suppressSpecialistPopup();
+                            setAuthOpen(false);
+                            return;
+                        }
                         trackedOpen.current = false;
                         reveal({ resetDismiss: true, persistShow: true });
+                        return;
                     }
                     lastUserId.current = id;
                 }
@@ -200,8 +192,8 @@ export function SpecialistWelcomePopup({
         setAuthOpen(false);
         trackedOpen.current = false;
         if (forceOpen) return;
-        writeDismissed(true);
-        writeShowFlag(false);
+        writeSpecialistPopupDismissed(true);
+        writeSpecialistPopupShowFlag(false);
     }, [forceOpen]);
 
     // Fire-and-forget tracking; must never delay or block the tel: call.
@@ -447,7 +439,7 @@ export function SpecialistWelcomePopup({
                                     </div>
 
                                     <a
-                                        href={PHONE_TEL}
+                                        href={specialist.phoneTel}
                                         onClick={trackCallClick}
                                         className="group relative mt-3 flex w-full min-h-[64px] items-center justify-center gap-3 overflow-hidden rounded-2xl bg-grad-sapphire px-5 text-white shadow-sapphire transition-all hover:bg-grad-sapphire-hover hover:shadow-sapphire active:scale-[0.985] touch-manipulation select-none motion-safe:animate-[cta-pulse-green_2.2s_ease-in-out_infinite] sm:mt-0 sm:w-auto sm:min-w-[19rem] sm:flex-1 sm:min-h-[72px]"
                                     >
@@ -461,7 +453,7 @@ export function SpecialistWelcomePopup({
                                                 Call now · tap to call
                                             </span>
                                             <span className="mt-1 font-sans text-[1.85rem] font-black tabular-nums tracking-tight text-white sm:text-[2.15rem]">
-                                                {PHONE_DISPLAY}
+                                                {specialist.phoneDisplay}
                                             </span>
                                         </span>
                                     </a>

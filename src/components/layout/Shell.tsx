@@ -24,6 +24,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
   const isAuthPage =
+    pathname === "/onboarding" ||
+    pathname.startsWith("/onboarding/") ||
     pathname.startsWith("/auth/") ||
     pathname.startsWith("/reset-password") ||
     pathname.startsWith("/setup") ||
@@ -39,14 +41,19 @@ export function Shell({ children }: { children: React.ReactNode }) {
     pathname === "/admin" ||
     pathname.startsWith("/admin/")
 
-  // Mount on login/sign-up + app so SIGNED_IN can open the popup, then survive
-  // the redirect into the dashboard. Embed/dev render their own copy.
+  // Mount on login + app so SIGNED_IN can open the popup, then survive the
+  // redirect into the dashboard. Sign-up and onboarding skip it. Embed/dev
+  // render their own copy.
   const hideSpecialistPopup =
     pathname === "/embed" ||
     pathname.startsWith("/embed/") ||
     pathname.startsWith("/article/") ||
     pathname.startsWith("/dev/") ||
     pathname.startsWith("/legal/") ||
+    pathname === "/onboarding" ||
+    pathname.startsWith("/onboarding/") ||
+    pathname === "/auth/sign-up" ||
+    pathname.startsWith("/auth/sign-up/") ||
     pathname.startsWith("/auth/callback") ||
     pathname.startsWith("/auth/reset-password") ||
     pathname.startsWith("/auth/forgot-password")

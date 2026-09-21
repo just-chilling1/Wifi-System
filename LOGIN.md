@@ -5,8 +5,8 @@ Auth is Supabase email/password. Do not commit real passwords — keep them in `
 ## Member account
 
 1. Open `/auth/login` (local: [http://localhost:3000/auth/login](http://localhost:3000/auth/login); production follows `NEXT_PUBLIC_SITE_URL`).
-2. Sign in with an existing member email and password, **or** create one at `/auth/sign-up` (minimum 6 characters).
-3. After sign-in, members land on `/dashboard`. Admins go to `/admin`.
+2. Sign in with an existing member email and password, **or** create one at `/auth/sign-up` (first name, email, password of at least 6 characters).
+3. New members go through `/onboarding` — a short account setup, then a click-to-call success consultation — before `/dashboard`. Returning members land on `/dashboard`. Admins go to `/admin`.
 4. Password reset: `/auth/forgot-password` → email from Resend with a `wificodemembers.com` link → `/auth/callback` → `/auth/reset-password`. Requires `RESEND_API_KEY` and `SUPABASE_SERVICE_ROLE_KEY` on the host.
 
 Whether sign-up requires email confirmation is a Supabase Auth setting (Authentication → Providers → Email). If confirmation is on, the user must verify before they can stay signed in.
