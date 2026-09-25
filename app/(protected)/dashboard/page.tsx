@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation"
+import { redirect, unstable_rethrow } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
 import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass"
@@ -7,6 +7,7 @@ import { ContactSupportWidget } from "@/components/contact-support-widget"
 import { DashboardTipsWidget } from "@/components/dashboard-tips-widget"
 import { PremiumUpgradesWidget } from "@/components/premium-upgrades-widget"
 import { DashboardVideoCard } from "@/components/dashboard-video-card"
+import { WifiCodeEntry } from "@/components/wifi-code-entry"
 import { BonusTrainingCard } from "@/components/bonus-training-card"
 import { BookOpen, Brain, Play } from "lucide-react"
 import { DASHBOARD_TRAINING_VIDEOS } from "@/lib/dashboard-training-videos"
@@ -17,17 +18,18 @@ import { dashboard } from "@/config/dashboard.config"
 export const dynamic = "force-dynamic"
 
 export default async function DashboardPage() {
+  const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  // redirect() throws — keep it outside try/catch so Next can handle navigation.
+  if (!user && !isDevAuthBypassEnabled()) {
+    redirect("/auth/login")
+  }
+
   try {
-    const supabase = await createClient()
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user && !isDevAuthBypassEnabled()) {
-      redirect("/auth/login")
-    }
-
     let profile = null
 
     if (user) {
@@ -56,6 +58,8 @@ export default async function DashboardPage() {
 
         <div className="grid grid-cols-1 gap-5 lg:gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]">
           <div className="flex min-w-0 flex-col gap-5 lg:gap-6">
+            <WifiCodeEntry />
+
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-3">
                 <Play className="h-5 w-5 text-ink-3" strokeWidth={1.75} />
@@ -101,6 +105,7 @@ export default async function DashboardPage() {
       </div>
     )
   } catch (error) {
+    unstable_rethrow(error)
     console.error("[robinhood] Dashboard error:", error)
     if (!isDevAuthBypassEnabled()) {
       redirect("/auth/login")
