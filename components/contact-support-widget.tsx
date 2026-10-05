@@ -1,7 +1,7 @@
 "use client"
 
 import { FormEvent, useCallback, useEffect, useState } from "react"
-import { CheckCircle2, Clock, Headphones, Inbox, Loader2, Mail, ShieldCheck } from "lucide-react"
+import { CheckCircle2, Clock, Inbox, Loader2, ShieldCheck } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { APP_SUPPORT_NAME, SUPPORT_EMAIL } from "@/lib/support"
 import { usePromoLinks } from "@/context/PromoLinksContext"
@@ -9,10 +9,9 @@ import { usePromoLinks } from "@/context/PromoLinksContext"
 type FormState = "idle" | "submitting" | "success" | "error"
 
 const fieldClassName =
-  "w-full min-w-0 rounded-lg border border-border bg-card px-3.5 py-3 text-sm leading-normal text-text-primary placeholder:text-text-muted shadow-sm focus:border-sapphire-700 focus:outline-none focus:ring-2 focus:ring-sapphire-100 transition-all disabled:bg-surface-nested disabled:text-[var(--text-disabled)]"
+  "w-full min-w-0 rounded-[1.25rem] border border-[var(--border-subtle)] bg-[var(--layer-shell)] px-4 py-3 text-sm leading-normal text-ink placeholder:text-ink-3 focus:border-[var(--border)] focus:outline-none focus:ring-2 focus:ring-[var(--border-subtle)] transition-colors disabled:bg-surface-nested disabled:text-[var(--text-disabled)]"
 
-const labelClassName =
-  "mb-2 block text-[13px] font-medium uppercase tracking-wide text-text-muted"
+const labelClassName = "mb-1.5 block text-sm text-ink-3"
 
 function openSupportMailto(email: string, message: string) {
   const subject = `${APP_SUPPORT_NAME} — Support Request`
@@ -48,7 +47,10 @@ async function parseJsonResponse(res: Response): Promise<{
   }
 }
 
-export function ContactSupportWidget() {
+const prominentShell =
+  "card-base min-w-0 overflow-hidden !rounded-[2.75rem] !border-[color-mix(in_srgb,var(--brand-100)_42%,transparent)] !bg-[linear-gradient(180deg,color-mix(in_srgb,var(--brand-400)_34%,var(--layer-elevated)),var(--layer-elevated)_52%)] !shadow-[0_18px_44px_-16px_rgba(140,38,55,0.72)]"
+
+export function ContactSupportWidget({ prominent = false }: { prominent?: boolean }) {
   const [email, setEmail] = useState("")
   const [message, setMessage] = useState("")
   const [formState, setFormState] = useState<FormState>("idle")
@@ -143,7 +145,7 @@ export function ContactSupportWidget() {
 
   if (formState === "success") {
     return (
-      <div className="card-base min-w-0 overflow-hidden">
+      <div className={prominent ? `${prominentShell} w-full max-w-full` : "card-base w-full min-w-0 max-w-full overflow-hidden !rounded-[2.75rem]"}>
         <div className="flex flex-col items-center text-center">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-success-light text-success shadow-[0_0_0_8px_color-mix(in_srgb,var(--success)_12%,transparent)]">
             <CheckCircle2 className="h-7 w-7" aria-hidden />
@@ -168,9 +170,9 @@ export function ContactSupportWidget() {
           </p>
         </div>
 
-        <ul className="mt-5 space-y-3 rounded-2xl border border-[var(--ds-line)] bg-sapphire-100/70 p-4 text-left">
+        <ul className="mt-5 space-y-3 rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-nested)] p-4 text-left">
           <li className="flex items-start gap-3">
-            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-sapphire-700 shadow-sm">
+            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--layer-elevated)] text-ink-3">
               <Clock className="h-4 w-4" aria-hidden />
             </span>
             <p className="text-sm leading-snug text-text-secondary">
@@ -179,7 +181,7 @@ export function ContactSupportWidget() {
             </p>
           </li>
           <li className="flex items-start gap-3">
-            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-sapphire-700 shadow-sm">
+            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--layer-elevated)] text-ink-3">
               <ShieldCheck className="h-4 w-4" aria-hidden />
             </span>
             <p className="text-sm leading-snug text-text-secondary">
@@ -189,33 +191,34 @@ export function ContactSupportWidget() {
           </li>
         </ul>
 
-        <div className="bonus-training-card mt-5">
-          <div className="bonus-training-card__body !p-4">
-            <span className="bonus-training-badge inline-flex items-center rounded-md px-2.5 py-0.5 text-[10px] font-black uppercase">
+        <div className="bonus-training-card bonus-training-card--compact mt-5 w-full min-w-0 max-w-full">
+          <div className="bonus-training-card__glow" aria-hidden />
+          <div className="bonus-training-card__body">
+            <span className="bonus-training-badge inline-flex max-w-full items-center rounded-md px-2.5 py-0.5 text-[10px] font-black uppercase">
               While you wait
             </span>
-            <p className="mt-2.5 text-balance text-lg font-black leading-tight tracking-tight text-foreground">
+            <p className="mt-2.5 w-full min-w-0 break-words text-wrap text-[15px] font-bold leading-snug text-text-primary">
               Free training: wake up to an extra{" "}
               <span className="bonus-training-accent">$1,000–$5,000</span>
             </p>
-            <p className="mt-1.5 text-sm leading-relaxed text-text-secondary">
+            <p className="mt-1.5 w-full min-w-0 break-words text-wrap text-sm leading-relaxed text-text-secondary">
               A simple system that can scale to $1k–$5k per day — no extra grind, no credit card.
             </p>
-            <p className="mt-3 text-[11px] font-bold uppercase tracking-[0.12em] text-danger">
+            <p className="bonus-training-urgency !mt-3 w-full min-w-0 !max-w-none break-words text-left normal-case">
               Warning: this may be taken down soon
             </p>
             <a
               href={trainingUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="bonus-training-cta mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-xl px-4 text-sm font-black"
+              className="bonus-training-cta block w-full min-w-0 max-w-full whitespace-normal text-center"
             >
               {trainingCta}
             </a>
           </div>
         </div>
 
-        <button type="button" onClick={resetForm} className="btn-secondary mt-4 w-full">
+        <button type="button" onClick={resetForm} className="btn-secondary mt-4 w-full !rounded-full">
           Send another message
         </button>
       </div>
@@ -223,20 +226,20 @@ export function ContactSupportWidget() {
   }
 
   return (
-    <div className="card-base min-w-0 overflow-hidden">
-      <div className="flex items-center gap-3 border-b border-border-dim/60 pb-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-100">
-          <Headphones size={20} className="text-sapphire-700" />
-        </div>
-        <h3 className="ds-h3 min-w-0">Contact Support</h3>
+    <div className={prominent ? prominentShell : "card-base min-w-0 overflow-hidden !rounded-[2.75rem]"}>
+      <div className={prominent ? "border-b border-[color-mix(in_srgb,var(--brand-100)_28%,transparent)] pb-4" : "border-b border-[var(--border-subtle)] pb-4"}>
+        {prominent ? (
+          <p className="mb-3 inline-flex rounded-full bg-[var(--brand-400)] px-3 py-1 text-xs font-medium text-[var(--brand-50)]">
+            Fastest way to reach us
+          </p>
+        ) : null}
+        <h3 className="text-xl font-medium tracking-tight text-ink">Send a message</h3>
+        <p className="mt-1 text-sm leading-relaxed text-ink-3">
+          Typical reply is under two hours. During busy periods, allow 24–48 hours.
+        </p>
       </div>
 
-      <div className="mt-3 flex flex-col gap-4">
-        <p className="text-sm leading-relaxed text-text-secondary">
-          We usually reply within about 2 hours — allow{" "}
-          <span className="font-medium text-text-primary">24–48 hours</span> during busy periods.
-        </p>
-
+      <div className="mt-4 flex flex-col gap-4">
         <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
           <div className="min-w-0">
             <label htmlFor="support-email" className={labelClassName}>
@@ -278,12 +281,11 @@ export function ContactSupportWidget() {
             </p>
           ) : null}
 
-          <p className="rounded-lg border border-border bg-sapphire-100 px-3 py-2.5 text-xs leading-relaxed text-text-secondary">
-            <span className="font-medium text-text-secondary">Please note:</span> We reply to the
-            email above. Check spam or junk if you don&apos;t hear back within 48 hours.
+          <p className="text-sm leading-relaxed text-ink-3">
+            Replies go to the email above. Check spam if nothing arrives within 48 hours.
           </p>
 
-          <button type="submit" disabled={formState === "submitting"} className="btn-primary w-full min-h-[44px]">
+          <button type="submit" disabled={formState === "submitting"} className="btn-primary w-full min-h-[48px] !rounded-full">
             {formState === "submitting" ? (
               <span className="inline-flex items-center justify-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -295,21 +297,17 @@ export function ContactSupportWidget() {
           </button>
         </form>
 
-        <div className="flex gap-2.5 rounded-lg border border-border bg-card px-3 py-2.5 shadow-sm">
-          <Mail className="mt-0.5 h-4 w-4 shrink-0 text-text-secondary" />
-          <div className="min-w-0">
-            <p className="text-xs leading-snug text-text-secondary">
-              Form not working? Copy our support email:
-            </p>
-            <button
-              type="button"
-              onClick={() => void navigator.clipboard.writeText(SUPPORT_EMAIL)}
-              className="mt-1 block break-all text-left text-sm font-medium text-sapphire-700 hover:underline"
-            >
-              {SUPPORT_EMAIL}
-            </button>
-          </div>
-        </div>
+        <p className="text-sm text-ink-3">
+          Or copy{" "}
+          <button
+            type="button"
+            onClick={() => void navigator.clipboard.writeText(SUPPORT_EMAIL)}
+            className="break-all text-left font-medium text-ink underline-offset-2 hover:underline"
+            aria-label="Copy support email"
+          >
+            {SUPPORT_EMAIL}
+          </button>
+        </p>
       </div>
     </div>
   )

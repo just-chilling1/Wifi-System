@@ -527,6 +527,12 @@ export default function DfyProfitClient({
                 links={savedLinks}
                 selectedId={selectedLinkId}
                 onSelect={(link) => {
+                  if (!link) {
+                    setSelectedLinkId(null)
+                    setAffiliateUrl("")
+                    setError("")
+                    return
+                  }
                   setSelectedLinkId(link.id)
                   setAffiliateUrl(link.affiliate_url)
                   setOfferName(link.offer_name)
@@ -621,10 +627,7 @@ export default function DfyProfitClient({
       </PremiumControlCard>
 
       {generating && (
-        <GenerationProgress
-          label={STAGE_LABELS[stage as Exclude<Stage, "idle" | "done">]}
-          offer="welcome"
-        />
+        <GenerationProgress label={STAGE_LABELS[stage as Exclude<Stage, "idle" | "done">]} />
       )}
 
       <DfyResultPanel

@@ -5,16 +5,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import { TrendingUp, CheckCircle2, ExternalLink, Clock, Users, Copy, Check } from "lucide-react"
+import { CheckCircle2, ExternalLink, Clock, Users, Copy, Check } from "lucide-react"
 import { GenerationProgress } from "@/components/generation-progress"
-import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
+import { BonusTrainingCard } from "@/components/bonus-training-card"
 import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
-import {
-  PremiumControlCard,
-  PremiumFeatureBanner,
-  PremiumSteps,
-} from "@/components/premium-feature-chrome"
-import { PremiumPageLayout } from "@/components/premium-page-layout"
+import { PremiumErrorAlert, PremiumPageLayout } from "@/components/premium-page-layout"
+import { cn } from "@/lib/utils"
 import { useScrollToResults } from "@/lib/use-scroll-to-results"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
 import { getPremiumTrainingVimeoId } from "@/lib/premium-training-videos"
@@ -1994,7 +1990,22 @@ const trafficSources: TrafficSource[] = [
   },
 ]
 
-export function AutomatedIncomeContent({ userId }: { userId: string }) {
+const STEPS = [
+  { num: "1", title: "Pick a niche", desc: "Filter the directory so you only see sources that fit your market." },
+  { num: "2", title: "Save your page URL", desc: "We drop it into every submission description so you can copy and send." },
+  { num: "3", title: "Submit and wait", desc: "Follow the steps for each site. Traffic keeps arriving after you submit." },
+] as const
+
+const panelClass =
+  "overflow-hidden rounded-[2.75rem] border border-[var(--border-subtle)] bg-[var(--layer-elevated)] shadow-[var(--ds-shadow-card)]"
+
+const primaryCtaClass =
+  "rounded-[1.75rem] bg-grad-sapphire font-medium text-white shadow-sapphire transition-[background-color,box-shadow,transform] duration-200 hover:-translate-y-px hover:shadow-sapphire active:translate-y-0 active:scale-[0.98]"
+
+const quietButtonClass =
+  "rounded-[1.75rem] border border-[var(--ds-line-strong)] bg-card font-medium text-ink transition-[background-color,border-color,color,transform] duration-200 hover:border-primary hover:bg-primary-light hover:text-sapphire-700 active:scale-[0.98]"
+
+export function AutomatedIncomeContent({ userId: _userId }: { userId: string }) {
   const [selectedSource, setSelectedSource] = useState<TrafficSource | null>(null)
   const [pageUrl, setPageUrl] = useState("")
   const [selectedNiche, setSelectedNiche] = useState<string>("All")
@@ -2081,183 +2092,162 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
   return (
     <PremiumPageLayout
       title={PREMIUM_FEATURE_LABELS.automatedIncome}
-      subtitle="Submit your page to 100+ traffic sources once. They keep sending visitors after you walk away."
+      subtitle="Submit your page to these traffic sources once. They keep sending visitors after you walk away."
     >
       <PremiumVideoTutorial
         premiumKey="socialPayouts"
         vimeoId={getPremiumTrainingVimeoId("socialPayouts")}
-        title={`${PREMIUM_FEATURE_LABELS.automatedIncome} Training`}
-        description="Watch this quick tutorial to learn how to submit your link to these 100+ traffic sources and get automated traffic forever!"
+        title={`${PREMIUM_FEATURE_LABELS.automatedIncome} training`}
+        description="How to save your page URL, pick a niche, and submit it to each source."
         iframeTitle={`${PREMIUM_FEATURE_LABELS.automatedIncome} training video`}
       />
 
-      <PremiumFeatureBanner
-        icon={TrendingUp}
-        kicker="Hands-free traffic"
-        title="Submit once, keep visitors"
-        description="Pick a niche, save your page URL, then follow the short instructions for each source. No daily posting required after you submit."
-        chip="100+ sources"
-      />
-
-      <PremiumSteps
-        title="Three steps to automated traffic"
-        steps={[
-          {
-            num: "1",
-            title: "Pick your niche",
-            desc: "Filter the directory so you only see sources that fit your market.",
-          },
-          {
-            num: "2",
-            title: "Save your page URL",
-            desc: "We drop it into every submission description so you can copy and send.",
-          },
-          {
-            num: "3",
-            title: "Submit and wait",
-            desc: "Follow the steps for each site. Traffic keeps arriving after you submit.",
-          },
-        ]}
-      />
-
-      <div className="rounded-xl border border-warning/30 bg-warning-light px-5 py-4">
-        <p className="text-sm font-semibold text-warning">Pro tip</p>
-        <p className="mt-1 text-sm leading-relaxed text-warning">
-          Set aside a block of time and submit to as many sources as you can. More submissions means more automatic
-          traffic later.
+      <section className={cn(panelClass, "px-5 py-6 md:px-8 md:py-8")}>
+        <h2 className="text-xl font-medium tracking-tight text-ink">How it works</h2>
+        <ol className="mt-5 grid gap-5 sm:grid-cols-3">
+          {STEPS.map((step) => (
+            <li key={step.num} className="flex gap-3">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-grad-sapphire text-xs font-medium text-white">
+                {step.num}
+              </span>
+              <span>
+                <span className="block text-sm font-medium text-ink">{step.title}</span>
+                <span className="mt-1 block text-sm leading-relaxed text-ink-3">{step.desc}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-5 max-w-[65ch] text-sm leading-relaxed text-ink-3">
+          Set aside a block of time and submit to as many sources as you can. More submissions means more traffic later.
         </p>
-      </div>
+      </section>
 
-      {/* Page URL Input */}
-      <PremiumControlCard
-        icon={TrendingUp}
-        title="Your page URL"
-        description="This is the page you want to promote. We'll automatically insert it in all the submission descriptions below."
-      >
-          <Label htmlFor="page-url" className="mb-3 block text-sm font-medium uppercase tracking-wide text-ink-3">
-            Your page URL
-          </Label>
-          <Input
-            id="page-url"
-            type="url"
-            placeholder="https://your-page-url.com"
-            value={pageUrl}
-            onChange={(e) => setPageUrl(e.target.value)}
-            className="h-14 border-[var(--ds-line)] bg-card text-ink"
-          />
+      <section className={panelClass}>
+        <div className="px-5 py-6 md:px-8 md:py-8">
+          <h2 className="text-xl font-medium tracking-tight text-ink">Your page</h2>
+          <p className="mt-1 max-w-[65ch] text-sm leading-relaxed text-ink-3">
+            We insert this URL into every submission description below.
+          </p>
 
-          {linkError && (
-            <p className="mt-4 text-lg font-medium text-[#C53030]">{linkError}</p>
-          )}
+          <div className="surface-action mt-6 rounded-[1.75rem] p-4 sm:p-5">
+            <Label htmlFor="page-url" className="text-sm font-medium text-ink">
+              Page URL
+            </Label>
+            <Input
+              id="page-url"
+              type="url"
+              placeholder="https://your-page-url.com"
+              value={pageUrl}
+              onChange={(e) => setPageUrl(e.target.value)}
+              className="mt-2 h-12 rounded-[1.75rem] bg-card px-5 text-base text-ink"
+            />
+          </div>
 
-          {savingLink && (
-            <div className="mt-6">
-              <GenerationProgress
-                offer="welcome"
-                label="Inserting your link into 100+ submission descriptions..."
-              />
+          {linkError ? (
+            <div className="mt-4">
+              <PremiumErrorAlert message={linkError} />
             </div>
-          )}
+          ) : null}
 
-          {!savingLink && linkSaved && (
+          {savingLink ? (
             <div className="mt-6">
-              <WelcomeOfferBanner />
+              <GenerationProgress label="Inserting your link into the submission descriptions" />
             </div>
-          )}
+          ) : null}
+
+          {!savingLink && linkSaved ? (
+            <div className="mt-6">
+              <BonusTrainingCard />
+            </div>
+          ) : null}
 
           <Button
             onClick={handleSaveLink}
             disabled={savingLink}
-            className="mt-6 h-12 w-full rounded-xl bg-grad-sapphire text-base font-medium text-white shadow-sapphire hover:shadow-sapphire"
+            className={cn("mt-6 h-12 w-full text-base", primaryCtaClass)}
           >
-            {savingLink ? "Saving Your Link..." : linkSaved ? "Link Saved ✓ — Update It Anytime" : "Save My Link →"}
+            {savingLink ? "Saving your link" : linkSaved ? "Link saved. Update it anytime" : "Save my link"}
           </Button>
-      </PremiumControlCard>
 
-      {/* Niche Filter */}
-      <div className="flex gap-3 flex-wrap">
-        {niches.map((niche) => (
-          <Button
-            key={niche}
-            onClick={() => handleSelectNiche(niche)}
-            variant={selectedNiche === niche ? "default" : "outline"}
-            className={
-              selectedNiche === niche
-                ? "bg-grad-sapphire text-white font-medium hover:bg-grad-sapphire"
-                : "border-[var(--ds-line-strong)] !text-ink hover:border-primary hover:bg-primary-light hover:!text-sapphire-700 font-medium"
-            }
-            size="lg"
-          >
-            {niche}
-          </Button>
-        ))}
-      </div>
+          <div className="mt-6 border-t border-[var(--ds-line)] pt-6">
+            <Label id="niche-label" className="text-sm font-medium text-ink">
+              Niche
+            </Label>
+            <div role="radiogroup" aria-labelledby="niche-label" className="mt-3 flex flex-wrap gap-2">
+              {niches.map((niche) => {
+                const selected = selectedNiche === niche
+                return (
+                  <button
+                    key={niche}
+                    type="button"
+                    role="radio"
+                    aria-checked={selected}
+                    onClick={() => handleSelectNiche(niche)}
+                    className={cn(
+                      "min-h-11 rounded-[1.75rem] border px-4 py-2 text-sm transition-[background-color,border-color,color,box-shadow,transform] duration-200 active:scale-[0.98]",
+                      selected
+                        ? primaryCtaClass
+                        : "border-[var(--ds-line)] bg-card text-ink-3 hover:border-[var(--ds-line-strong)] hover:text-ink",
+                    )}
+                  >
+                    {niche}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* While generating the niche's sources: loading bar + offer banner (banner stays after) */}
       {generating ? (
         <GenerationProgress
-          offer="welcome"
           label={`Finding the best ${selectedNiche === "All" ? "" : `${selectedNiche} `}traffic sources for you...`}
         />
       ) : hasGenerated ? (
-        <WelcomeOfferBanner />
+        <BonusTrainingCard />
       ) : null}
 
       {!generating && (
       <div ref={sourcesResultsRef} className="space-y-8">
-      <div className="glass-card overflow-hidden p-0">
-        <div className="border-b border-[var(--ds-line)] bg-sapphire-100 p-5 md:p-6">
-          <div className="flex items-center gap-3">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
-              <TrendingUp className="h-5 w-5" aria-hidden />
-            </span>
-            <div>
-              <p className="text-[13px] font-medium uppercase tracking-[0.12em] text-sapphire-700">Your progress</p>
-              <p className="font-medium text-ink">
-                {completedSources.size} of {filteredSources.length} sources
-              </p>
-              <p className="mt-0.5 text-sm text-ink-3">Mark a source complete after you submit.</p>
-            </div>
+      <section className={cn(panelClass, "px-5 py-6 md:px-8 md:py-8")}>
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className="text-xl font-medium tracking-tight text-ink">Your progress</h2>
+            <p className="mt-1 text-sm text-ink-3">Mark a source complete after you submit.</p>
           </div>
+          <p className="text-sm tabular-nums text-ink-3">
+            <span className="text-2xl font-medium text-ink">{completedSources.size}</span>
+            {" "}of {filteredSources.length}
+          </p>
         </div>
-        <div className="flex flex-col gap-4 p-5 sm:p-6">
-          <div className="flex items-end justify-between gap-3">
-            <p className="text-2xl font-medium tabular-nums text-sapphire-700">
-              {filteredSources.length
-                ? Math.round((completedSources.size / filteredSources.length) * 100)
-                : 0}
-              <span className="ml-1 text-xs font-medium uppercase tracking-wide text-ink-3">
-                complete
-              </span>
-            </p>
-          </div>
+        <div
+          className="mt-5 h-2 w-full overflow-hidden rounded-full bg-[var(--ds-line)]"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={
+            filteredSources.length
+              ? Math.round((completedSources.size / filteredSources.length) * 100)
+              : 0
+          }
+          aria-label="Sources completed"
+        >
           <div
-            className="h-3 w-full overflow-hidden rounded-full bg-[var(--ds-line)]"
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={
-              filteredSources.length
-                ? Math.round((completedSources.size / filteredSources.length) * 100)
-                : 0
-            }
-          >
-            <div
-              className="h-full rounded-full bg-sapphire-500 transition-all duration-500"
-              style={{
-                width: `${
-                  filteredSources.length
-                    ? Math.max(
-                        completedSources.size > 0 ? 4 : 0,
-                        (completedSources.size / filteredSources.length) * 100,
-                      )
-                    : 0
-                }%`,
-              }}
-            />
-          </div>
+            className="h-full rounded-full bg-grad-sapphire transition-all duration-500"
+            style={{
+              width: `${
+                filteredSources.length
+                  ? Math.max(
+                      completedSources.size > 0 ? 4 : 0,
+                      (completedSources.size / filteredSources.length) * 100,
+                    )
+                  : 0
+              }%`,
+            }}
+          />
         </div>
-      </div>
+      </section>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
         {filteredSources.map((source) => {
@@ -2265,53 +2255,53 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
           return (
             <article
               key={source.id}
-              className={`glass-card cursor-pointer p-6 transition-colors hover:border-[var(--ds-line-sapphire)] ${
-                isCompleted ? "opacity-60" : ""
-              }`}
               onClick={() => setSelectedSource(source)}
+              className={cn(
+                "cursor-pointer rounded-[1.75rem] border border-[var(--border-subtle)] bg-[var(--layer-elevated)] p-5 text-left shadow-[var(--ds-shadow-card)] transition-[border-color,transform] duration-200 hover:border-[var(--border-strong)]",
+                isCompleted && "opacity-70",
+              )}
             >
-                <div className="mb-4 flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-[var(--ds-offer-green-100)] px-3 py-1 text-xs font-medium text-sapphire-700">
-                    {source.category}
-                  </span>
-                  <span className="rounded-full bg-sapphire-200 px-3 py-1 text-xs font-medium text-sapphire-700">
-                    {source.difficulty}
-                  </span>
-                  {isCompleted && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--ds-offer-green-100)] px-3 py-1 text-xs font-medium text-sapphire-700">
-                      <CheckCircle2 className="h-3.5 w-3.5" />
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-3">
+                  <span>{source.category}</span>
+                  <span>{source.difficulty}</span>
+                  {isCompleted ? (
+                    <span className="inline-flex items-center gap-1 text-[var(--ds-offer-green-800)]">
+                      <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
                       Completed
                     </span>
-                  )}
+                  ) : null}
                 </div>
-                <h3 className="text-xl font-medium text-ink">{source.name}</h3>
-                <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm">
-                  <p className="inline-flex items-center gap-1.5 font-semibold text-sapphire-700">
+                <h3 className="mt-2 text-lg font-medium text-ink">{source.name}</h3>
+                <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-3">
+                  <p className="inline-flex items-center gap-1.5">
                     <Users className="h-4 w-4" aria-hidden />
                     {source.trafficPotential}
                   </p>
-                  <p className="inline-flex items-center gap-1.5 font-semibold text-ink">
-                    <Clock className="h-4 w-4 text-sapphire-700" aria-hidden />
+                  <p className="inline-flex items-center gap-1.5">
+                    <Clock className="h-4 w-4" aria-hidden />
                     {source.timeToComplete}
                   </p>
                 </div>
 
                 <div
-                  className="mt-4 rounded-xl border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] p-4"
+                  className="surface-action mt-4 rounded-[1.25rem] p-4"
                   onClick={(e) => e.stopPropagation()}
+                  onKeyDown={(e) => e.stopPropagation()}
                 >
                   <div className="mb-2 flex items-center justify-between gap-3">
-                    <p className="text-sm font-semibold text-ink">Use this description when submitting</p>
+                    <p className="text-sm font-medium text-ink">Description to submit</p>
                     <Button
                       size="sm"
                       onClick={(e) => handleCopyDescription(e, source)}
-                      className={`h-9 shrink-0 rounded-lg px-3 font-semibold text-white ${
+                      className={cn(
+                        "h-9 shrink-0 px-3",
                         copiedSourceId === source.id
-                          ? "bg-sapphire-500 hover:bg-sapphire-500"
-                          : "bg-sapphire-500 hover:bg-sapphire-700"
-                      }`}
+                          ? "rounded-[1.75rem] bg-sapphire-500 font-medium text-white hover:bg-sapphire-500"
+                          : primaryCtaClass,
+                      )}
                     >
                       {copiedSourceId === source.id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                      {copiedSourceId === source.id ? "Copied" : "Copy"}
                     </Button>
                   </div>
                   <p className="break-words text-sm leading-relaxed text-ink">
@@ -2319,7 +2309,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                   </p>
                 </div>
 
-                <Button className="mt-4 h-12 w-full rounded-xl bg-grad-sapphire text-base font-medium text-white hover:shadow-sapphire">
+                <Button className={cn("mt-4 h-12 w-full text-base", primaryCtaClass)}>
                   <ExternalLink className="mr-2 h-4 w-4" />
                   View instructions
                 </Button>
@@ -2331,37 +2321,29 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
       )}
 
       <Dialog open={!!selectedSource} onOpenChange={() => setSelectedSource(null)}>
-        <DialogContent className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden border border-[var(--ds-line)] bg-card p-0 sm:max-w-2xl">
+        <DialogContent className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden rounded-[1.75rem] border border-[var(--border-subtle)] bg-[var(--layer-elevated)] p-0 sm:max-w-2xl">
           <DialogHeader className="space-y-3 border-b border-[var(--ds-line)] px-6 py-5 pr-12 text-left">
-            <div className="flex flex-wrap items-center gap-2">
-              {selectedSource?.category ? (
-                <span className="rounded-full bg-[var(--ds-offer-green-100)] px-3 py-1 text-xs font-semibold text-sapphire-700">
-                  {selectedSource.category}
-                </span>
-              ) : null}
-              {selectedSource?.difficulty ? (
-                <span className="rounded-full bg-sapphire-200 px-3 py-1 text-xs font-semibold text-sapphire-700">
-                  {selectedSource.difficulty}
-                </span>
-              ) : null}
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-3">
+              {selectedSource?.category ? <span>{selectedSource.category}</span> : null}
+              {selectedSource?.difficulty ? <span>{selectedSource.difficulty}</span> : null}
               {selectedSource && completedSources.has(selectedSource.id) ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-[var(--ds-offer-green-100)] px-3 py-1 text-xs font-semibold text-sapphire-700">
-                  <CheckCircle2 className="h-3.5 w-3.5" />
+                <span className="inline-flex items-center gap-1 text-[var(--ds-offer-green-800)]">
+                  <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
                   Completed
                 </span>
               ) : null}
             </div>
-            <DialogTitle className="text-xl font-semibold text-ink sm:text-2xl">
+            <DialogTitle className="text-xl font-medium text-ink sm:text-2xl">
               {selectedSource?.name}
             </DialogTitle>
             <DialogDescription asChild>
-              <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
-                <span className="inline-flex items-center gap-1.5 font-semibold text-sapphire-700">
+              <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-3">
+                <span className="inline-flex items-center gap-1.5">
                   <Users className="h-4 w-4" aria-hidden />
                   {selectedSource?.trafficPotential}
                 </span>
-                <span className="inline-flex items-center gap-1.5 font-semibold text-ink">
-                  <Clock className="h-4 w-4 text-sapphire-700" aria-hidden />
+                <span className="inline-flex items-center gap-1.5">
+                  <Clock className="h-4 w-4" aria-hidden />
                   {selectedSource?.timeToComplete}
                 </span>
               </div>
@@ -2372,7 +2354,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button
                 asChild
-                className="h-12 flex-1 rounded-xl bg-sapphire-500 text-base font-semibold text-white hover:bg-sapphire-700"
+                className={cn("h-12 flex-1 text-base", primaryCtaClass)}
               >
                 <a href={selectedSource?.url} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="mr-2 h-4 w-4" />
@@ -2382,7 +2364,7 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
               <Button
                 onClick={() => selectedSource && handleMarkComplete(selectedSource.id)}
                 variant="outline"
-                className="h-12 rounded-xl border border-[var(--ds-line-strong)] bg-card font-semibold !text-ink hover:border-primary hover:bg-primary-light hover:!text-sapphire-700 sm:min-w-[11rem]"
+                className={cn("h-12 sm:min-w-[11rem]", quietButtonClass)}
                 disabled={selectedSource ? completedSources.has(selectedSource.id) : false}
               >
                 <CheckCircle2 className="mr-2 h-4 w-4 text-sapphire-700" />
@@ -2390,15 +2372,15 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
               </Button>
             </div>
 
-            <div className="rounded-2xl border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] p-5">
-              <h4 className="text-base font-semibold text-ink">Step-by-step instructions</h4>
+            <div className="surface-action rounded-[1.75rem] p-5">
+              <h4 className="text-base font-medium text-ink">Step-by-step instructions</h4>
               <ol className="mt-4 space-y-3">
                 {selectedSource?.instructions.map((instruction, index) => (
                   <li
                     key={index}
-                    className="flex gap-3 rounded-xl border border-[var(--ds-line-offer)] bg-white p-3.5"
+                    className="flex gap-3 rounded-[1.25rem] border border-[var(--ds-line)] bg-[var(--layer-elevated)] p-3.5"
                   >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sapphire-500 text-xs font-semibold text-white">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-grad-sapphire text-xs font-medium text-white">
                       {index + 1}
                     </span>
                     <p className="pt-0.5 text-sm leading-relaxed text-ink">{instruction}</p>
@@ -2407,9 +2389,9 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
               </ol>
             </div>
 
-            <div className="rounded-2xl border border-[var(--ds-line)] bg-surface-nested/80 p-5">
-              <h4 className="text-base font-semibold text-ink">Use this description when submitting</h4>
-              <p className="mt-3 whitespace-pre-wrap break-words rounded-xl border border-[var(--ds-line)] bg-card p-4 text-sm leading-relaxed text-ink">
+            <div className="surface-action rounded-[1.75rem] p-5">
+              <h4 className="text-base font-medium text-ink">Description to submit</h4>
+              <p className="mt-3 whitespace-pre-wrap break-words rounded-[1.25rem] border border-[var(--ds-line)] bg-card p-4 text-sm leading-relaxed text-ink">
                 {pageUrl ? populatedDescription : selectedSource?.submissionDescription}
               </p>
               <Button
@@ -2421,11 +2403,12 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
                   setCopiedSourceId(selectedSource.id)
                   setTimeout(() => setCopiedSourceId(null), 1500)
                 }}
-                className={`mt-4 h-11 w-full rounded-xl font-semibold text-white sm:w-auto ${
+                className={cn(
+                  "mt-4 h-11 w-full sm:w-auto",
                   selectedSource && copiedSourceId === selectedSource.id
-                    ? "bg-sapphire-500 hover:bg-sapphire-500"
-                    : "bg-sapphire-500 hover:bg-sapphire-700"
-                }`}
+                    ? "rounded-[1.75rem] bg-sapphire-500 font-medium text-white hover:bg-sapphire-500"
+                    : primaryCtaClass,
+                )}
               >
                 {selectedSource && copiedSourceId === selectedSource.id ? (
                   <>
@@ -2442,11 +2425,9 @@ export function AutomatedIncomeContent({ userId }: { userId: string }) {
             </div>
 
             {!pageUrl ? (
-              <div className="rounded-xl border border-warning/30 bg-warning-light px-4 py-3">
-                <p className="text-sm leading-relaxed text-warning">
-                  Save your page URL above first so this description includes your live link.
-                </p>
-              </div>
+              <p className="rounded-[1.25rem] border border-[var(--ds-line)] bg-card px-4 py-3 text-sm leading-relaxed text-ink-3">
+                Save your page URL above first so this description includes your live link.
+              </p>
             ) : null}
           </div>
         </DialogContent>

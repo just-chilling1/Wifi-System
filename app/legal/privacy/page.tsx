@@ -5,7 +5,7 @@ import Link from "next/link"
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="min-h-screen p-6 lg:p-8">
+    <div className="app-bg min-h-dvh p-6 lg:p-12">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="flex items-center gap-4">
           <Button asChild variant="outline" className="h-12 glass bg-transparent">

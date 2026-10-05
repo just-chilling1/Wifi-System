@@ -96,7 +96,7 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          <aside className="flex min-w-0 flex-col gap-5 xl:sticky xl:top-8 xl:self-start">
+          <aside className="flex w-full min-w-0 flex-col gap-5 overflow-x-clip xl:sticky xl:top-8 xl:self-start">
             <ContactSupportWidget />
             <DashboardTipsWidget />
             <PremiumUpgradesWidget />

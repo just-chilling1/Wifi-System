@@ -20,7 +20,7 @@ import {
 } from "lucide-react"
 
 const generateCtaClass =
-  "rounded-xl bg-grad-sapphire font-semibold text-white shadow-sapphire transition-[transform,box-shadow,background] duration-[160ms] hover:-translate-y-px hover:bg-grad-sapphire-hover hover:shadow-sapphire active:translate-y-0"
+  "rounded-xl bg-primary font-semibold text-primary-foreground shadow-sm transition-colors duration-150 hover:bg-primary-hover"
 
 type Props = {
   video: VideoOpportunity
@@ -54,7 +54,7 @@ function formatPublished(publishedAt: string) {
 function viralBarClass(score: number) {
   if (score >= 85) return "bg-gold-grad"
   if (score >= 60) return "bg-gradient-to-r from-sapphire-300 to-sapphire-500"
-  return "bg-ink-6"
+  return "bg-burgundy-300"
 }
 
 export function GoldRushVideoCard({
@@ -75,7 +75,7 @@ export function GoldRushVideoCard({
       className={cn(
         "glass-card overflow-hidden p-0 transition-[border-color,box-shadow] duration-200 hover:border-[var(--ds-line-sapphire)]",
         rank <= 3 && "accent-card",
-        hasComments && "border-[var(--ds-line-sapphire)] shadow-[0_8px_24px_-8px_rgba(13,148,136,0.35)]",
+        hasComments && "border-[var(--border-brand)] shadow-sm",
       )}
     >
       <div className="flex gap-3 p-3.5 sm:gap-5 sm:p-5">
@@ -85,7 +85,7 @@ export function GoldRushVideoCard({
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Watch ${video.title} on YouTube`}
-            className="group relative block aspect-[9/16] w-[4.75rem] shrink-0 self-start overflow-hidden rounded-[12px] bg-ink sm:w-[7.75rem]"
+            className="group relative block aspect-[9/16] w-[4.75rem] shrink-0 self-start overflow-hidden rounded-[12px] bg-burgundy-950 sm:w-[7.75rem]"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -94,20 +94,20 @@ export function GoldRushVideoCard({
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
             />
             <div className="video-thumb-scrim absolute inset-0" />
-            <span className="absolute left-1.5 top-1.5 inline-flex items-center gap-1 rounded-md bg-ink/80 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur-sm sm:left-2 sm:top-2 sm:px-2 sm:text-[11px]">
+            <span className="absolute left-1.5 top-1.5 inline-flex items-center gap-1 rounded-md bg-black/75 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur-sm sm:left-2 sm:top-2 sm:px-2 sm:text-[11px]">
               <Youtube className="h-3 w-3" aria-hidden />
               Short
             </span>
             <span
               className={cn(
                 "absolute bottom-1.5 left-1.5 flex h-6 min-w-6 items-center justify-center rounded-md px-1.5 text-[11px] font-bold tabular-nums shadow-sm sm:bottom-2 sm:left-2 sm:h-7 sm:min-w-7 sm:text-xs",
-                rank === 1 ? "bg-gold-grad text-white" : "bg-white/95 text-ink",
+                rank === 1 ? "bg-primary text-[var(--brand-50)]" : "bg-[var(--brand-900)] text-[var(--brand-100)]",
               )}
             >
               {rank}
             </span>
             <span className="absolute inset-0 flex items-center justify-center">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-sapphire-700 opacity-90 shadow-md transition-transform duration-200 group-hover:scale-110 sm:h-11 sm:w-11">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-[var(--brand-50)] shadow-[var(--shadow-brand)] transition-transform duration-200 group-hover:scale-110 sm:h-11 sm:w-11">
                 <Play className="ml-0.5 h-4 w-4 fill-current sm:h-5 sm:w-5" aria-hidden />
               </span>
             </span>
@@ -118,7 +118,7 @@ export function GoldRushVideoCard({
           {rank === 1 || hasComments || !video.thumbnailUrl ? (
             <div className="mb-1 flex flex-wrap items-center gap-2">
               {rank === 1 ? (
-                <span className="inline-flex items-center rounded-full bg-[var(--gold-200)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sapphire-700">
+                <span className="inline-flex items-center rounded-full bg-[var(--gold-200)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
                   Top pick
                 </span>
               ) : null}
@@ -129,7 +129,7 @@ export function GoldRushVideoCard({
                 </span>
               ) : null}
               {!video.thumbnailUrl ? (
-                <span className="inline-flex items-center gap-1 rounded-md bg-ink px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                <span className="inline-flex items-center gap-1 rounded-md bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary-foreground">
                   <Youtube className="h-3 w-3" aria-hidden />
                   Short
                 </span>
@@ -147,12 +147,12 @@ export function GoldRushVideoCard({
 
           <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[13px] sm:mt-3 sm:gap-x-4 sm:gap-y-2 sm:text-sm">
             <span className="inline-flex items-center gap-1.5 font-semibold text-ink">
-              <Eye className="h-4 w-4 text-sapphire-700" aria-hidden />
+              <Eye className="h-4 w-4 text-primary" aria-hidden />
               {formatNumber(video.viewCount)}
               <span className="font-medium text-text-muted">views</span>
             </span>
             <span className="inline-flex items-center gap-1.5 font-semibold text-ink">
-              <TrendingUp className="h-4 w-4 text-sapphire-700" aria-hidden />
+              <TrendingUp className="h-4 w-4 text-primary" aria-hidden />
               {formatNumber(video.estimatedClicks)}
               <span className="inline-flex items-center gap-1 font-medium text-text-muted">
                 est. clicks
@@ -167,7 +167,7 @@ export function GoldRushVideoCard({
           <div className="mt-3">
             <div className="mb-1.5 flex items-center justify-between gap-2">
               <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-text-secondary">
-                <Flame className="h-3.5 w-3.5 text-sapphire-700" aria-hidden />
+                <Flame className="h-3.5 w-3.5 text-primary" aria-hidden />
                 Viral score
                 <InfoHint
                   side="bottom"
@@ -249,10 +249,10 @@ export function GoldRushVideoCard({
             {comments.map((comment, index) => (
               <div
                 key={index}
-                className="flex flex-col gap-3 rounded-xl border border-[var(--ds-line)] bg-white p-3.5 transition-colors hover:border-[var(--ds-line-sapphire)] sm:flex-row sm:items-start"
+                className="flex flex-col gap-3 rounded-xl border border-[var(--ds-line)] bg-[var(--layer-elevated)] p-3.5 transition-colors hover:border-[var(--ds-line-sapphire)] sm:flex-row sm:items-start"
               >
                 <div className="flex min-w-0 flex-1 items-start gap-3">
-                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sapphire-200 text-[11px] font-bold text-sapphire-700">
+                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sapphire-200 text-[11px] font-bold text-primary">
                     {index + 1}
                   </span>
                   <p className="min-w-0 flex-1 text-sm font-medium leading-relaxed text-ink sm:text-base">

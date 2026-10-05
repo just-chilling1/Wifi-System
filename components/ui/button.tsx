@@ -5,22 +5,22 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-normal text-center text-sm font-semibold transition-[background,box-shadow,filter,color,border-color,transform] duration-[160ms] disabled:pointer-events-none disabled:opacity-60 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 min-w-0 max-w-full [&_svg]:shrink-0 outline-none focus-visible:ring-[3px] focus-visible:ring-sapphire-700/25 aria-invalid:ring-destructive/20 aria-invalid:border-destructive sm:whitespace-nowrap",
+  "inline-flex items-center justify-center gap-2 whitespace-normal text-center text-sm font-semibold tracking-[-0.01em] transition-[background-color,box-shadow,color,border-color,transform] duration-[160ms] disabled:pointer-events-none disabled:opacity-60 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 min-w-0 max-w-full [&_svg]:shrink-0 outline-none focus-visible:ring-[3px] focus-visible:ring-primary/40 aria-invalid:ring-destructive/20 aria-invalid:border-destructive sm:whitespace-nowrap rounded-[12px]",
   {
     variants: {
       variant: {
         default:
-          'bg-grad-sapphire text-white shadow-sapphire hover:bg-grad-sapphire-hover hover:shadow-sapphire rounded-full font-medium',
+          'bg-primary text-primary-foreground shadow-sapphire hover:bg-primary-hover active:bg-primary-active',
         destructive:
-          'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 rounded-full',
+          'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20',
         outline:
-          'border border-[var(--ds-line-strong)] bg-surface !text-ink shadow-sm hover:bg-primary-light hover:border-primary hover:!text-sapphire-700 hover:shadow-hover rounded-full font-medium',
+          'border border-[var(--border-strong)] bg-[var(--layer-elevated)] text-[var(--text-primary)] hover:bg-[var(--surface-hover)] hover:border-[var(--border-brand)]',
         secondary:
-          'border border-[var(--ds-line-strong)] bg-surface !text-ink shadow-sm hover:bg-primary-light hover:border-primary hover:!text-sapphire-700 hover:shadow-hover rounded-full font-medium',
+          'border border-transparent bg-secondary text-secondary-foreground hover:bg-[var(--secondary-hover)]',
         ghost:
-          'text-ink-3 hover:text-ink hover:bg-surface-hover rounded-md',
-        link: 'text-sapphire-700 underline-offset-4 hover:underline rounded-md',
-        ink: 'bg-grad-ink text-primary-foreground shadow-raised hover:bg-grad-ink-hover rounded-full font-medium',
+          'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)]',
+        link: 'text-primary underline-offset-4 hover:text-accent hover:underline',
+        ink: 'border border-[var(--border-brand)] bg-[var(--layer-feature)] text-[var(--brand-50)] shadow-sapphire hover:bg-[var(--brand-600)]',
       },
       size: {
         default: 'h-11 min-h-11 px-6 py-2 has-[>svg]:px-4',

@@ -1,33 +1,26 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, type ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { motion, useReducedMotion } from "framer-motion"
 import {
-  Copy,
-  CheckCircle2,
-  Facebook,
-  Search,
-  BookOpen,
-  PenLine,
-  Link2,
   ArrowRight,
-  ExternalLink,
+  BookOpen,
+  CheckCircle2,
   ChevronDown,
+  Copy,
+  ExternalLink,
   FolderOpen,
   Loader2,
   Trash2,
+  type LucideIcon,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { GenerationProgress } from "@/components/generation-progress"
-import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
-import {
-  PremiumControlCard,
-  PremiumFeatureBanner,
-  PremiumSteps,
-} from "@/components/premium-feature-chrome"
-import { PremiumPageLayout } from "@/components/premium-page-layout"
+import { BonusTrainingCard } from "@/components/bonus-training-card"
+import { PremiumPageLayout, PremiumErrorAlert } from "@/components/premium-page-layout"
 import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
 import { useScrollToResults } from "@/lib/use-scroll-to-results"
 import { PREMIUM_FEATURE_LABELS } from "@/lib/premium-features"
@@ -43,63 +36,47 @@ import {
   type InstantIncomeSavedPost,
 } from "@/app/actions/instant-income-post-sets"
 
-const INSTANT_STEPS = [
-  {
-    num: "1",
-    title: "Pick your niche",
-    desc: "Choose the niche that matches your affiliate offer — weight loss, make money online, health, beauty, and more.",
-  },
-  {
-    num: "2",
-    title: "Name your link",
-    desc: "Paste your affiliate link and give it a name. We write posts about that offer in the niche you picked, then save the set in your library.",
-  },
-  {
-    num: "3",
-    title: "Copy and post",
-    desc: "Copy a post, personalize it, and share it in groups that allow that kind of message. Reopen saved sets anytime.",
-  },
+const STEPS = [
+  { num: "1", title: "Pick a niche", desc: "Match it to the offer you are promoting." },
+  { num: "2", title: "Add your link", desc: "Paste the URL and name the set." },
+  { num: "3", title: "Copy and post", desc: "Edit the opening line, then share it where the rules allow." },
 ] as const
 
-const primaryCtaClass =
-  "rounded-xl bg-grad-sapphire font-medium text-white shadow-sapphire transition-[background-color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:shadow-sapphire"
-
-const outlineCtaClass =
-  "rounded-xl border border-[var(--ds-line-strong)] bg-card font-medium text-ink transition-[background-color,border-color,color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:text-sapphire-700 hover:shadow-hover"
-
-const GUIDE_STEPS = [
+const GUIDE = [
   {
-    num: "1",
-    icon: Search,
-    title: "Find Facebook groups",
+    title: "Find groups",
     items: [
       "Search keywords like “weight loss support”, “make money online”, or “fitness motivation”, then filter to Groups.",
-      "Join 10–15 groups with 5,000+ members. Bigger rooms mean more people seeing a personal story.",
-      "Wait for admin approval — usually 1–24 hours. Post only after you’re in.",
+      "Join 10-15 groups with 5,000+ members.",
+      "Wait for admin approval, usually 1-24 hours. Post only after you are in.",
     ],
   },
   {
-    num: "2",
-    icon: BookOpen,
-    title: "Read the group rules",
+    title: "Read the rules",
     items: [
       "Open About and check whether personal stories are allowed. Most groups ban hard selling, not honest updates.",
-      "These drafts are written as personal stories so they usually fit — still read the rules first.",
+      "These drafts are written as personal stories. Still read the rules first.",
       "If a group says no links, post the story and send the link in DMs to people who ask.",
     ],
   },
   {
-    num: "3",
-    icon: PenLine,
-    title: "Post your message",
+    title: "Post the message",
     items: [
-      "Click Write something, paste your copied draft, then Post. Change the first line so it sounds like you.",
-      "Best windows: 7–9 AM, 12–1 PM, and 7–9 PM. Post in 3–5 different groups per day — never blast every group at once.",
-      "Reply to comments within an hour. Friendly replies keep the thread visible.",
+      "Paste the draft, change the first line so it sounds like you, then post.",
+      "Useful windows: 7-9 AM, 12-1 PM, and 7-9 PM. Post in 3-5 groups a day, spaced out.",
+      "Reply to comments within an hour so the thread stays visible.",
     ],
   },
 ] as const
 
+const panelClass =
+  "overflow-hidden rounded-[2.75rem] border border-[var(--border-subtle)] bg-[var(--layer-elevated)] shadow-[var(--ds-shadow-card)]"
+
+const primaryCtaClass =
+  "rounded-xl bg-grad-sapphire font-medium text-white shadow-sapphire transition-[background-color,box-shadow,transform] duration-200 hover:-translate-y-px hover:shadow-sapphire active:translate-y-0 active:scale-[0.98]"
+
+const quietButtonClass =
+  "rounded-xl border border-[var(--ds-line-strong)] bg-card font-medium text-ink transition-[background-color,border-color,color,transform] duration-200 hover:border-primary hover:bg-primary-light hover:text-sapphire-700 active:scale-[0.98]"
 
 export function InstantIncomeContent({
   userId: _userId,
@@ -116,7 +93,7 @@ export function InstantIncomeContent({
   const [generating, setGenerating] = useState(false)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [guideOpen, setGuideOpen] = useState(false)
-  const [libraryOpen, setLibraryOpen] = useState(initialSets.length > 0)
+  const [libraryOpen, setLibraryOpen] = useState(false)
   const [librarySets, setLibrarySets] = useState<InstantIncomePostSet[]>(initialSets)
   const [openLibraryId, setOpenLibraryId] = useState<string | null>(null)
   const [formError, setFormError] = useState("")
@@ -127,6 +104,7 @@ export function InstantIncomeContent({
   const [resultNiche, setResultNiche] = useState("Weight Loss")
 
   const postsResultsRef = useScrollToResults(showPosts && resultPosts.length > 0)
+  const reduceMotion = useReducedMotion()
 
   const savedSetForResults = librarySets.find(
     (set) => set.name.trim().toLowerCase() === setName.trim().toLowerCase(),
@@ -211,7 +189,6 @@ export function InstantIncomeContent({
       setGenerating(false)
       setFormError("Could not generate posts for that offer. Try again.")
     }
-
   }
 
   const handleMarkPostUsed = async (setId: string, postId: string) => {
@@ -243,612 +220,477 @@ export function InstantIncomeContent({
 
   return (
     <PremiumPageLayout
-      title={`${PREMIUM_FEATURE_LABELS.instantIncome}`}
-      subtitle="Facebook posts written for your niche and your offer. Paste a link, copy a draft, and share it where the group rules allow."
+      title={PREMIUM_FEATURE_LABELS.instantIncome}
+      subtitle="Facebook posts for one niche and one offer. Paste a link, copy a draft, and share it where the group rules allow."
     >
       <PremiumVideoTutorial
         premiumKey="recurringStreams"
         vimeoId={getPremiumTrainingVimeoId("recurringStreams")}
-        title={`${PREMIUM_FEATURE_LABELS.instantIncome} Training`}
-        description="Watch this quick tutorial to learn how to copy these Facebook posts and start making money instantly. Simple and easy!"
+        title={`${PREMIUM_FEATURE_LABELS.instantIncome} training`}
+        description="How to copy a draft, adjust the first line, and post it in a group that allows it."
         iframeTitle={`${PREMIUM_FEATURE_LABELS.instantIncome} training video`}
       />
 
-      <PremiumFeatureBanner
-        icon={Facebook}
-        kicker="Facebook posts"
-        title="Posts for your offer"
-        description="Pick a niche, drop in your affiliate link, and get Facebook stories written about that product — then edit them so they sound like you."
-        chip="Copy and personalize"
-      />
-
-      <PremiumSteps title="Three steps to post" steps={INSTANT_STEPS} />
-
-      <section className="glass-card overflow-hidden p-0">
-        <button
-          type="button"
-          onClick={() => setGuideOpen((open) => !open)}
-          aria-expanded={guideOpen}
-          className="flex w-full items-center gap-3 border-b border-[var(--ds-line)] bg-sapphire-100 p-5 text-left transition-colors hover:bg-sapphire-100/80 md:p-6"
-        >
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sapphire-100 text-sapphire-700">
-            <Facebook size={24} strokeWidth={1.75} aria-hidden />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block font-medium text-ink">How to find and post in Facebook groups</span>
-            <span className="mt-0.5 block text-sm text-ink-3">
-              Groups reward members who sound human. Read this once, then generate drafts and edit the first line
-              before you paste.
-            </span>
-          </span>
-          <ChevronDown
-            className={cn(
-              "h-5 w-5 shrink-0 text-sapphire-700 transition-transform duration-200",
-              guideOpen && "rotate-180",
-            )}
-            aria-hidden
-          />
-        </button>
-
-        {guideOpen ? (
-          <div className="space-y-3 p-5 md:p-6">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              {GUIDE_STEPS.map((step) => {
-                const Icon = step.icon
-                return (
-                  <div
-                    key={step.num}
-                    className="rounded-2xl border border-[var(--ds-line-sapphire)] bg-sapphire-100/50 p-4 sm:p-5"
-                  >
-                    <div className="mb-3 flex items-center gap-2">
-                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-grad-sapphire text-sm font-medium text-white">
-                        {step.num}
-                      </span>
-                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-white text-sapphire-700 shadow-sm">
-                        <Icon className="h-4 w-4" aria-hidden />
-                      </span>
-                      <h3 className="text-base font-medium text-ink">{step.title}</h3>
-                    </div>
-                    <ul className="space-y-2.5">
-                      {step.items.map((item) => (
-                        <li key={item} className="flex items-start gap-2 text-sm leading-relaxed text-ink">
-                          <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sapphire-700" aria-hidden />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )
-              })}
-            </div>
-
-            <div className="rounded-2xl border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] p-5">
-              <h3 className="text-base font-medium text-ink">What to expect</h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink">
-                Outcomes depend on your niche, offer, group rules, and consistency. Treat these as starting drafts —
-                edit them so they sound like you and match each community&apos;s guidelines.
-              </p>
-              <ul className="mt-3 space-y-2">
-                <li className="flex items-start gap-2 text-sm leading-relaxed text-ink">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-sapphire-700" aria-hidden />
-                  Post in a handful of relevant groups per day, spaced out — never dump the same text everywhere at
-                  once.
-                </li>
-                <li className="flex items-start gap-2 text-sm leading-relaxed text-ink">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-sapphire-700" aria-hidden />
-                  Reply quickly and helpfully so the thread stays visible without sounding salesy.
-                </li>
-                <li className="flex items-start gap-2 text-sm leading-relaxed text-ink">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-sapphire-700" aria-hidden />
-                  Track hook, group, and time of day so you improve the message — not just the volume.
-                </li>
+      <Disclosure
+        open={guideOpen}
+        onToggle={() => setGuideOpen((open) => !open)}
+        icon={BookOpen}
+        title="How to post in Facebook groups"
+        summary="Groups reward posts that sound like a person. Read this once, then edit the first line before you paste."
+      >
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {GUIDE.map((step, index) => (
+            <div key={step.title} className="surface-action rounded-[1.75rem] p-4 sm:p-5">
+              <div className="flex items-center gap-2.5">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-grad-sapphire text-xs font-medium text-white">
+                  {index + 1}
+                </span>
+                <h3 className="text-sm font-medium text-ink">{step.title}</h3>
+              </div>
+              <ul className="mt-3 space-y-2.5">
+                {step.items.map((item) => (
+                  <li key={item} className="text-sm leading-relaxed text-ink-3">
+                    {item}
+                  </li>
+                ))}
               </ul>
             </div>
-          </div>
-        ) : null}
-      </section>
+          ))}
+        </div>
+        <p className="mt-4 max-w-[65ch] text-sm leading-relaxed text-ink-3">
+          Results depend on the niche, the offer, the group rules, and how often you post. Treat these as drafts.
+          Space them out, reply quickly, and keep notes on which opening line and time of day get replies.
+        </p>
+      </Disclosure>
 
-      <section className="glass-card overflow-hidden p-0">
-        <button
-          type="button"
-          onClick={() => setLibraryOpen((open) => !open)}
-          aria-expanded={libraryOpen}
-          className="flex w-full flex-wrap items-center gap-3 border-b border-[var(--ds-line)] bg-sapphire-100 p-5 text-left transition-colors hover:bg-sapphire-100/80 md:p-6"
-        >
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-sapphire-700 shadow-sm">
-            <FolderOpen size={24} strokeWidth={1.75} aria-hidden />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="page-eyebrow mb-1 block">Library</span>
-            <span className="block text-xl font-semibold text-ink sm:text-2xl">Saved post sets</span>
-            <span className="mt-1 block text-sm text-text-secondary">
-              Each generation is saved under the link name you enter. Same name updates that set.
-            </span>
-          </span>
-          <span className="flex shrink-0 items-center gap-2">
-            <span className="rounded-full border border-[var(--ds-line)] bg-card px-3 py-1.5 text-sm font-semibold text-ink">
-              {librarySets.length} set{librarySets.length === 1 ? "" : "s"}
-            </span>
-            <ChevronDown
-              className={cn(
-                "h-5 w-5 shrink-0 text-sapphire-700 transition-transform duration-200",
-                libraryOpen && "rotate-180",
-              )}
-              aria-hidden
-            />
-          </span>
-        </button>
-
-        {libraryOpen ? (
-          <div className="space-y-4 p-5 md:p-6">
-            {libraryError ? (
-              <p
-                role="alert"
-                className="rounded-xl border border-[#C53030]/30 bg-[#FDE4E4] px-3.5 py-2.5 text-sm font-medium text-[#C53030]"
-              >
-                {libraryError}
-              </p>
-            ) : null}
-
-            {librarySets.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-[var(--ds-line)] bg-card px-5 py-10 text-center">
-                <FolderOpen className="mx-auto h-8 w-8 text-sapphire-700" aria-hidden />
-                <p className="mt-3 text-sm font-semibold text-ink">No saved sets yet</p>
-                <p className="mt-1 text-sm text-text-secondary">
-                  Generate posts with a link name to start your library.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {librarySets.map((set) => {
-                  const open = openLibraryId === set.id
-                  return (
-                    <article
-                      key={set.id}
-                      className="overflow-hidden rounded-2xl border border-[var(--ds-line)] bg-card shadow-[var(--ds-shadow-card)]"
-                    >
-                      <div className="flex flex-wrap items-center gap-3 px-4 py-3 sm:px-5">
-                        <button
-                          type="button"
-                          onClick={() => setOpenLibraryId(open ? null : set.id)}
-                          aria-expanded={open}
-                          className="flex min-w-0 flex-1 items-center gap-3 text-left"
-                        >
-                          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
-                            <FolderOpen className="h-4 w-4" aria-hidden />
-                          </span>
-                          <span className="min-w-0 flex-1">
-                            <span className="block truncate text-sm font-semibold text-ink">{set.name}</span>
-                            <span className="mt-0.5 block truncate text-xs text-text-secondary">
-                              {set.niche} · {set.posts.length} posts ·{" "}
-                              {new Date(set.updatedAt).toLocaleDateString()}
-                            </span>
-                          </span>
-                          <ChevronDown
-                            className={cn(
-                              "h-4 w-4 shrink-0 text-text-secondary transition-transform",
-                              open && "rotate-180",
-                            )}
-                            aria-hidden
-                          />
-                        </button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          disabled={deletingId === set.id}
-                          onClick={() => void handleDeleteSet(set.id)}
-                          className={cn("h-9 shrink-0", outlineCtaClass)}
-                          aria-label={`Delete ${set.name}`}
-                        >
-                          {deletingId === set.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Trash2 className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </div>
-
-                      {open ? (
-                        <div className="space-y-3 border-t border-[var(--ds-line)] bg-surface-nested/40 px-4 py-4 sm:px-5">
-                          <p className="truncate text-xs text-text-secondary">{set.affiliateUrl}</p>
-                          {set.posts.map((post, index) => {
-                            const copyKey = `${set.id}-${post.id}`
-                            const markKey = copyKey
-                            const isUsed = Boolean(post.usedAt)
-                            const isMarking = markingPostKey === markKey
-
-                            return (
-                              <div
-                                key={post.id}
-                                className={cn(
-                                  "rounded-xl border border-[var(--ds-line)] bg-card p-4",
-                                  isUsed && "border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)]/40",
-                                )}
-                              >
-                                <div className="mb-2 flex flex-wrap items-center gap-2">
-                                  <p className="text-xs font-semibold uppercase tracking-wide text-sapphire-700">
-                                    Post #{index + 1}
-                                  </p>
-                                  {isUsed ? (
-                                    <span className="inline-flex items-center gap-1 rounded-full border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--ds-offer-green-800)]">
-                                      <CheckCircle2 className="h-3 w-3" aria-hidden />
-                                      Used
-                                    </span>
-                                  ) : null}
-                                </div>
-                                <p
-                                  className={cn(
-                                    "whitespace-pre-wrap text-sm leading-relaxed text-ink",
-                                    isUsed && "text-ink-3",
-                                  )}
-                                >
-                                  {post.body}
-                                </p>
-                                <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-                                  <Button
-                                    type="button"
-                                    onClick={() => handleCopy(copyKey, post.body)}
-                                    className={cn(
-                                      "h-10 flex-1 text-sm",
-                                      copiedId === copyKey
-                                        ? "rounded-xl bg-sapphire-500 font-medium text-white hover:bg-sapphire-500"
-                                        : primaryCtaClass,
-                                    )}
-                                  >
-                                    {copiedId === copyKey ? (
-                                      <>
-                                        <CheckCircle2 className="mr-2 h-4 w-4" />
-                                        Copied
-                                      </>
-                                    ) : (
-                                      <>
-                                        <Copy className="mr-2 h-4 w-4" />
-                                        Copy this post
-                                      </>
-                                    )}
-                                  </Button>
-                                  <Button
-                                    type="button"
-                                    variant="outline"
-                                    disabled={isUsed || isMarking}
-                                    onClick={() => void handleMarkPostUsed(set.id, post.id)}
-                                    className={cn(
-                                      "h-10 flex-1 text-sm",
-                                      isUsed
-                                        ? "border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] font-medium text-[var(--ds-offer-green-800)]"
-                                        : outlineCtaClass,
-                                    )}
-                                  >
-                                    {isMarking ? (
-                                      <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Saving…
-                                      </>
-                                    ) : isUsed ? (
-                                      <>
-                                        <CheckCircle2 className="mr-2 h-4 w-4" />
-                                        Marked as used
-                                      </>
-                                    ) : (
-                                      "Mark as used"
-                                    )}
-                                  </Button>
-                                </div>
-                              </div>
-                            )
-                          })}
-                        </div>
-                      ) : null}
-                    </article>
-                  )
-                })}
-              </div>
-            )}
-          </div>
-        ) : null}
-      </section>
-
-      <PremiumControlCard
+      <Disclosure
+        open={libraryOpen}
+        onToggle={() => setLibraryOpen((open) => !open)}
         icon={FolderOpen}
-        title="Write posts for this offer"
-        description="Pick the niche that matches your product. We read the offer page and write Facebook stories about that specific link — not a generic template."
+        title="Saved post sets"
+        summary="Each generation is stored under the link name. The same name updates that set."
+        meta={`${librarySets.length} set${librarySets.length === 1 ? "" : "s"}`}
       >
-            <div className="space-y-3">
-              <Label className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                Step 1 · Choose your niche
-              </Label>
-              <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-                {INSTANT_INCOME_NICHES.map((niche) => {
-                  const selected = selectedNiche === niche
-                  return (
-                    <Button
-                      key={niche}
-                      type="button"
-                      onClick={() => {
-                        setSelectedNiche(niche)
-                        setShowPosts(false)
-                      }}
-                      variant={selected ? "default" : "outline"}
-                      className={
-                        selected
-                          ? cn("h-auto min-h-11 px-2 py-2 text-xs sm:px-3 sm:text-sm", primaryCtaClass)
-                          : cn("h-auto min-h-11 px-2 py-2 text-xs sm:px-3 sm:text-sm", outlineCtaClass)
-                      }
-                    >
-                      {niche}
-                    </Button>
-                  )
-                })}
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-[var(--ds-line)] bg-surface-nested/70 p-4 sm:p-5">
-              <h3 className="flex items-center gap-2 text-sm font-semibold text-ink">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-sapphire-100 text-sapphire-700">
-                  <Link2 className="h-3.5 w-3.5" aria-hidden />
-                </span>
-                Where to get your affiliate link
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink">
-                We recommend{" "}
-                <a
-                  href="http://digistore24.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-semibold text-sapphire-700 underline decoration-sapphire-300 underline-offset-2 hover:text-sapphire-900"
-                >
-                  DigiStore24
-                </a>
-                {" "}
-                — a free marketplace with products you can promote for commission.
-              </p>
-              <ol className="mt-3 space-y-2">
-                <li className="flex items-start gap-2.5 text-sm leading-relaxed text-ink">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-grad-sapphire text-[11px] font-medium text-white">
-                    1
-                  </span>
-                  Create a free account at digistore24.com (about two minutes).
-                </li>
-                <li className="flex items-start gap-2.5 text-sm leading-relaxed text-ink">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-grad-sapphire text-[11px] font-medium text-white">
-                    2
-                  </span>
-                  Browse your niche and click Promote on a product.
-                </li>
-                <li className="flex items-start gap-2.5 text-sm leading-relaxed text-ink">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-grad-sapphire text-[11px] font-medium text-white">
-                    3
-                  </span>
-                  Copy your unique link and paste it below.
-                </li>
-              </ol>
-              <Button asChild variant="outline" className={cn("mt-4 w-full", outlineCtaClass)}>
-                <a href="http://digistore24.com" target="_blank" rel="noopener noreferrer">
-                  Create free DigiStore24 account
-                  <ExternalLink className="ml-2 h-4 w-4" aria-hidden />
-                </a>
-              </Button>
-            </div>
-
-            <div className="rounded-2xl border border-[var(--ds-line)] bg-surface-nested/70 p-4 sm:p-5">
-              <Label
-                htmlFor="affiliate-link"
-                className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-text-secondary"
-              >
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-sapphire-100 text-sapphire-700">
-                  <Link2 size={12} aria-hidden />
-                </span>
-                Step 2 · Affiliate link
-              </Label>
-              <Input
-                id="affiliate-link"
-                type="url"
-                placeholder="https://digistore24.com/..."
-                value={affiliateLink}
-                onChange={(e) => {
-                  setAffiliateLink(e.target.value)
-                  setShowPosts(false)
-                }}
-                className="h-12 bg-card text-base text-ink"
-              />
-              <p className="mt-2 text-xs leading-relaxed text-text-secondary">
-                We write this URL into every draft and use the offer page to keep the story about your product. Must start with https://
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-[var(--ds-line)] bg-surface-nested/70 p-4 sm:p-5">
-              <Label
-                htmlFor="set-name"
-                className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-text-secondary"
-              >
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-sapphire-100 text-sapphire-700">
-                  <FolderOpen size={12} aria-hidden />
-                </span>
-                Step 3 · Name for this link
-              </Label>
-              <Input
-                id="set-name"
-                type="text"
-                placeholder="e.g. Melatonin Digistore"
-                value={setName}
-                onChange={(e) => {
-                  setNameTouched(true)
-                  setSetName(e.target.value)
-                }}
-                className="h-12 bg-card text-base text-ink"
-              />
-              <p className="mt-2 text-xs leading-relaxed text-text-secondary">
-                Saved sets use this name. Generating again with the same name updates that set.
-              </p>
-            </div>
-
-            {generating ? (
-              <GenerationProgress
-                offer="welcome"
-                label={`Writing ${INSTANT_INCOME_POST_COUNT} ${selectedNiche} posts for your offer...`}
-              />
-            ) : showPosts ? (
-              <WelcomeOfferBanner />
-            ) : null}
-
-            {formError ? (
-              <p
-                role="alert"
-                className="flex items-start gap-2 rounded-xl border border-[#C53030]/30 bg-[#FDE4E4] px-3.5 py-2.5 text-sm font-medium text-[#C53030]"
-              >
-                {formError}
-              </p>
-            ) : null}
-
-            <Button
-              onClick={() => void handleGeneratePosts()}
-              disabled={!affiliateLink.trim() || !setName.trim() || generating}
-              className={cn("h-12 w-full text-base sm:h-14 sm:text-lg", primaryCtaClass)}
-              size="lg"
-            >
-              {generating ? "Writing your posts…" : `Generate ${INSTANT_INCOME_POST_COUNT} ${selectedNiche} posts`}
-              {!generating ? <ArrowRight className="ml-2 h-5 w-5" aria-hidden /> : null}
-            </Button>
-      </PremiumControlCard>
-
-      {showPosts && resultPosts.length > 0 && (
-        <div ref={postsResultsRef} className="space-y-6">
-          <div className="glass-card overflow-hidden p-0">
-            <div className="border-b border-[var(--ds-line)] bg-sapphire-100 p-5 md:p-6">
-              <div className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
-                  <CheckCircle2 className="h-5 w-5" aria-hidden />
-                </span>
-                <div>
-                  <p className="text-[13px] font-medium uppercase tracking-[0.12em] text-sapphire-700">
-                    Ready to copy
-                  </p>
-                  <h2 className="font-medium text-ink">
-                    Your {resultPosts.length} {resultNiche} posts are ready
-                  </h2>
-                  <p className="mt-1 text-sm leading-relaxed text-ink-3">
-                    Copy a draft, rewrite the opening line in your voice, then paste where the group rules allow.
-                  </p>
-                </div>
-              </div>
-            </div>
+        {libraryError ? <PremiumErrorAlert message={libraryError} className="mb-4" /> : null}
+        {librarySets.length === 0 ? (
+          <div className="empty-state-panel rounded-[1.75rem]">
+            <span className="empty-state-icon">
+              <FolderOpen className="h-6 w-6" aria-hidden />
+            </span>
+            <p className="text-sm font-medium text-ink">No saved sets yet</p>
+            <p className="empty-state-copy">Generate posts with a link name to start your library.</p>
           </div>
-
-          {libraryError ? (
-            <p
-              role="alert"
-              className="rounded-xl border border-[#C53030]/30 bg-[#FDE4E4] px-3.5 py-2.5 text-sm font-medium text-[#C53030]"
-            >
-              {libraryError}
-            </p>
-          ) : null}
-
-          <div className="grid grid-cols-1 gap-4">
-            {resultPosts.map((post, index) => {
-              const savedPost = savedSetForResults?.posts.find((p) => p.id === post.id)
-              const isUsed = Boolean(savedPost?.usedAt || post.usedAt)
-              const setId = savedSetForResults?.id
-              const markKey = setId ? `${setId}-${post.id}` : null
-              const isMarking = markKey != null && markingPostKey === markKey
-              const body = post.body
-
+        ) : (
+          <div className="space-y-3">
+            {librarySets.map((set) => {
+              const open = openLibraryId === set.id
               return (
                 <article
-                  key={post.id}
+                  key={set.id}
                   className={cn(
-                    "glass-card overflow-hidden p-0",
-                    isUsed && "ring-1 ring-[var(--ds-line-offer)]",
+                    "overflow-hidden rounded-[1.75rem] border bg-card transition-colors duration-200",
+                    open ? "border-primary" : "border-[var(--ds-line)]",
                   )}
                 >
-                  <div className="flex flex-wrap items-center gap-2 border-b border-[var(--ds-line)] px-5 py-3">
-                    <span className="rounded-full bg-grad-sapphire px-3 py-1 text-xs font-medium text-white">
-                      Post #{index + 1}
-                    </span>
-                    <span className="rounded-full border border-[var(--ds-line)] bg-surface-nested px-3 py-1 text-xs font-medium text-ink">
-                      {resultNiche}
-                    </span>
-                    {isUsed ? (
-                      <span className="inline-flex items-center gap-1 rounded-full border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] px-2.5 py-1 text-xs font-semibold text-[var(--ds-offer-green-800)]">
-                        <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
-                        Used
-                      </span>
-                    ) : null}
-                  </div>
-                  <div className="px-5 py-5">
-                    <div
-                      className={cn(
-                        "rounded-xl border border-[var(--ds-line)] bg-surface-nested/80 p-4 sm:p-5",
-                        isUsed && "opacity-90",
-                      )}
+                  <div className="flex items-center gap-2 px-3 py-3 sm:px-4">
+                    <button
+                      type="button"
+                      onClick={() => setOpenLibraryId(open ? null : set.id)}
+                      aria-expanded={open}
+                      className="flex min-w-0 flex-1 items-center gap-3 py-1 text-left"
                     >
-                      <p
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-light text-sm font-medium text-sapphire-700">
+                        {set.posts.length}
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-medium text-ink">{set.name}</span>
+                        <span className="mt-0.5 block truncate text-xs text-ink-3">
+                          {set.niche}, {new Date(set.updatedAt).toLocaleDateString()}
+                        </span>
+                      </span>
+                      <ChevronDown
                         className={cn(
-                          "whitespace-pre-wrap text-[15px] font-normal leading-7 text-ink sm:text-base",
-                          isUsed && "text-ink-3",
+                          "h-4 w-4 shrink-0 text-ink-3 transition-transform duration-200",
+                          open && "rotate-180",
                         )}
-                      >
-                        {body}
-                      </p>
-                    </div>
-                    <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-                      <Button
-                        onClick={() => handleCopy(post.id, body)}
-                        className={cn(
-                          "h-12 flex-1 text-base",
-                          copiedId === post.id
-                            ? "rounded-xl bg-sapphire-500 font-medium text-white hover:bg-sapphire-500"
-                            : primaryCtaClass,
-                        )}
-                        size="lg"
-                      >
-                        {copiedId === post.id ? (
-                          <>
-                            <CheckCircle2 className="mr-2 h-5 w-5" />
-                            Copied — now paste in Facebook
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="mr-2 h-5 w-5" />
-                            Copy this post
-                          </>
-                        )}
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="lg"
-                        disabled={!setId || isUsed || isMarking}
-                        onClick={() => setId && void handleMarkPostUsed(setId, post.id)}
-                        className={cn(
-                          "h-12 flex-1 text-base",
-                          isUsed
-                            ? "border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] font-medium text-[var(--ds-offer-green-800)]"
-                            : outlineCtaClass,
-                        )}
-                      >
-                        {isMarking ? (
-                          <>
-                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                            Saving…
-                          </>
-                        ) : isUsed ? (
-                          <>
-                            <CheckCircle2 className="mr-2 h-5 w-5" />
-                            Marked as used
-                          </>
-                        ) : (
-                          "Mark as used"
-                        )}
-                      </Button>
-                    </div>
+                        aria-hidden
+                      />
+                    </button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={deletingId === set.id}
+                      onClick={() => void handleDeleteSet(set.id)}
+                      className={cn("h-9 w-9 shrink-0 px-0", quietButtonClass)}
+                      aria-label={`Delete ${set.name}`}
+                    >
+                      {deletingId === set.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </Button>
                   </div>
+                  {open ? (
+                    <div className="space-y-3 border-t border-[var(--ds-line)] bg-surface-nested/40 px-3 py-4 sm:px-4">
+                      <p className="truncate rounded-lg bg-card px-3 py-2 text-xs text-ink-3">{set.affiliateUrl}</p>
+                      {set.posts.map((post, index) => {
+                        const copyKey = `${set.id}-${post.id}`
+                        const isUsed = Boolean(post.usedAt)
+                        return (
+                          <PostDraft
+                            key={post.id}
+                            index={index}
+                            body={post.body}
+                            isUsed={isUsed}
+                            copied={copiedId === copyKey}
+                            marking={markingPostKey === copyKey}
+                            markDisabled={isUsed}
+                            onCopy={() => handleCopy(copyKey, post.body)}
+                            onMark={() => void handleMarkPostUsed(set.id, post.id)}
+                          />
+                        )
+                      })}
+                    </div>
+                  ) : null}
                 </article>
               )
             })}
           </div>
-        </div>
-      )}
+        )}
+      </Disclosure>
+
+      <section className={cn(panelClass, "px-5 py-6 md:px-8 md:py-8")}>
+        <h2 className="text-xl font-medium tracking-tight text-ink">How it works</h2>
+        <ol className="mt-5 grid gap-5 sm:grid-cols-3">
+          {STEPS.map((step) => (
+            <li key={step.num} className="flex gap-3">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-grad-sapphire text-xs font-medium text-white">
+                {step.num}
+              </span>
+              <span>
+                <span className="block text-sm font-medium text-ink">{step.title}</span>
+                <span className="mt-1 block text-sm leading-relaxed text-ink-3">{step.desc}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className={panelClass}>
+        <div className="px-5 py-6 md:px-8 md:py-8">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h2 className="text-xl font-medium tracking-tight text-ink">Write posts</h2>
+                <p className="mt-1 max-w-[65ch] text-sm leading-relaxed text-ink-3">
+                  We read the offer page and write stories about that link.
+                </p>
+              </div>
+              <p className="rounded-full border border-[var(--ds-line-sapphire)] bg-primary-light px-3 py-1 text-sm font-medium text-sapphire-700">
+                {INSTANT_INCOME_POST_COUNT} {selectedNiche} posts
+              </p>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              <div className="surface-action rounded-[1.75rem] p-4 sm:p-5">
+                <Label id="niche-label" className="text-sm font-medium text-ink">
+                  Niche
+                </Label>
+                <div
+                  role="radiogroup"
+                  aria-labelledby="niche-label"
+                  className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-4"
+                >
+                  {INSTANT_INCOME_NICHES.map((niche) => {
+                    const selected = selectedNiche === niche
+                    return (
+                      <button
+                        key={niche}
+                        type="button"
+                        role="radio"
+                        aria-checked={selected}
+                        onClick={() => {
+                          setSelectedNiche(niche)
+                          setShowPosts(false)
+                        }}
+                        className={cn(
+                          "min-h-11 rounded-xl border px-3 py-2 text-sm transition-[background-color,border-color,color,box-shadow,transform] duration-200 active:scale-[0.98]",
+                          selected
+                            ? primaryCtaClass
+                            : "border-[var(--ds-line)] bg-card text-ink-3 hover:border-[var(--ds-line-strong)] hover:text-ink",
+                        )}
+                      >
+                        {niche}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="surface-action rounded-[1.75rem] p-4 sm:p-5 md:col-span-2">
+                  <Label htmlFor="affiliate-link" className="text-sm font-medium text-ink">
+                    Affiliate link
+                  </Label>
+                  <Input
+                    id="affiliate-link"
+                    type="url"
+                    placeholder="https://digistore24.com/..."
+                    value={affiliateLink}
+                    onChange={(e) => {
+                      setAffiliateLink(e.target.value)
+                      setShowPosts(false)
+                    }}
+                    className="mt-2 h-12 rounded-[1.75rem] bg-card px-5 text-base text-ink"
+                  />
+                  <p className="mt-2 max-w-[65ch] text-sm leading-relaxed text-ink-3">
+                    Must start with https://. Need a link?{" "}
+                    <a
+                      href="http://digistore24.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center font-medium text-sapphire-700 underline decoration-sapphire-300 underline-offset-2 hover:text-sapphire-900"
+                    >
+                      DigiStore24
+                      <ExternalLink className="ml-1 h-3.5 w-3.5" aria-hidden />
+                    </a>{" "}
+                    is a free marketplace. Create an account, open Promote on a product, and paste your link here.
+                  </p>
+                </div>
+
+                <div className="surface-action rounded-[1.75rem] p-4 sm:p-5 md:col-span-2">
+                  <Label htmlFor="set-name" className="text-sm font-medium text-ink">
+                    Name for this link
+                  </Label>
+                  <Input
+                    id="set-name"
+                    type="text"
+                    placeholder="Melatonin Digistore"
+                    value={setName}
+                    onChange={(e) => {
+                      setNameTouched(true)
+                      setSetName(e.target.value)
+                    }}
+                    className="mt-2 h-12 rounded-[1.75rem] bg-card px-5 text-base text-ink"
+                  />
+                  <p className="mt-2 text-sm leading-relaxed text-ink-3">
+                    Saved sets use this name. The same name updates that set.
+                  </p>
+                </div>
+              </div>
+
+              {generating ? (
+                <GenerationProgress
+                  label={`Writing ${INSTANT_INCOME_POST_COUNT} ${selectedNiche} posts for your offer`}
+                />
+              ) : null}
+
+              {formError ? <PremiumErrorAlert message={formError} /> : null}
+
+              <Button
+                onClick={() => void handleGeneratePosts()}
+                disabled={!affiliateLink.trim() || !setName.trim() || generating}
+                className={cn("h-12 w-full text-base", primaryCtaClass)}
+                size="lg"
+              >
+                {generating ? "Writing your posts" : `Generate ${INSTANT_INCOME_POST_COUNT} ${selectedNiche} posts`}
+                {!generating ? <ArrowRight className="ml-2 h-4 w-4" aria-hidden /> : null}
+              </Button>
+            </div>
+          </div>
+      </section>
+
+      {showPosts && resultPosts.length > 0 ? (
+        <motion.div
+          ref={postsResultsRef}
+          initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className={cn(panelClass, "scroll-mt-24")}
+        >
+          <div className="bg-grad-sapphire px-5 py-5 text-white md:px-8 md:py-6">
+            <p className="text-sm text-white/80">{resultNiche}</p>
+            <h2 className="mt-1 text-xl font-medium tracking-tight text-white">
+              {resultPosts.length} posts ready
+            </h2>
+            <p className="mt-2 max-w-[65ch] text-sm leading-relaxed text-white/80">
+              Copy a draft, rewrite the opening line in your voice, then paste where the group rules allow.
+            </p>
+          </div>
+          <div className="space-y-4 p-5 md:p-8">
+            {libraryError ? <PremiumErrorAlert message={libraryError} /> : null}
+            {resultPosts.map((post, index) => {
+              const savedPost = savedSetForResults?.posts.find((item) => item.id === post.id)
+              const isUsed = Boolean(savedPost?.usedAt || post.usedAt)
+              const setId = savedSetForResults?.id
+              const markKey = setId ? `${setId}-${post.id}` : null
+              return (
+                <PostDraft
+                  key={post.id}
+                  index={index}
+                  niche={resultNiche}
+                  body={post.body}
+                  isUsed={isUsed}
+                  copied={copiedId === post.id}
+                  marking={markKey != null && markingPostKey === markKey}
+                  markDisabled={!setId || isUsed}
+                  onCopy={() => handleCopy(post.id, post.body)}
+                  onMark={() => setId && void handleMarkPostUsed(setId, post.id)}
+                />
+              )
+            })}
+            <BonusTrainingCard />
+          </div>
+        </motion.div>
+      ) : null}
     </PremiumPageLayout>
+  )
+}
+
+function Disclosure({
+  open,
+  onToggle,
+  icon: Icon,
+  title,
+  summary,
+  meta,
+  children,
+}: {
+  open: boolean
+  onToggle: () => void
+  icon: LucideIcon
+  title: string
+  summary: string
+  meta?: string
+  children: ReactNode
+}) {
+  return (
+    <section className={panelClass}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className="flex w-full items-center gap-4 px-5 py-5 text-left transition-colors duration-200 hover:bg-surface-hover md:px-6"
+      >
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-light text-sapphire-700">
+          <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-base font-medium text-ink">{title}</span>
+          <span className="mt-1 block text-sm leading-relaxed text-ink-3">{summary}</span>
+        </span>
+        {meta ? (
+          <span className="hidden shrink-0 rounded-full border border-[var(--ds-line)] bg-card px-3 py-1 text-sm font-medium tabular-nums text-ink sm:inline">
+            {meta}
+          </span>
+        ) : null}
+        <ChevronDown
+          className={cn("h-4 w-4 shrink-0 text-ink-3 transition-transform duration-200", open && "rotate-180")}
+          aria-hidden
+        />
+      </button>
+      {open ? <div className="border-t border-[var(--border-brand)] px-5 py-5 md:px-6 md:py-6">{children}</div> : null}
+    </section>
+  )
+}
+
+function PostDraft({
+  index,
+  niche,
+  body,
+  isUsed,
+  copied,
+  marking,
+  markDisabled,
+  onCopy,
+  onMark,
+}: {
+  index: number
+  niche?: string
+  body: string
+  isUsed: boolean
+  copied: boolean
+  marking: boolean
+  markDisabled: boolean
+  onCopy: () => void
+  onMark: () => void
+}) {
+  return (
+    <article
+      className={cn(
+        "overflow-hidden rounded-[1.75rem] border bg-card",
+        isUsed ? "border-[var(--ds-line-offer)]" : "border-[var(--ds-line)]",
+      )}
+    >
+      <div className="flex items-center gap-3 border-b border-[var(--ds-line)] px-4 py-3 sm:px-5">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-grad-sapphire text-sm font-medium text-white">
+          {index + 1}
+        </span>
+        <div className="min-w-0">
+          <h3 className="text-sm font-medium text-ink">Post {index + 1}</h3>
+          {niche ? <p className="text-xs text-ink-3">{niche}</p> : null}
+        </div>
+        {isUsed ? (
+          <span className="ml-auto inline-flex items-center gap-1 rounded-full border border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] px-2.5 py-1 text-xs font-medium text-[var(--ds-offer-green-800)]">
+            <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
+            Used
+          </span>
+        ) : null}
+      </div>
+      <p
+        className={cn(
+          "whitespace-pre-wrap px-4 py-4 text-[15px] leading-7 text-ink sm:px-5 sm:py-5",
+          isUsed && "text-ink-3",
+        )}
+      >
+        {body}
+      </p>
+      <div className="flex flex-col gap-2 border-t border-[var(--ds-line)] px-4 py-3 sm:flex-row sm:px-5">
+        <Button
+          type="button"
+          onClick={onCopy}
+          className={cn(
+            "h-11 flex-1 text-sm",
+            copied ? "rounded-xl bg-sapphire-500 font-medium text-white hover:bg-sapphire-500" : primaryCtaClass,
+          )}
+        >
+          {copied ? (
+            <>
+              <CheckCircle2 className="mr-2 h-4 w-4" />
+              Copied
+            </>
+          ) : (
+            <>
+              <Copy className="mr-2 h-4 w-4" />
+              Copy this post
+            </>
+          )}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={markDisabled || marking}
+          onClick={onMark}
+          className={cn(
+            "h-11 flex-1 text-sm",
+            isUsed
+              ? "rounded-xl border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] font-medium text-[var(--ds-offer-green-800)]"
+              : quietButtonClass,
+          )}
+        >
+          {marking ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Saving
+            </>
+          ) : isUsed ? (
+            "Marked as used"
+          ) : (
+            "Mark as used"
+          )}
+        </Button>
+      </div>
+    </article>
   )
 }

@@ -1,62 +1,43 @@
-"use client"
-
-import { motion } from "framer-motion"
-import { FileText, ShieldCheck } from "lucide-react"
 import { support } from "@/lib/support"
 
-export const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
-}
+const cardTones = [
+  "border-[color-mix(in_srgb,var(--brand-100)_32%,transparent)] bg-[linear-gradient(165deg,color-mix(in_srgb,var(--brand-400)_32%,var(--layer-shell)),var(--layer-elevated))]",
+  "border-[var(--ds-line-offer)] bg-[linear-gradient(165deg,color-mix(in_srgb,var(--offer-olive-500)_34%,var(--layer-shell)),var(--layer-elevated))]",
+  "border-[color-mix(in_srgb,var(--warning)_32%,transparent)] bg-[linear-gradient(165deg,color-mix(in_srgb,var(--warning)_20%,var(--layer-shell)),var(--layer-elevated))]",
+] as const
 
-export const itemVariants = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0 },
-}
+const badgeTones = [
+  "bg-[var(--brand-400)]",
+  "bg-[var(--offer-olive-600)]",
+  "bg-[color-mix(in_srgb,var(--warning)_62%,var(--brand-700))]",
+] as const
 
 export function SupportRefundSection() {
   const { refundPolicy } = support
 
   return (
-    <motion.section variants={itemVariants} className="card-base">
-      <div className="mb-5 flex items-center gap-3">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-100">
-          <FileText className="h-6 w-6 text-sapphire-700" />
-        </div>
-        <div>
-          <h2 className="ds-h3">{refundPolicy.title}</h2>
-          <p className="mt-1 text-sm text-text-muted">{refundPolicy.subtitle}</p>
-        </div>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-3">
+    <section className="rounded-[2.75rem] border border-[var(--border-subtle)] bg-[var(--layer-elevated)] px-5 py-6 shadow-[var(--ds-shadow-card)] md:px-8 md:py-8">
+      <h2 className="text-xl font-medium tracking-tight text-ink">{refundPolicy.title}</h2>
+      <p className="mt-1 max-w-[65ch] text-sm text-ink-3">{refundPolicy.subtitle}</p>
+      <dl className="mt-6 grid gap-4 md:grid-cols-3">
         {refundPolicy.items.map((item, index) => (
-          <div key={item.title} className="rounded-xl border border-border bg-card p-4 shadow-sm">
-            <span className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sapphire-100 text-[13px] font-semibold text-sapphire-700">
+          <div
+            key={item.title}
+            className={`rounded-[2.25rem] border px-5 py-5 shadow-[var(--ds-shadow-card)] ${cardTones[index % cardTones.length]}`}
+          >
+            <span
+              className={`inline-flex h-8 w-8 items-center justify-center rounded-full text-xs font-medium text-[var(--brand-50)] ${badgeTones[index % badgeTones.length]}`}
+            >
               {String(index + 1).padStart(2, "0")}
             </span>
-            <h3 className="ds-h4 mb-2 text-sapphire-700">{item.title}</h3>
-            <p className="text-sm leading-relaxed text-text-secondary">{item.body}</p>
+            <dt className="mt-4 text-sm font-medium text-ink">{item.title}</dt>
+            <dd className="mt-1.5 text-sm leading-relaxed text-ink-3">{item.body}</dd>
           </div>
         ))}
-      </div>
-    </motion.section>
-  )
-}
-
-export function SupportTrustRow() {
-  return (
-    <div className="flex items-start gap-3 rounded-xl border border-border bg-card p-4 shadow-card">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-100">
-        <ShieldCheck className="h-5 w-5 text-sapphire-700" />
-      </div>
-      <div>
-        <p className="text-sm font-semibold text-text-primary">Account security</p>
-        <p className="mt-1 text-sm leading-relaxed text-text-secondary">
-          We will never ask for your password. Only share the details needed to resolve your issue, and
-          check spam if you don&apos;t see a reply within 48 hours.
-        </p>
-      </div>
-    </div>
+      </dl>
+      <p className="mt-4 rounded-[2rem] border border-[color-mix(in_srgb,var(--brand-100)_22%,transparent)] bg-[var(--surface-nested)] px-5 py-4 text-sm leading-relaxed text-ink-3">
+        We never ask for your password. Share only what we need to resolve the issue, and check spam if a reply has not arrived within 48 hours.
+      </p>
+    </section>
   )
 }

@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "AI-powered YouTube engagement tool",
     start_url: "/dashboard",
     display: "standalone",
-    background_color: "#F8FAFC",
-    theme_color: "#1E293B",
+    background_color: "#161214",
+    theme_color: "#161214",
     icons: [
       {
         src: "/icon.png",

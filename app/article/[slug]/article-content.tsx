@@ -167,7 +167,7 @@ export default function ArticleContent({ page }: ArticleContentProps) {
           color: var(--ds-ink);
           line-height: 1.2;
           margin-bottom: 2rem;
-          background: linear-gradient(135deg, var(--ds-ink) 0%, var(--ds-sapphire-500) 100%);
+          background: linear-gradient(135deg, var(--ds-ink) 0%, var(--link) 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -206,7 +206,7 @@ export default function ArticleContent({ page }: ArticleContentProps) {
         }
 
         .article-content a.inline-link {
-          color: var(--ds-sapphire-500);
+          color: var(--link);
           text-decoration: none;
           font-weight: 600;
           transition: all 0.2s ease;
@@ -215,7 +215,7 @@ export default function ArticleContent({ page }: ArticleContentProps) {
         }
 
         .article-content a.inline-link:hover {
-          color: var(--ds-sapphire-700);
+          color: var(--brand-50);
           border-bottom-color: rgba(13,148,136, 0.6);
         }
 
@@ -229,7 +229,7 @@ export default function ArticleContent({ page }: ArticleContentProps) {
         }
 
         .article-content a.affiliate-link:hover {
-          color: var(--ds-sapphire-500);
+          color: var(--link);
           border-bottom-color: rgba(13,148,136, 0.7);
           transform: translateY(-1px);
         }
@@ -247,7 +247,7 @@ export default function ArticleContent({ page }: ArticleContentProps) {
           margin-top: 0;
           margin-bottom: 1rem;
           font-size: 1.75rem;
-          background: linear-gradient(135deg, var(--ds-sapphire-500) 0%, var(--ds-sapphire-700) 100%);
+          background: linear-gradient(135deg, var(--link) 0%, var(--brand-50) 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -259,7 +259,7 @@ export default function ArticleContent({ page }: ArticleContentProps) {
         }
 
         .article-content a {
-          color: var(--ds-sapphire-500);
+          color: var(--link);
           text-decoration: none;
           font-weight: 600;
           transition: all 0.2s ease;
@@ -286,7 +286,7 @@ export default function ArticleContent({ page }: ArticleContentProps) {
         }
 
         .article-content li::marker {
-          color: var(--ds-sapphire-500);
+          color: var(--link);
         }
 
         @media (max-width: 768px) {

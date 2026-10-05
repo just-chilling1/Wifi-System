@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   generator: "v0.app",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: brand.productName,
   },
   robots: {
@@ -35,8 +35,20 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${sans.variable} ${display.variable} light`} style={{ colorScheme: "light" }}>
-      <body className="antialiased selection:bg-sapphire-200">
+    <html
+      lang="en"
+      className={`${sans.variable} ${display.variable}`}
+      style={{ colorScheme: "dark" }}
+      suppressHydrationWarning
+    >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var c=localStorage.getItem("rh_sidebar_collapsed")==="1";document.documentElement.dataset.sidebar=c?"collapsed":"expanded";document.documentElement.style.setProperty("--sidebar-w",c?"84px":"280px");}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body className="antialiased selection:bg-primary selection:text-primary-foreground">
         <AppProviders>{children}</AppProviders>
         <Analytics />
       </body>

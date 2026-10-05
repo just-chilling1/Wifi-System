@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { ChevronDown, HelpCircle, Search, X } from "lucide-react"
+import { ChevronDown, Search, X } from "lucide-react"
 import { clsx } from "clsx"
 import type { FaqSection } from "@/lib/faq"
 
@@ -41,14 +41,14 @@ export function SupportFaqAccordion({ sections }: SupportFaqAccordionProps) {
       <div className="space-y-3 border-b border-border-dim/80 px-4 py-3 sm:px-5">
         <label
           className={clsx(
-            "flex items-center gap-2.5 rounded-lg border px-3.5 py-2.5 transition-colors",
+            "flex items-center gap-2.5 rounded-full border px-4 py-3 transition-colors",
             isActive
-              ? "border-sapphire-700 bg-card ring-2 ring-sapphire-100"
-              : "border-border bg-page/80",
+              ? "border-[var(--border)] bg-[var(--layer-elevated)]"
+              : "border-[var(--border)] bg-[var(--surface-nested)]",
           )}
         >
           <Search
-            className={clsx("h-4 w-4 shrink-0", isActive ? "text-sapphire-700" : "text-text-muted")}
+            className={clsx("h-4 w-4 shrink-0", isActive ? "text-ink" : "text-ink-3")}
             aria-hidden
           />
           <input
@@ -62,14 +62,14 @@ export function SupportFaqAccordion({ sections }: SupportFaqAccordionProps) {
           />
           {isSearching ? (
             <>
-              <span className="hidden shrink-0 text-[12px] font-medium text-sapphire-700 sm:inline">
+              <span className="hidden shrink-0 text-[12px] text-ink-3 sm:inline">
                 {matchCount} {matchCount === 1 ? "match" : "matches"}
               </span>
               <button
                 type="button"
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => setQuery("")}
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-text-muted transition-colors hover:bg-sapphire-100 hover:text-sapphire-700"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-ink-3 transition-colors hover:text-ink"
                 aria-label="Clear search"
               >
                 <X className="h-3.5 w-3.5" />
@@ -97,28 +97,29 @@ export function SupportFaqAccordion({ sections }: SupportFaqAccordionProps) {
         </p>
       ) : (
         filtered.map((section) => (
-          <div key={section.title} className="border-b border-border-dim/70 last:border-b-0">
-            <p className="px-5 pb-1 pt-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-sapphire-700">
-              {section.title}
-            </p>
-            <div className="divide-y divide-border-dim/70">
+          <div key={section.title} className="px-4 pb-4 last:pb-5 sm:px-5">
+            <p className="px-1 pb-2 pt-4 text-sm text-ink-3">{section.title}</p>
+            <div className="space-y-2">
               {section.items.map((faq) => {
                 const key = `${section.title}:${faq.q}`
                 const isOpen = expandedKey === key
 
                 return (
-                  <div key={key}>
+                  <div
+                    key={key}
+                    className="overflow-hidden rounded-[1.25rem] border border-[var(--border)] bg-[var(--surface-nested)]"
+                  >
                     <button
                       type="button"
-                      className="flex w-full items-center justify-between px-5 py-3.5 text-left transition-colors hover:bg-sapphire-100"
+                      className="flex w-full items-center justify-between px-4 py-3.5 text-left transition-colors hover:bg-[var(--layer-elevated)]"
                       onClick={() => setExpandedKey(isOpen ? null : key)}
                       aria-expanded={isOpen}
                     >
                       <span className="pr-4 text-sm font-medium text-text-primary">{faq.q}</span>
                       <ChevronDown
                         size={18}
-                        className={`shrink-0 transition-transform duration-200 ${
-                          isOpen ? "rotate-180 text-sapphire-700" : "text-text-muted"
+                        className={`shrink-0 text-ink-3 transition-transform duration-200 ${
+                          isOpen ? "rotate-180" : ""
                         }`}
                       />
                     </button>
@@ -130,7 +131,7 @@ export function SupportFaqAccordion({ sections }: SupportFaqAccordionProps) {
                           exit={{ height: 0, opacity: 0 }}
                           className="overflow-hidden"
                         >
-                          <div className="px-5 pb-4 text-sm leading-relaxed text-text-secondary">{faq.a}</div>
+                          <div className="px-4 pb-4 text-sm leading-relaxed text-text-secondary">{faq.a}</div>
                         </motion.div>
                       ) : null}
                     </AnimatePresence>
@@ -158,10 +159,10 @@ function FilterChip({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-3 py-1 text-[12px] font-semibold transition-colors ${
+      className={`rounded-full border px-3.5 py-1.5 text-[13px] transition-colors ${
         active
-          ? "border-[var(--ds-line-sapphire)] bg-sapphire-100 text-sapphire-700"
-          : "border-border bg-card text-text-muted hover:border-sapphire-300 hover:text-text-primary"
+          ? "border-[var(--border)] bg-[var(--surface-nested)] font-medium text-ink"
+          : "border-transparent text-ink-3 hover:text-ink"
       }`}
     >
       {label}
@@ -171,14 +172,9 @@ function FilterChip({
 
 export function SupportFaqCardHeader() {
   return (
-    <div className="flex items-center gap-3 border-b border-border-dim/80 px-5 py-4">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--ds-line-sapphire)] bg-sapphire-100">
-        <HelpCircle className="h-5 w-5 text-sapphire-700" />
-      </div>
-      <div>
-        <h2 className="ds-h3">Frequently Asked Questions</h2>
-        <p className="mt-1 text-sm text-text-muted">Search or browse by topic — then contact us if you still need help</p>
-      </div>
+    <div className="border-b border-[var(--border-subtle)] px-5 py-5 md:px-6">
+      <h2 className="text-xl font-medium tracking-tight text-ink">Questions</h2>
+      <p className="mt-1 text-sm text-ink-3">Search by topic, or send a message if you still need help.</p>
     </div>
   )
 }

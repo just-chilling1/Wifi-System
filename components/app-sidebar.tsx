@@ -17,12 +17,9 @@ import { usePromoLinks } from "@/context/PromoLinksContext"
 import { getVisibleExclusiveOffers } from "@/lib/promo-links"
 import { getCachedClientUser } from "@/lib/auth-client-cache"
 import { isAdminUser } from "@/lib/admin"
+import { premiumSectionLabel } from "@/config/navigation.config"
 import {
-  mainSectionLabel,
-  premiumSectionLabel,
-} from "@/config/navigation.config"
-import {
-  getMainNav,
+  getMainNavSections,
   getSupportNav,
   getVisiblePremiumNav,
 } from "@/lib/features"
@@ -33,7 +30,7 @@ const COLLAPSE_KEY = "rh_sidebar_collapsed"
 
 function applySidebarLayout(collapsed: boolean) {
   document.documentElement.dataset.sidebar = collapsed ? "collapsed" : "expanded"
-  document.documentElement.style.setProperty("--sidebar-w", collapsed ? "76px" : "280px")
+  document.documentElement.style.setProperty("--sidebar-w", collapsed ? "84px" : "280px")
 }
 
 function SidebarBody({
@@ -55,64 +52,91 @@ function SidebarBody({
   userInitials: string
   isAdmin: boolean
 }) {
-  const menuItems = getMainNav()
+  const menuSections = getMainNavSections()
   const premiumItems = getVisiblePremiumNav()
   const supportItem = getSupportNav()
   const { settings: promoSettings } = usePromoLinks()
   const exclusiveOffers = getVisibleExclusiveOffers(promoSettings)
 
   return (
-    <div className="flex h-full min-h-0 w-full flex-col overflow-hidden border-r border-[var(--sidebar-border)] bg-[var(--sidebar-shell-bg,#fff)]">
-      <div className={`shrink-0 border-b border-[var(--ds-line)] ${collapsed ? "p-3" : "px-[14px] py-4"}`}>
-        <div className={`flex w-full items-center ${collapsed ? "flex-col gap-3" : "gap-2"}`}>
-          <Link
-            href="/dashboard"
-            onClick={onNavigate}
-            className={`transition-opacity hover:opacity-90 ${collapsed ? "flex w-full justify-center" : "min-w-0 flex-1"}`}
-            title={brand.productName}
-          >
-            {collapsed ? (
-              <BrandLogo variant="icon" size={52} />
-            ) : (
-              <BrandLogo variant="wordmark" width={220} priority />
-            )}
-          </Link>
-          <button
-            type="button"
-            onClick={onToggle}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[var(--ds-line)] text-ink-3 transition-colors hover:bg-sapphire-100 hover:text-ink ${!collapsed ? "ml-auto" : ""}`}
-          >
-            {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-          </button>
-        </div>
+    <div className="flex h-full min-h-0 w-full flex-col overflow-hidden border-r border-[var(--border-subtle)] bg-[var(--layer-shell)]">
+      <div className={`shrink-0 ${collapsed ? "px-3 py-4" : "px-5 pb-2 pt-6"}`}>
+        {collapsed ? (
+          <div className="flex w-full flex-col items-center gap-3">
+            <Link
+              href="/dashboard"
+              onClick={onNavigate}
+              className="flex w-full justify-center transition-opacity hover:opacity-90"
+              title={brand.productName}
+            >
+              <BrandLogo variant="icon" size={44} />
+            </Link>
+            <button
+              type="button"
+              onClick={onToggle}
+              aria-label="Expand sidebar"
+              aria-expanded={false}
+              className="sidebar-collapse-toggle"
+            >
+              <PanelLeftOpen className="h-4 w-4" strokeWidth={1.75} />
+            </button>
+          </div>
+        ) : (
+          <div className="flex min-w-0 items-center gap-2">
+            <Link
+              href="/dashboard"
+              onClick={onNavigate}
+              className="min-w-0 flex-1 transition-opacity hover:opacity-90"
+              title={brand.productName}
+            >
+              <BrandLogo variant="wordmark" width={172} priority className="max-w-[calc(100%-0.25rem)]" />
+            </Link>
+            <button
+              type="button"
+              onClick={onToggle}
+              aria-label="Collapse sidebar"
+              aria-expanded
+              className="sidebar-collapse-toggle"
+            >
+              <PanelLeftClose className="h-4 w-4" strokeWidth={1.75} />
+            </button>
+          </div>
+        )}
       </div>
 
-      <div className="sidebar-scroll flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overflow-y-auto overscroll-y-contain py-2">
-        {!collapsed && <p className="sidebar-section-label px-[14px]">{mainSectionLabel}</p>}
-        <nav aria-label="Main navigation" className="space-y-0.5 px-[14px]">
-          {menuItems.map((item) => {
-            const isActive = pathname === item.path
-            const Icon = NAV_ICONS[item.icon]
-            return (
-              <Link
-                key={item.path}
-                href={item.path}
-                onClick={onNavigate}
-                title={collapsed ? item.label : undefined}
-                className={`sidebar-nav-item group flex items-center rounded-md border border-transparent text-[15px] ${
-                  collapsed ? "justify-center px-2 py-3" : "gap-3 py-3 pl-[14px] pr-3"
-                } ${isActive ? "is-active" : "text-ink"}`}
-              >
-                <Icon className={`h-5 w-5 shrink-0 ${isActive ? "text-sapphire-200" : "text-ink-3"}`} />
-                {!collapsed && <span className="sidebar-nav-label truncate font-normal leading-[1.4]">{item.label}</span>}
-              </Link>
-            )
-          })}
+      <div className="sidebar-scroll flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overflow-y-auto overscroll-y-contain py-3">
+        <nav aria-label="Main navigation" className={`flex flex-col ${collapsed ? "px-2" : "px-4"}`}>
+          {menuSections.map((section) => (
+            <div key={section.id} className="sidebar-nav-group">
+              {!collapsed && <p className="sidebar-section-label">{section.label}</p>}
+              <div className="flex flex-col gap-1">
+                {section.items.map((item) => {
+                  const isActive = pathname === item.path
+                  const Icon = NAV_ICONS[item.icon]
+                  return (
+                    <Link
+                      key={item.path}
+                      href={item.path}
+                      onClick={onNavigate}
+                      title={collapsed ? item.label : undefined}
+                      className={`sidebar-nav-item type-nav group flex items-center border border-transparent ${
+                        collapsed ? "sidebar-icon-btn justify-center" : "gap-3 px-2 py-1.5"
+                      } ${isActive ? "is-active" : "text-[var(--brand-50)]"}`}
+                    >
+                      <span className="nav-icon-well">
+                        <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} />
+                      </span>
+                      {!collapsed && <span className="sidebar-nav-label truncate">{item.label}</span>}
+                    </Link>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         <div className={`mt-4 shrink-0 ${collapsed ? "px-1.5" : "px-[14px]"}`}>
-          <div className={`premium-nav-section ${collapsed ? "p-1" : "p-2"}`}>
+          <div className={`premium-nav-section ${collapsed ? "sidebar-premium-collapsed" : "p-2"}`}>
             <div className="premium-nav-section-shimmer" aria-hidden />
             {!collapsed && (
               <p className="premium-nav-section-label relative z-[1] flex items-center gap-1.5 px-2.5 pb-2 pt-1.5 text-[13px] uppercase tracking-wider">
@@ -132,7 +156,7 @@ function SidebarBody({
                     title={item.label}
                     style={{ animationDelay: `${0.15 + index * 0.06}s` }}
                     className={`premium-stagger-item premium-sidebar-item flex items-center text-[15px] font-medium ${
-                      collapsed ? "justify-center px-0 py-2.5" : "gap-2.5 px-3 py-2"
+                      collapsed ? "sidebar-icon-btn justify-center" : "gap-2.5 px-3 py-2"
                     } ${isActive ? "is-active" : ""}`}
                   >
                     <span className="premium-sidebar-icon-chip">
@@ -153,17 +177,23 @@ function SidebarBody({
         )}
       </div>
 
-      <div className="shrink-0 space-y-2 border-t border-[var(--ds-line)] p-2 md:p-4">
+      <div className="sidebar-footer shrink-0 space-y-1 p-3 md:p-4">
         {isAdmin ? (
           <Link
             href="/admin"
             onClick={onNavigate}
             title="Promo Links"
             className={`sidebar-nav-item flex items-center text-[15px] ${
-              collapsed ? "justify-center px-2 py-3" : "gap-3 px-3 py-3"
+              collapsed ? "sidebar-icon-btn justify-center" : "gap-3 px-3 py-3"
             } ${pathname === "/admin" || pathname.startsWith("/admin/") ? "is-active" : "text-ink"}`}
           >
-            <Link2 className="h-5 w-5 shrink-0" />
+            {collapsed ? (
+              <span className="nav-icon-well">
+                <Link2 className="h-4 w-4 shrink-0" strokeWidth={1.75} />
+              </span>
+            ) : (
+              <Link2 className="h-5 w-5 shrink-0" />
+            )}
             {!collapsed && <span className="sidebar-nav-label">Promo Links</span>}
           </Link>
         ) : null}
@@ -173,12 +203,18 @@ function SidebarBody({
             onClick={onNavigate}
             title={supportItem.label}
             className={`sidebar-nav-item flex items-center text-[15px] ${
-              collapsed ? "justify-center px-2 py-3" : "gap-3 px-3 py-3"
+              collapsed ? "sidebar-icon-btn justify-center" : "gap-3 px-3 py-3"
             } ${pathname === supportItem.path ? "is-active" : "text-ink"}`}
           >
             {(() => {
               const Icon = NAV_ICONS[supportItem.icon]
-              return <Icon className="h-5 w-5 shrink-0" />
+              return collapsed ? (
+                <span className="nav-icon-well">
+                  <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} />
+                </span>
+              ) : (
+                <Icon className="h-5 w-5 shrink-0" />
+              )
             })()}
             {!collapsed && <span className="sidebar-nav-label">{supportItem.label}</span>}
           </Link>

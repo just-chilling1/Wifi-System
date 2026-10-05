@@ -58,10 +58,7 @@ export function ExclusiveOffersNavSection({
                 <span className="exclusive-offers-nav-subtitle">{offer.cta.trim()}</span>
               ) : null}
             </span>
-            <ExternalLink
-              className="exclusive-offers-nav-external h-3.5 w-3.5 shrink-0 text-ink-4"
-              strokeWidth={1.75}
-            />
+            <ExternalLink className="exclusive-offers-nav-external h-3.5 w-3.5 shrink-0" strokeWidth={1.75} />
           </motion.a>
         ))}
       </div>

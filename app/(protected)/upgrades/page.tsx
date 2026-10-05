@@ -149,15 +149,23 @@ export default async function UpgradesPage() {
         </section>
       )}
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {upgrades.map((upgrade) => {
+      <div className="flex flex-col gap-5">
+        {upgrades.map((upgrade, index) => {
           const Icon = upgrade.icon
           const isCurrentPlan = profile?.upgrade_level === upgrade.id
+          const featured = index === 0
 
           const thumbnailSlug = PREMIUM_UPGRADE_THUMBNAILS[upgrade.id]
 
           return (
-            <article key={upgrade.id} className="glass-card flex flex-col overflow-hidden p-0">
+            <article
+              key={upgrade.id}
+              className={
+                featured
+                  ? "surface-premium grid overflow-hidden p-0 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
+                  : "surface-standard grid overflow-hidden p-0 md:grid-cols-[12rem_minmax(0,1fr)_auto] md:items-center"
+              }
+            >
               {thumbnailSlug ? (
                 <PremiumFeatureThumbnail slug={thumbnailSlug} alt={upgrade.name} />
               ) : null}

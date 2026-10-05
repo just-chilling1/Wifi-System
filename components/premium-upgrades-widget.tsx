@@ -16,7 +16,7 @@ export function PremiumUpgradesWidget() {
           <Sparkles className="premium-sparkle h-4 w-4" fill="currentColor" />
           Premium Upgrades
         </p>
-        <p className="mt-1.5 text-sm leading-relaxed text-ink-2">
+        <p className="mt-1.5 text-sm leading-relaxed text-[var(--brand-100)]">
           Unlock the tools that drive the biggest results.
         </p>
       </div>
@@ -44,7 +44,7 @@ export function PremiumUpgradesWidget() {
                   <span className={`block text-sm font-semibold tracking-wide ${isActive ? "text-[#f8fafc]" : "text-ink"}`}>
                     {feature.label}
                   </span>
-                  <p className={`mt-0.5 text-xs leading-relaxed ${isActive ? "text-sapphire-300" : "text-ink-3"}`}>
+                  <p className={`mt-0.5 text-xs leading-relaxed ${isActive ? "text-[var(--brand-100)]" : "text-[var(--text-secondary)]"}`}>
                     {feature.description}
                   </p>
                 </div>
@@ -52,8 +52,8 @@ export function PremiumUpgradesWidget() {
                 <span
                   className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-all duration-[160ms] ${
                     isActive
-                      ? "bg-white/15 text-[#f8fafc]"
-                      : "bg-sapphire-100 text-sapphire-700 group-hover:translate-x-0.5"
+                      ? "bg-white/15 text-[var(--brand-50)]"
+                      : "bg-[color-mix(in_srgb,var(--link)_16%,var(--surface-nested))] text-[var(--link)] group-hover:translate-x-0.5"
                   }`}
                 >
                   <ArrowRight className="h-3.5 w-3.5" />

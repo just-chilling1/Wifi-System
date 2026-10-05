@@ -1,6 +1,6 @@
-import { Inter, Playfair_Display } from "next/font/google"
+import { Fraunces, Inter } from "next/font/google"
 
-/** Wifi Code UI stack — Inter (body) + Playfair Display (headings). */
+/** Wifi System UI stack — Inter for interface, Fraunces for display headlines. */
 export const sans = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -8,9 +8,9 @@ export const sans = Inter({
   display: "swap",
 })
 
-export const display = Playfair_Display({
+export const display = Fraunces({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-playfair",
+  variable: "--font-fraunces",
   display: "swap",
 })

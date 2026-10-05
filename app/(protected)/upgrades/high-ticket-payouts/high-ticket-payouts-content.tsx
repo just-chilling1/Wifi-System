@@ -38,7 +38,7 @@ import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { WelcomeOfferBanner } from "@/components/welcome-offer-banner"
+import { BonusTrainingCard } from "@/components/bonus-training-card"
 import { wrapArticleWithTitle } from "@/lib/high-ticket-payouts/article-content"
 import { sanitizeArticleHtml } from "@/lib/sanitize-html"
 import { isValidAffiliateUrl } from "@/lib/affiliate-url"
@@ -560,7 +560,7 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
       >
             {links.length === 0 && selectedLinkId !== PASTE_MODE ? (
               <div className="rounded-2xl border border-dashed border-[var(--ds-line)] bg-surface-nested/70 px-5 py-8 text-center">
-                <span className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-white text-sapphire-700 shadow-sm">
+                <span className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--layer-elevated)] text-sapphire-700 shadow-sm">
                   <FolderOpen className="h-5 w-5" aria-hidden />
                 </span>
                 <p className="text-sm font-semibold text-ink">No Link Vault offers yet</p>
@@ -675,7 +675,7 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
             {error ? (
               <p
                 role="alert"
-                className="flex items-start gap-2 rounded-xl border border-[#C53030]/30 bg-[#FDE4E4] px-3.5 py-2.5 text-sm font-medium text-[#C53030]"
+                className="flex items-start gap-2 rounded-xl border border-[#C53030]/30 bg-danger-light px-3.5 py-2.5 text-sm font-medium text-danger"
               >
                 <AlertCircle size={16} className="mt-0.5 shrink-0" aria-hidden />
                 {error}
@@ -686,12 +686,9 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
       <CrossPlatformGuide />
 
       {loadingAction ? (
-        <GenerationProgress
-          offer="welcome"
-          label="Personalizing article with your affiliate link..."
-        />
+        <GenerationProgress label="Personalizing article with your affiliate link..." />
       ) : showResults ? (
-        <WelcomeOfferBanner />
+        <BonusTrainingCard />
       ) : null}
 
       <AnimatePresence>
@@ -784,7 +781,7 @@ export function HighTicketPayoutsContent({ links }: { links: AffiliateLink[] }) 
             {usageError ? (
               <p
                 role="alert"
-                className="border-t border-[#C53030]/20 bg-[#FDE4E4] px-5 py-2.5 text-sm font-medium text-[#C53030] md:px-6"
+                className="border-t border-[#C53030]/20 bg-danger-light px-5 py-2.5 text-sm font-medium text-danger md:px-6"
               >
                 {usageError}
               </p>

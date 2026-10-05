@@ -53,9 +53,9 @@ export function AffiliateLinkGuide({ className }: { className?: string }) {
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
-        className="flex w-full items-center gap-2.5 px-4 py-3 text-left font-sans transition-colors hover:bg-white/70"
+        className="flex w-full items-center gap-2.5 px-4 py-3 text-left font-sans transition-colors hover:bg-primary-light"
       >
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--ds-line)] bg-white text-sapphire-700">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--layer-elevated)] text-primary">
           <Bookmark className="h-4 w-4" aria-hidden />
         </span>
         <span className="min-w-0 flex-1 text-[12px] font-semibold uppercase tracking-[0.08em] text-ink">
@@ -75,14 +75,14 @@ export function AffiliateLinkGuide({ className }: { className?: string }) {
           {STEPS.map((step, index) => (
             <li
               key={step.title}
-              className="flex items-start gap-3 rounded-xl border border-[var(--ds-line)] bg-white px-3 py-2.5"
+              className="flex items-start gap-3 rounded-xl border border-[var(--ds-line)] bg-[var(--layer-elevated)] px-3 py-2.5"
             >
-              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sapphire-100 font-sans text-[11px] font-semibold text-sapphire-700">
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-light font-sans text-[11px] font-semibold text-primary">
                 {index + 1}
               </span>
               <div className="min-w-0 flex-1">
                 <p className="flex items-start gap-2 font-sans text-sm font-medium leading-snug text-ink">
-                  <step.icon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-sapphire-700" aria-hidden />
+                  <step.icon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
                   <span>{step.title}</span>
                 </p>
                 {"href" in step && step.href ? (
@@ -90,7 +90,7 @@ export function AffiliateLinkGuide({ className }: { className?: string }) {
                     href={step.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-1 inline-flex items-center gap-1 pl-[22px] font-sans text-sm font-semibold text-sapphire-700 underline-offset-2 hover:underline"
+                    className="mt-1 inline-flex items-center gap-1 pl-[22px] font-sans text-sm font-semibold text-primary underline-offset-2 hover:underline"
                   >
                     {step.linkLabel}
                     <ExternalLink className="h-3.5 w-3.5" aria-hidden />

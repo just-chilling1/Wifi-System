@@ -28,7 +28,9 @@ export function PremiumPageLayout({
 }: PremiumPageLayoutProps) {
   const content = (
     <div className={clsx("page-container mx-auto w-full max-w-7xl", className)}>
-      <PageHeader eyebrow="Premium" title={title} subtitle={subtitle} actions={actions} />
+      <section className="surface-premium px-6 py-8 sm:px-10 sm:py-12">
+        <PageHeader eyebrow="Premium" title={title} subtitle={subtitle} actions={actions} />
+      </section>
       {children}
       {footer ?? <PremiumFooter />}
     </div>

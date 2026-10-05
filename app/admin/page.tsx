@@ -19,7 +19,7 @@ import { isAdminUser } from "@/lib/admin"
 import { usePromoLinks } from "@/context/PromoLinksContext"
 import type { ExclusiveOffer } from "@/config/offers.config"
 import type { PromoLinksSettings } from "@/lib/promo-links"
-import { getDefaultPromoLinks, isValidPromoUrl } from "@/lib/promo-links"
+import { DEFAULT_SCALE_TRAINING_TITLE, getDefaultPromoLinks, isValidPromoUrl } from "@/lib/promo-links"
 import { createClient } from "@/lib/supabase/client"
 import { PageHeader } from "@/components/page-header"
 import { useRouter } from "next/navigation"
@@ -552,7 +552,7 @@ export default function AdminPromoLinksPage() {
                       setSuccess(false)
                     }}
                     className={fieldClass}
-                    placeholder="Scale Your Wifi Code To $1,000+ Per Day"
+                    placeholder={DEFAULT_SCALE_TRAINING_TITLE}
                   />
                   <p className={hintClass}>Main headline on the Bonus Training page.</p>
                 </div>

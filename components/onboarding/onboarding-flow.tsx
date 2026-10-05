@@ -96,7 +96,7 @@ function Countdown({ remainingMs }: { remainingMs: number }) {
         {expired ? cfg.timerExpiredLabel : cfg.timerLabel}
       </p>
       <span
-        className="inline-flex min-w-[5.25rem] items-center justify-center rounded-xl bg-ink px-3 py-1.5 text-[1.35rem] font-black tabular-nums tracking-tight text-white"
+        className="inline-flex min-w-[5.25rem] items-center justify-center rounded-xl bg-primary px-3 py-1.5 text-[1.35rem] font-black tabular-nums tracking-tight text-primary-foreground"
         aria-live="polite"
       >
         {formatCountdown(remainingMs)}

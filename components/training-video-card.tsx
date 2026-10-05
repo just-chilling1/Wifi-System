@@ -17,7 +17,13 @@ export type TrainingCardVideo = {
   thumbnailSlug?: VideoThumbnailSlug
 }
 
-export function TrainingVideoCard({ video }: { video: TrainingCardVideo }) {
+export function TrainingVideoCard({
+  video,
+  featured = false,
+}: {
+  video: TrainingCardVideo
+  featured?: boolean
+}) {
   const [open, setOpen] = useState(false)
   const hasVideo = Boolean(video.id.trim())
   const thumbnail = getVideoThumbnail({ slug: video.thumbnailSlug, vimeoId: video.id })
@@ -33,36 +39,34 @@ export function TrainingVideoCard({ video }: { video: TrainingCardVideo }) {
 
   return (
     <>
-      <article className="glass-card flex h-full flex-col overflow-hidden [content-visibility:auto] [contain-intrinsic-size:auto_360px]">
-        <div className="flex min-h-[3.25rem] items-center gap-3 border-b border-border-dim/60 px-4 py-3 sm:px-5">
-          <span
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sapphire-200 text-[13px] font-medium text-sapphire-700"
-            aria-hidden={video.badge === "Mindset" ? undefined : true}
-            aria-label={video.badge === "Mindset" ? "Mindset video" : undefined}
-          >
-            {headerIcon}
-          </span>
-          <h3 className="min-w-0 flex-1 text-sm font-medium leading-snug text-ink sm:text-base">
-            {video.title}
-          </h3>
-        </div>
+      <article
+        className={
+          featured
+            ? "surface-media grid gap-6 p-3 sm:p-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(16rem,0.8fr)] lg:items-end lg:p-5"
+            : "flex h-full flex-col gap-4 rounded-2xl border border-[var(--ds-line)] bg-[var(--layer-elevated)] p-3 sm:p-4"
+        }
+      >
+        <TrainingVideo
+          title={video.title}
+          thumbnailSrc={thumbnail}
+          onPlay={() => {
+            if (hasVideo) setOpen(true)
+          }}
+          caption={hasVideo ? "Play" : "Video coming soon"}
+        />
 
-        <div className="px-4 py-3 sm:px-5 sm:py-4">
-          <TrainingVideo
-            title={video.title}
-            thumbnailSrc={thumbnail}
-            onPlay={() => {
-              if (hasVideo) setOpen(true)
-            }}
-            caption={hasVideo ? "▶ Click to Play Video" : "Video coming soon"}
-          />
-        </div>
-
-        <div className="flex flex-1 flex-col space-y-2 px-4 pb-4 pt-0 sm:px-5 sm:pb-5">
-          <p className="flex-1 text-[13px] leading-relaxed text-text-secondary">{video.description}</p>
+        <div className={featured ? "flex flex-col gap-3 px-1 pb-2 lg:px-2 lg:pb-4" : "flex flex-1 flex-col gap-2 px-1"}>
+          <div className="flex items-center gap-2">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--surface-hover)] text-xs font-semibold tabular-nums text-[var(--link)]">
+              {headerIcon}
+            </span>
+            {video.badge ? <span className="text-xs font-medium text-[var(--link)]">{video.badge}</span> : null}
+          </div>
+          <h3 className={featured ? "type-heading-xl" : "type-heading-md"}>{video.title}</h3>
+          <p className="type-body-sm">{video.description}</p>
           {video.duration ? (
-            <p className="flex items-center gap-1.5 text-xs text-text-muted">
-              <Clock className="h-3.5 w-3.5 shrink-0" />
+            <p className="type-caption flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} />
               {video.duration}
             </p>
           ) : null}

@@ -15,9 +15,9 @@ export function getBrandCssVars(): Record<string, string> {
     "--bg-border-teal": brand.colors.borderTeal,
     "--bg-glass": brand.colors.panelGlass,
     "--brand-primary": brand.colors.primary,
-    "--brand-primary-readable": brand.colors.secondary,
+    "--brand-primary-readable": "#E8B4BC",
     "--brand-secondary": brand.colors.secondary,
-    "--brand-tint": "#F0FDFA",
+    "--brand-tint": "#3A2228",
     "--promo-accent": brand.colors.promoAccent,
     "--promo-cta": brand.colors.promoCta,
     "--text-heading": brand.colors.textHeading,
@@ -30,9 +30,12 @@ export function getBrandCssVars(): Record<string, string> {
     "--ds-surface": brand.colors.panel,
     "--ds-surface-sub": brand.colors.sidebar,
     "--background": brand.colors.page,
+    "--foreground": brand.colors.textPrimary,
+    "--secondary": brand.colors.secondary,
+    "--accent": brand.colors.accent,
     "--primary": brand.colors.primary,
-    "--primary-hover": brand.colors.secondary,
-    "--primary-foreground": "#F8FAFC",
+    "--primary-hover": "#65101E",
+    "--primary-foreground": "#F7F4F4",
   }
 }
 

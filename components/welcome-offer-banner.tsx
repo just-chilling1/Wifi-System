@@ -43,7 +43,7 @@ export function WelcomeOfferBanner({ size = "full" }: { size?: BannerSize }) {
           type="button"
           onClick={() => setDismissed(true)}
           aria-label="Close banner"
-          className="absolute right-2 top-2 z-[2] rounded-lg p-1.5 text-ink-4 transition-colors hover:bg-white/50 hover:text-ink"
+          className="absolute right-2 top-2 z-[2] rounded-lg p-1.5 text-ink-4 transition-colors hover:bg-white/10 hover:text-ink"
         >
           <X className={compact ? "h-4 w-4" : "h-5 w-5"} />
         </button>

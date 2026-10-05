@@ -15,10 +15,7 @@ import { usePromoLinks } from "@/context/PromoLinksContext"
 import { getVisibleExclusiveOffers } from "@/lib/promo-links"
 import { getCachedClientUser } from "@/lib/auth-client-cache"
 import { isAdminUser } from "@/lib/admin"
-import {
-  mainSectionLabel,
-  premiumSectionLabel,
-} from "@/config/navigation.config"
+import { premiumSectionLabel } from "@/config/navigation.config"
 import {
   getBottomNavMoreLinks,
   getBottomNavTabs,
@@ -69,15 +66,17 @@ export function BottomNav() {
             <Link
               key={tab.path}
               href={tab.path}
-              className={`relative flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-0.5 transition-colors ${
-                isActive ? "text-sapphire-700" : "text-ink-3 hover:bg-surface-hover hover:text-ink active:text-ink"
+              className={`relative flex min-h-16 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-0.5 transition-colors ${
+                isActive ? "text-[var(--primary)]" : "text-[var(--text-primary)] hover:text-[var(--accent)]"
               }`}
             >
-              {isActive && (
-                <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-grad-sapphire" />
-              )}
-              <Icon className="h-6 w-6" />
-              <span className="bottom-nav-label text-[11px] font-semibold leading-none">{tab.label}</span>
+              <span className="relative z-[1] flex h-8 w-8 items-center justify-center">
+                {isActive && (
+                  <span className="absolute inset-0 rounded-full bg-[var(--layer-feature)] shadow-[var(--shadow-brand)]" />
+                )}
+                <Icon className={`relative z-[1] h-6 w-6 ${isActive ? "text-[var(--brand-50)]" : ""}`} strokeWidth={1.75} />
+              </span>
+              <span className={`bottom-nav-label relative z-[1] text-[11px] font-semibold leading-none ${isActive ? "text-[var(--brand-50)]" : ""}`}>{tab.label}</span>
             </Link>
           )
         })}
@@ -86,15 +85,17 @@ export function BottomNav() {
           <SheetTrigger asChild>
             <button
               type="button"
-              className={`relative flex flex-1 flex-col items-center justify-center gap-0.5 transition-colors ${
-                moreActive ? "text-sapphire-700" : "text-ink-3 hover:bg-surface-hover hover:text-ink active:text-ink"
+              className={`relative flex min-h-16 flex-1 flex-col items-center justify-center gap-1 transition-colors ${
+                moreActive ? "text-[var(--primary)]" : "text-[var(--text-primary)] hover:text-[var(--accent)]"
               }`}
             >
-              {moreActive && (
-                <span className="absolute top-0 left-3 right-3 h-[3px] rounded-b-full bg-grad-sapphire" />
-              )}
-              <Menu className="h-6 w-6" />
-              <span className="bottom-nav-label text-[11px] font-semibold leading-none">More</span>
+              <span className="relative z-[1] flex h-8 w-8 items-center justify-center">
+                {moreActive && (
+                  <span className="absolute inset-0 rounded-full bg-[var(--layer-feature)] shadow-[var(--shadow-brand)]" />
+                )}
+                <Menu className={`relative z-[1] h-6 w-6 ${moreActive ? "text-[var(--brand-50)]" : ""}`} strokeWidth={1.75} />
+              </span>
+              <span className={`bottom-nav-label relative z-[1] text-[11px] font-semibold leading-none ${moreActive ? "text-[var(--brand-50)]" : ""}`}>More</span>
             </button>
           </SheetTrigger>
           <SheetContent
@@ -102,12 +103,12 @@ export function BottomNav() {
             className="max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-[var(--ds-line)] bg-card p-0"
           >
             <SheetTitle className="sr-only">More</SheetTitle>
-            <div className="mx-auto mt-3 h-1.5 w-12 rounded-full bg-sapphire-300" />
+            <div className="mx-auto mt-3 h-1.5 w-12 rounded-full bg-[var(--brand-700)]" />
 
             <div className="space-y-6 p-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
               {moreLinks.length > 0 && (
                 <div>
-                  <p className="sidebar-section-label !px-1 !pt-0">{mainSectionLabel}</p>
+                  <p className="sidebar-section-label !px-1 !pt-0">Library</p>
                   {moreLinks.map((item) => {
                     const Icon = NAV_ICONS[item.icon]
                     const isActive = pathname === item.path
@@ -167,8 +168,8 @@ export function BottomNav() {
                     onClick={() => setMoreOpen(false)}
                     className={`flex items-center gap-3 rounded-[var(--ds-r-md)] px-4 py-3.5 text-[15px] font-medium ${
                       pathname === "/admin" || pathname.startsWith("/admin/")
-                        ? "text-sapphire-700"
-                        : "text-ink-2 hover:bg-[rgba(15,23,42,0.04)]"
+                        ? "text-[var(--primary)]"
+                        : "text-[var(--text-primary)] hover:bg-[var(--surface-hover)]"
                     }`}
                   >
                     <Link2 className="h-5 w-5" />
@@ -179,7 +180,7 @@ export function BottomNav() {
                   <Link
                     href={supportItem.path}
                     onClick={() => setMoreOpen(false)}
-                    className="flex items-center gap-3 rounded-[var(--ds-r-md)] px-4 py-3.5 text-[15px] font-medium text-ink-2 hover:bg-[rgba(15,23,42,0.04)]"
+                    className="flex items-center gap-3 rounded-[var(--ds-r-md)] px-4 py-3.5 text-[15px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-hover)]"
                   >
                     {(() => {
                       const Icon = NAV_ICONS[supportItem.icon]

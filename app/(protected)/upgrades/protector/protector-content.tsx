@@ -17,7 +17,6 @@ import {
   ShieldCheck,
   User,
 } from "lucide-react"
-import { PremiumFeatureBanner, PremiumSteps } from "@/components/premium-feature-chrome"
 import { PremiumPageLayout } from "@/components/premium-page-layout"
 import { PremiumVideoTutorial } from "@/components/premium-video-tutorial"
 import { PRODUCT_NAME } from "@/lib/brand"
@@ -30,10 +29,8 @@ interface ProtectorContentProps {
   data: ProtectorViewModel
 }
 
-const SUCCESS = "var(--ds-sapphire-500)"
-const SUCCESS_BG = "var(--ds-offer-green-100)"
-const WARNING = "var(--warning)"
-const WARNING_BG = "var(--warning-light)"
+const panelClass =
+  "overflow-hidden rounded-[2.75rem] border border-[var(--border-subtle)] bg-[var(--layer-elevated)] shadow-[var(--ds-shadow-card)]"
 
 const PROTECTION_LAYERS = [
   {
@@ -111,14 +108,11 @@ function StatusChip({
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center gap-1 rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wide",
-        ok
-          ? "border-transparent text-white"
-          : "border-warning/30 text-warning",
+        "inline-flex shrink-0 items-center gap-1 text-xs font-medium",
+        ok ? "text-[var(--ds-offer-green-800)]" : "text-warning",
       )}
-      style={{ backgroundColor: ok ? SUCCESS : WARNING_BG }}
     >
-      <CheckCircle2 className="h-3 w-3" aria-hidden />
+      <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
       {ok ? okLabel : pendingLabel}
     </span>
   )
@@ -136,18 +130,16 @@ function AccountRow({
   tone?: "ink" | "success" | "warning"
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-[var(--ds-line)] bg-surface-nested/60 px-3 py-3">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
+    <div className="surface-action flex items-center gap-3 rounded-[1.25rem] px-4 py-3">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--layer-elevated)] text-ink-3">
         <Icon className="h-4 w-4" aria-hidden />
       </div>
       <div className="min-w-0">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-text-muted">{label}</p>
+        <p className="text-sm text-ink-3">{label}</p>
         <p
           className={cn(
-            "truncate text-sm font-semibold",
-            tone === "success" && "text-sapphire-700",
-            tone === "warning" && "text-warning",
-            tone === "ink" && "text-ink",
+            "truncate text-sm font-medium",
+            tone === "warning" ? "text-warning" : "text-ink",
           )}
         >
           {value}
@@ -173,16 +165,14 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
       }
       actions={
         isEmailVerified ? (
-          <div className="inline-flex items-center gap-2 rounded-full bg-grad-sapphire px-4 py-2.5 text-white shadow-sapphire">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
-            <span className="text-xs font-medium uppercase tracking-wider">All systems secure</span>
+          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--layer-elevated)] px-4 py-2.5 text-ink">
+            <ShieldCheck size={15} aria-hidden />
+            <span className="text-sm font-medium">All systems secure</span>
           </div>
         ) : (
-          <div className="inline-flex items-center gap-2 rounded-full border border-warning/30 bg-warning-light px-4 py-2.5">
-            <span className="h-2 w-2 rounded-full bg-warning" />
-            <span className="text-xs font-medium uppercase tracking-wider text-warning">
-              Verification pending
-            </span>
+          <div className="inline-flex items-center gap-2 rounded-full border border-warning/30 bg-warning-light px-4 py-2.5 text-warning">
+            <Shield size={15} aria-hidden />
+            <span className="text-sm font-medium">Verification pending</span>
           </div>
         )
       }
@@ -190,169 +180,129 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
       <PremiumVideoTutorial
         premiumKey="protector"
         vimeoId={protectorVideoId}
-        title={`${PREMIUM_FEATURE_LABELS.protector} Training`}
-        description={`Watch this to understand how ${PREMIUM_FEATURE_LABELS.protector} keeps your ${PRODUCT_NAME} account and activity secure.`}
+        title={`${PREMIUM_FEATURE_LABELS.protector} training`}
+        description={`How ${PREMIUM_FEATURE_LABELS.protector} shows the live security status of your ${PRODUCT_NAME} account.`}
         iframeTitle={`${PREMIUM_FEATURE_LABELS.protector} training video`}
       />
 
-      <PremiumFeatureBanner
-        icon={ShieldCheck}
-        kicker="Live monitoring"
-        title={isEmailVerified ? "Protected account" : "Finish verification"}
-        description={
-          <>
-            {PRODUCT_NAME} watches sign-in, session, and platform health for {displayName}. This page
-            is the live readout — nothing here is a scan you have to run.
-          </>
-        }
-        chip={isEmailVerified ? "Email verified" : "Verify email"}
-      />
-
-      <PremiumSteps title="What stays protected" steps={PROTECTION_LAYERS} />
-
-      <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
-        {[
-          {
-            label: "Protection",
-            value: isEmailVerified ? "Strong" : "Good",
-            ok: true,
-          },
-          {
-            label: "Account status",
-            value: accountStatus,
-            ok: isEmailVerified,
-          },
-          { label: "Security", value: "Bank-level", ok: true },
-          { label: "Availability", value: "Always on", ok: true },
-        ].map((metric) => (
-          <div
-            key={metric.label}
-            className="glass-card p-3.5 sm:p-5"
-          >
-            <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-text-muted sm:mb-2 sm:text-[11px]">
-              {metric.label}
-            </p>
-            <p
-              className="break-words text-lg font-semibold leading-tight sm:text-2xl lg:text-3xl"
-              style={{ color: metric.ok ? SUCCESS : WARNING }}
+      <section className={cn(panelClass, "px-5 py-6 md:px-8 md:py-8")}>
+        <h2 className="text-xl font-medium tracking-tight text-ink">How it works</h2>
+        <p className="mt-1 max-w-[65ch] text-sm leading-relaxed text-ink-3">
+          {PRODUCT_NAME} watches sign-in, session, and platform health for {displayName}. This page is a live readout. Nothing here is a scan you have to run.
+        </p>
+        <ol className="mt-6 grid gap-3 sm:grid-cols-3">
+          {PROTECTION_LAYERS.map((step) => (
+            <li key={step.num} className="surface-action flex h-full flex-col rounded-[1.75rem] p-5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-grad-sapphire text-sm font-medium text-white">
+                {step.num}
+              </span>
+              <h3 className="mt-4 text-base font-medium text-ink">{step.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-3">{step.desc}</p>
+            </li>
+          ))}
+        </ol>
+        <dl className="mt-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {[
+            { label: "Protection", value: isEmailVerified ? "Strong" : "Good" },
+            { label: "Account status", value: accountStatus },
+            { label: "Security", value: "Bank-level" },
+            { label: "Availability", value: "Always on" },
+          ].map((metric) => (
+            <div
+              key={metric.label}
+              className="rounded-[1.75rem] border border-[var(--border-subtle)] bg-[var(--layer-shell)] px-5 py-4"
             >
-              {metric.value}
-            </p>
-          </div>
-        ))}
-      </div>
+              <dt className="text-sm text-ink-3">{metric.label}</dt>
+              <dd className="mt-1 text-lg font-medium text-ink">{metric.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="glass-card p-5 sm:p-6 lg:col-span-2">
-          <div className="mb-5 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
-              <ShieldCheck size={18} aria-hidden />
-            </div>
-            <div>
-              <h2 className="text-lg font-medium text-ink">Security checks</h2>
-              <p className="text-sm text-ink-3">Live status for this session</p>
-            </div>
-          </div>
-          <div className="space-y-3">
-            {securityChecks.map((check) => {
-              const Icon = check.icon
-              const verified = check.title !== "Account Verified" || isEmailVerified
-              return (
-                <div
-                  key={check.title}
-                  className="flex items-center gap-4 rounded-xl border border-[var(--ds-line)] bg-card p-4"
-                >
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
+        <div className="space-y-6 lg:col-span-2">
+          <section className={cn(panelClass, "px-5 py-6 md:px-8 md:py-8")}>
+            <h2 className="text-xl font-medium tracking-tight text-ink">Security checks</h2>
+            <p className="mt-1 text-sm text-ink-3">Live status for this session</p>
+            <div className="mt-5 space-y-3">
+              {securityChecks.map((check) => {
+                const Icon = check.icon
+                const verified = check.title !== "Account Verified" || isEmailVerified
+                return (
                   <div
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                    style={{
-                      backgroundColor: verified ? SUCCESS_BG : WARNING_BG,
-                      color: verified ? SUCCESS : WARNING,
-                    }}
+                    key={check.title}
+                    className="surface-action flex items-center gap-4 rounded-[1.25rem] p-4"
                   >
-                    <Icon className="h-5 w-5" aria-hidden />
+                    <div
+                      className={cn(
+                        "flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--layer-elevated)]",
+                        verified ? "text-ink-3" : "text-warning",
+                      )}
+                    >
+                      <Icon className="h-5 w-5" aria-hidden />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-ink">{check.title}</p>
+                      <p className="mt-0.5 text-sm leading-relaxed text-ink-3">{check.description}</p>
+                    </div>
+                    <StatusChip ok={verified} okLabel="Verified" pendingLabel="Pending" />
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-ink">{check.title}</p>
-                    <p className="mt-0.5 text-xs leading-relaxed text-text-secondary">
-                      {check.description}
-                    </p>
-                  </div>
-                  <StatusChip ok={verified} okLabel="Verified" pendingLabel="Pending" />
-                </div>
-              )
-            })}
-          </div>
-        </div>
+                )
+              })}
+            </div>
+          </section>
 
-        <div className="space-y-6">
-          <div className="glass-card p-5 sm:p-6">
-            <div className="mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
-                <User size={18} aria-hidden />
-              </div>
-              <div>
-                <h2 className="text-lg font-medium text-ink">Account info</h2>
-                <p className="text-sm text-ink-3">Who this session belongs to</p>
-              </div>
-            </div>
-            <div className="space-y-2.5">
-              {account.fullName ? (
-                <AccountRow icon={User} label="Name" value={account.fullName} />
-              ) : null}
-              <AccountRow icon={Mail} label="Email" value={account.email} />
-              <AccountRow icon={Gem} label="Premium tier" value={account.premiumTier} tone="success" />
-              <AccountRow icon={Shield} label="Membership" value={account.membership} tone="success" />
-              <AccountRow
-                icon={Lock}
-                label="Auth"
-                value={account.authProtection}
-                tone={isEmailVerified ? "success" : "warning"}
-              />
-              <AccountRow icon={Calendar} label="Last login" value={account.lastLogin} />
-              <AccountRow icon={Calendar} label="Member since" value={account.memberSince} />
-              <AccountRow icon={Fingerprint} label="Account ID" value={account.accountId} />
-              <AccountRow
-                icon={FileText}
-                label="Comment packs"
-                value={`${account.pagesGenerated} generated`}
-              />
-            </div>
-          </div>
-
-          <div className="glass-card p-5 sm:p-6">
-            <div className="mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
-                <Activity size={18} aria-hidden />
-              </div>
-              <div>
-                <h2 className="text-lg font-medium text-ink">Recent activity</h2>
-                <p className="text-sm text-ink-3">Latest account events</p>
-              </div>
-            </div>
-            <div className="space-y-3">
+          <section className={cn(panelClass, "px-5 py-6 md:px-8 md:py-8")}>
+            <h2 className="text-xl font-medium tracking-tight text-ink">Recent activity</h2>
+            <p className="mt-1 text-sm text-ink-3">Latest account events</p>
+            <div className="mt-5 flex flex-col gap-3 lg:flex-row">
               {activities.map((event) => {
                 const Icon = activityIcons[event.id as keyof typeof activityIcons] ?? Activity
                 return (
                   <div
                     key={event.id}
-                    className="flex items-start gap-3 rounded-xl border border-[var(--ds-line)] px-3 py-3"
+                    className="surface-action flex min-w-0 flex-1 items-start gap-3 rounded-[1.25rem] px-4 py-3"
                   >
-                    <div
-                      className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
-                      style={{ backgroundColor: SUCCESS_BG, color: SUCCESS }}
-                    >
+                    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--layer-elevated)] text-ink-3">
                       <Icon className="h-4 w-4" aria-hidden />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-ink">{event.label}</p>
-                      <p className="text-xs text-text-secondary">{event.time}</p>
+                      <p className="text-sm text-ink-3">{event.time}</p>
                     </div>
                   </div>
                 )
               })}
             </div>
-          </div>
+          </section>
         </div>
+
+        <section className={cn(panelClass, "px-5 py-6 md:px-8 md:py-8")}>
+          <h2 className="text-xl font-medium tracking-tight text-ink">Account info</h2>
+          <p className="mt-1 text-sm text-ink-3">Who this session belongs to</p>
+          <div className="mt-5 space-y-2.5">
+            {account.fullName ? (
+              <AccountRow icon={User} label="Name" value={account.fullName} />
+            ) : null}
+            <AccountRow icon={Mail} label="Email" value={account.email} />
+            <AccountRow icon={Gem} label="Premium tier" value={account.premiumTier} tone="success" />
+            <AccountRow icon={Shield} label="Membership" value={account.membership} tone="success" />
+            <AccountRow
+              icon={Lock}
+              label="Auth"
+              value={account.authProtection}
+              tone={isEmailVerified ? "success" : "warning"}
+            />
+            <AccountRow icon={Calendar} label="Last login" value={account.lastLogin} />
+            <AccountRow icon={Calendar} label="Member since" value={account.memberSince} />
+            <AccountRow icon={Fingerprint} label="Account ID" value={account.accountId} />
+            <AccountRow
+              icon={FileText}
+              label="Comment packs"
+              value={`${account.pagesGenerated} generated`}
+            />
+          </div>
+        </section>
       </div>
     </PremiumPageLayout>
   )

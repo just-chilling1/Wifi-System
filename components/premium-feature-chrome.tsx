@@ -37,7 +37,7 @@ export function PremiumFeatureBanner({
             </div>
           </div>
           {chip ? (
-            <span className="inline-flex items-center self-start rounded-full border border-[var(--ds-line-sapphire)] bg-white px-3 py-1.5 text-xs font-medium text-sapphire-700 md:self-center">
+            <span className="inline-flex items-center self-start rounded-full border border-[var(--ds-line-sapphire)] bg-[var(--layer-elevated)] px-3 py-1.5 text-xs font-medium text-sapphire-700 md:self-center">
               {chip}
             </span>
           ) : null}

@@ -67,7 +67,7 @@ export function PremiumVideoTutorial({
                     className="absolute inset-0 h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-ink via-ink-2 to-ink" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-burgundy-950 via-burgundy-800 to-burgundy-700" />
                 )}
                 <div className="video-thumb-scrim absolute inset-0" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">

@@ -86,21 +86,13 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
             : "flex flex-col gap-2 sm:flex-row sm:items-center"
         }
       >
-        <Button
-          type="button"
-          onClick={handleToggleComments}
-          className="h-11 w-full rounded-xl border-2 border-transparent text-sm font-semibold text-white shadow-none sm:flex-1"
-        >
+        <Button type="button" onClick={handleToggleComments} className="h-11 w-full sm:flex-1">
           {expanded ? <ChevronUp className="h-4 w-4" /> : <MessageSquare className="h-4 w-4" />}
           {expanded ? "Hide Comments" : "View Comments"}
         </Button>
 
         <div className="flex items-center gap-2">
-          <Button
-            asChild
-            variant="outline"
-            className="h-11 min-w-0 flex-1 rounded-xl border-2 border-[var(--ds-line-strong)] bg-white px-4 text-sm font-semibold shadow-none hover:border-sapphire-700 hover:bg-sapphire-100 hover:text-sapphire-700 hover:shadow-none sm:min-w-[9.5rem] sm:flex-none"
-          >
+          <Button asChild variant="outline" className="h-11 min-w-0 flex-1 px-4 sm:min-w-[9.5rem] sm:flex-none">
             <a href={videoUrl || affiliateLink} target="_blank" rel="noopener noreferrer">
               <Youtube className="h-4 w-4" />
               Open Video
@@ -113,7 +105,7 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
             onClick={() => setConfirmOpen(true)}
             disabled={loading}
             aria-label="Delete pack"
-            className="h-11 w-11 shrink-0 rounded-xl border-2 border-[#C53030]/30 px-0 text-[#C53030] shadow-none hover:border-[#C53030] hover:bg-[#C53030]/15 hover:text-[#9B2C2C] hover:shadow-none"
+            className="h-11 w-11 shrink-0 px-0 text-[var(--danger)] hover:border-[var(--destructive)] hover:bg-[var(--danger-light)] hover:text-[var(--danger)]"
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -121,33 +113,33 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
       </div>
 
       {expanded && (
-        <div className="space-y-2.5 rounded-xl border border-[var(--ds-line-sapphire)] bg-[var(--ds-sapphire-100)] p-3 sm:p-4">
+        <div className="space-y-2.5 rounded-xl border border-[var(--ds-line)] bg-[var(--surface-nested)] p-3 sm:p-4">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
             <p className="min-w-0 text-sm font-semibold leading-snug text-ink">
-              {comments.length} comment{comments.length === 1 ? "" : "s"} — copy and paste on the video
+              {comments.length} comment{comments.length === 1 ? "" : "s"}. Copy one and paste it on the video.
             </p>
             <Button
               type="button"
               onClick={handleCopyAll}
               variant="outline"
               size="sm"
-              className="h-8 w-full rounded-lg text-xs font-semibold sm:w-auto"
+              className="h-8 w-full text-xs sm:w-auto"
             >
-              {copiedAll ? <Check className="h-3.5 w-3.5 text-[#16875c]" /> : <Copy className="h-3.5 w-3.5" />}
+              {copiedAll ? <Check className="h-3.5 w-3.5 text-[var(--success)]" /> : <Copy className="h-3.5 w-3.5" />}
               {copiedAll ? "Copied" : "Copy All"}
             </Button>
           </div>
 
           {comments.length === 0 ? (
-            <p className="text-sm text-text-secondary">No comments found in this pack.</p>
+            <p className="text-sm text-ink-3">No comments found in this pack.</p>
           ) : (
             comments.map((comment, idx) => (
               <div
                 key={idx}
-                className="flex flex-col gap-2.5 rounded-xl border border-[var(--ds-line)] bg-white p-3 sm:flex-row sm:items-start"
+                className="flex flex-col gap-2.5 rounded-xl border border-[var(--ds-line)] bg-[var(--layer-elevated)] p-3 sm:flex-row sm:items-start"
               >
                 <div className="flex min-w-0 flex-1 items-start gap-2.5">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sapphire-200 text-[10px] font-bold text-sapphire-700">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--surface-hover)] text-[10px] font-semibold text-[var(--link)]">
                     {idx + 1}
                   </span>
                   <p className="min-w-0 flex-1 text-sm leading-relaxed text-ink">{comment}</p>
@@ -156,7 +148,7 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
                   type="button"
                   onClick={() => handleCopyOne(idx)}
                   size="sm"
-                  className="h-8 w-full shrink-0 rounded-lg text-xs font-bold sm:w-auto"
+                  className="h-8 w-full shrink-0 text-xs sm:w-auto"
                 >
                   {copiedIdx === idx ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
                   {copiedIdx === idx ? "Copied" : "Copy"}
@@ -168,31 +160,22 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
       )}
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DialogContent className="glass-strong border-2 border-[#C53030]/40 text-ink sm:max-w-md">
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-xl font-black text-ink">
-              <AlertTriangle className="w-5 h-5 text-[#C53030]" />
+            <DialogTitle className="flex items-center gap-2 text-lg font-semibold text-ink">
+              <AlertTriangle className="h-5 w-5 text-[var(--danger)]" />
               Delete this pack?
             </DialogTitle>
-            <DialogDescription className="text-ink-4">
+            <DialogDescription className="text-ink-3">
               This will permanently remove this comment pack. This can&apos;t be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setConfirmOpen(false)}
-              disabled={loading}
-              className="glass border-2 border-[var(--border)] text-ink font-bold rounded-xl"
-            >
+            <Button variant="outline" onClick={() => setConfirmOpen(false)} disabled={loading}>
               Keep It
             </Button>
-            <Button
-              onClick={handleDelete}
-              disabled={loading}
-              className="bg-[#C53030] hover:bg-[#9B2C2C] text-white font-black rounded-xl"
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
+            <Button variant="destructive" onClick={handleDelete} disabled={loading}>
+              <Trash2 className="h-4 w-4" />
               Delete
             </Button>
           </DialogFooter>

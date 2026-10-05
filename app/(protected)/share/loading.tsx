@@ -1,11 +1,19 @@
-import { Loader2 } from "lucide-react"
-
 export default function ShareLoading() {
   return (
-    <div className="flex items-center justify-center min-h-[60vh]">
-      <div className="text-center space-y-4">
-        <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto" />
-        <p className="text-lg text-muted-foreground">Loading your links...</p>
+    <div className="page-container mx-auto w-full max-w-7xl">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="space-y-3">
+          <div className="h-3 w-28 animate-pulse rounded bg-[var(--surface-hover)]" />
+          <div className="h-10 w-48 max-w-full animate-pulse rounded-lg bg-[var(--surface-hover)]" />
+          <div className="h-5 w-80 max-w-full animate-pulse rounded bg-[var(--surface)]" />
+        </div>
+        <div className="h-12 w-52 animate-pulse rounded-xl bg-[var(--surface-hover)]" />
+      </div>
+      <div className="h-24 animate-pulse rounded-2xl bg-[var(--layer-elevated)]" />
+      <div className="flex flex-col gap-4">
+        {[1, 2].map((i) => (
+          <div key={i} className="h-44 animate-pulse rounded-2xl bg-[var(--layer-elevated)]" />
+        ))}
       </div>
     </div>
   )

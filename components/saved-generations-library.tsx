@@ -54,7 +54,7 @@ export function SavedGenerationsLibrary<T extends SavedGenerationRow>({
         aria-expanded={libraryOpen}
         className="flex w-full flex-wrap items-center gap-3 border-b border-[var(--ds-line)] bg-sapphire-100 p-5 text-left transition-colors hover:bg-sapphire-100/80 md:p-6"
       >
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-sapphire-700 shadow-sm">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[var(--layer-elevated)] text-sapphire-700 shadow-sm">
           <FolderOpen size={24} strokeWidth={1.75} aria-hidden />
         </span>
         <span className="min-w-0 flex-1">
@@ -81,7 +81,7 @@ export function SavedGenerationsLibrary<T extends SavedGenerationRow>({
           {error ? (
             <p
               role="alert"
-              className="rounded-xl border border-[#C53030]/30 bg-[#FDE4E4] px-3.5 py-2.5 text-sm font-medium text-[#C53030]"
+              className="rounded-xl border border-[#C53030]/30 bg-danger-light px-3.5 py-2.5 text-sm font-medium text-danger"
             >
               {error}
             </p>

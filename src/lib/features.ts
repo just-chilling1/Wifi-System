@@ -4,9 +4,11 @@ import {
   bottomNavTabs,
   homeNav,
   mainNav,
+  mainNavSections,
   premiumNav,
   supportNav,
   type NavItem,
+  type NavSection,
 } from "@/config/navigation.config"
 
 function filterNav(items: NavItem[]): NavItem[] {
@@ -15,6 +17,12 @@ function filterNav(items: NavItem[]): NavItem[] {
 
 export function getMainNav(): NavItem[] {
   return filterNav(mainNav)
+}
+
+export function getMainNavSections(): NavSection[] {
+  return mainNavSections
+    .map((section) => ({ ...section, items: filterNav(section.items) }))
+    .filter((section) => section.items.length > 0)
 }
 
 export function getVisiblePremiumNav(): NavItem[] {

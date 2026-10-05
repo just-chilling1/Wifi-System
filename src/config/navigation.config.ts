@@ -31,38 +31,69 @@ export const homeNav: NavItem = {
   icon: "LayoutDashboard",
 }
 
-/** Main sidebar functions — paths match current Wifi Code routes. */
-export const mainNav: NavItem[] = [
-  homeNav,
+export interface NavSection {
+  id: string
+  label: string
+  items: NavItem[]
+}
+
+/** Sidebar groups — paths match current product routes. */
+export const mainNavSections: NavSection[] = [
   {
-    path: "/create",
-    label: "Gold Rush",
-    subtitle: "Make comments",
-    icon: "Brain",
-    feature: "gold-rush",
+    id: "home",
+    label: "Home",
+    items: [homeNav],
   },
   {
-    path: "/pages",
-    label: "My Vault",
-    subtitle: "Your saved comments",
-    icon: "FolderOpen",
-    feature: "my-vault",
+    id: "generate",
+    label: "Generate",
+    items: [
+      {
+        path: "/create",
+        label: "Gold Rush",
+        subtitle: "Make comments",
+        icon: "Brain",
+        feature: "gold-rush",
+      },
+    ],
   },
   {
-    path: "/share",
-    label: "Your links",
-    subtitle: "Saved affiliate links",
-    icon: "Upload",
-    feature: "link-vault",
+    id: "library",
+    label: "Library",
+    items: [
+      {
+        path: "/pages",
+        label: "My Vault",
+        subtitle: "Your saved comments",
+        icon: "FolderOpen",
+        feature: "my-vault",
+      },
+      {
+        path: "/share",
+        label: "Link Vault",
+        subtitle: "Saved affiliate links",
+        icon: "Upload",
+        feature: "link-vault",
+      },
+    ],
   },
   {
-    path: "/training",
-    label: "Academy",
-    subtitle: "Training videos",
-    icon: "Play",
-    feature: "training",
+    id: "training",
+    label: "Training",
+    items: [
+      {
+        path: "/training",
+        label: "Academy",
+        subtitle: "Training videos",
+        icon: "Play",
+        feature: "training",
+      },
+    ],
   },
 ]
+
+/** Flat main nav, derived from sidebar sections. */
+export const mainNav: NavItem[] = mainNavSections.flatMap((section) => section.items)
 
 export const supportNav: NavItem = {
   path: "/support",
@@ -118,7 +149,6 @@ export const premiumNav: NavItem[] = [
 ]
 
 export const premiumSectionLabel = "Premium Features"
-export const mainSectionLabel = "Main Functions"
 
 /** Primary mobile bottom tabs (first 4) + More sheet. */
 export const bottomNavTabs: NavItem[] = [
@@ -132,7 +162,7 @@ export const bottomNavTabs: NavItem[] = [
 export const bottomNavMoreLinks: NavItem[] = [
   {
     path: "/share",
-    label: "Your links",
+    label: "Link Vault",
     icon: "Upload",
     feature: "link-vault",
   },

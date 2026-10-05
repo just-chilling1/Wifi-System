@@ -23,7 +23,7 @@ const primaryCtaClass =
   "rounded-xl bg-grad-sapphire font-medium text-white shadow-sapphire transition-[background-color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:shadow-sapphire"
 
 const outlineCtaClass =
-  "rounded-xl border-2 border-[var(--ds-line-strong)] bg-white font-medium !text-ink transition-[background-color,border-color,color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:!text-sapphire-700 hover:shadow-hover"
+  "rounded-xl border-2 border-[var(--ds-line-strong)] bg-[var(--layer-elevated)] font-medium !text-ink transition-[background-color,border-color,color,box-shadow,transform] duration-[160ms] hover:-translate-y-px hover:border-primary hover:bg-primary-light hover:!text-sapphire-700 hover:shadow-hover"
 
 const POST_ACCENTS = [
   {
@@ -89,7 +89,7 @@ function KitSection({
   return (
     <details
       open={defaultOpen}
-      className={cn("group overflow-hidden rounded-2xl border-2 bg-white shadow-[var(--ds-shadow-raised)]", toneClass)}
+      className={cn("group overflow-hidden rounded-2xl border-2 bg-[var(--layer-elevated)] shadow-[var(--ds-shadow-raised)]", toneClass)}
     >
       <summary
         className={cn(
@@ -198,7 +198,7 @@ export function DfyResultPanel({
         defaultOpen={videos.length > 0}
         tone="video"
       >
-        <div className="flex items-center gap-3 rounded-xl border border-[var(--ds-line-sapphire)] bg-white px-3 py-3">
+        <div className="flex items-center gap-3 rounded-xl border border-[var(--ds-line-sapphire)] bg-[var(--layer-elevated)] px-3 py-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
             <Youtube className="h-[18px] w-[18px]" />
           </div>
@@ -264,7 +264,7 @@ export function DfyResultPanel({
                       <div
                         key={id}
                         className={cn(
-                          "flex flex-col gap-3 rounded-xl border-2 border-[var(--ds-line-strong)] border-l-4 border-l-primary bg-white p-3.5 shadow-sm",
+                          "flex flex-col gap-3 rounded-xl border-2 border-[var(--ds-line-strong)] border-l-4 border-l-primary bg-[var(--layer-elevated)] p-3.5 shadow-sm",
                           isUsed && "border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)]/40",
                         )}
                       >
@@ -313,7 +313,7 @@ export function DfyResultPanel({
           defaultOpen={isGeneratingArticle || retryingArticle || !!articleError || !!article}
           tone="neutral"
         >
-          <div className="flex items-center gap-3 rounded-xl border border-[var(--ds-line-strong)] bg-white px-3 py-3">
+          <div className="flex items-center gap-3 rounded-xl border border-[var(--ds-line-strong)] bg-[var(--layer-elevated)] px-3 py-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sapphire-100 text-sapphire-700">
               <FileText className="h-[18px] w-[18px]" aria-hidden />
             </div>
@@ -350,7 +350,7 @@ export function DfyResultPanel({
           ) : article ? (
             <article className="overflow-hidden rounded-2xl border-2 border-[var(--ds-line-strong)] bg-card shadow-[var(--ds-shadow-card)]">
               {article.saveWarning ? (
-                <p className="border-b border-[var(--ds-line)] bg-[#FDE4E4] px-5 py-3 text-sm font-medium text-[#C53030]">
+                <p className="border-b border-[var(--ds-line)] bg-danger-light px-5 py-3 text-sm font-medium text-danger">
                   {article.saveWarning}
                 </p>
               ) : null}
@@ -433,7 +433,7 @@ export function DfyResultPanel({
         defaultOpen={posts.length > 0}
         tone="social"
       >
-        <div className="flex items-start gap-3 rounded-xl border border-[var(--ds-line-offer)] bg-white px-3 py-3">
+        <div className="flex items-start gap-3 rounded-xl border border-[var(--ds-line-offer)] bg-[var(--layer-elevated)] px-3 py-3">
           <Megaphone className="mt-0.5 h-[18px] w-[18px] shrink-0 text-sapphire-700" />
           <p className="text-sm font-medium text-ink">
             {posts.length > 0

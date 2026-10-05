@@ -1,3 +1,4 @@
+import { PRODUCT_NAME } from "@/lib/brand"
 import { INSTANT_INCOME_POST_COUNT } from "./niches"
 
 export function buildInstantIncomePostsPrompt(input: {
@@ -26,7 +27,7 @@ Each post MUST:
 - Use a different angle from the other posts. Mix these angles across the set: a specific result, a mistake they made for months, skepticism then surprise, a small everyday win, and a "I wish I had this earlier" story.
 - End with the link on its own line, exactly: ${input.promoLink}
 - Sound human: short paragraphs, contractions, no hashtags, no income promises, no medical diagnoses, no "DM me"
-- Do not mention Wifi Code, AI, or that the post was generated
+- Do not mention ${PRODUCT_NAME}, AI, or that the post was generated
 
 Forbidden:
 - Generic copy that could promote any product in any niche

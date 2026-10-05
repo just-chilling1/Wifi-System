@@ -68,7 +68,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <AppSidebar />
 
         <div className="relative z-10 flex min-w-0 flex-1 flex-col">
-          <main className="app-main-canvas relative min-w-0 flex-1 overflow-x-clip overflow-y-auto scroll-smooth px-3 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] pt-[calc(var(--mobile-header-h,3.5rem)+env(safe-area-inset-top,0px))] transition-[padding] duration-300 sm:px-6 lg:pb-8 lg:pl-[calc(var(--sidebar-w)+var(--sidebar-gap))] lg:pr-8 lg:pt-8">
+          <main className="app-main-canvas relative z-[1] min-w-0 flex-1 overflow-x-clip overflow-y-auto scroll-smooth px-4 pb-[calc(6.5rem+env(safe-area-inset-bottom,0px))] pt-[calc(var(--mobile-header-h,3.75rem)+env(safe-area-inset-top,0px))] transition-[padding] duration-300 sm:px-6 lg:pb-16 lg:pl-[calc(var(--sidebar-w)+var(--sidebar-gap))] lg:pr-12 lg:pt-6">
             <div className="app-content-layer flex min-h-full w-full min-w-0 flex-col gap-0">
               {children}
               {!hideSupportBanner ? <SupportCtaBanner className="mx-auto mt-6 w-full max-w-7xl sm:mt-8" /> : null}

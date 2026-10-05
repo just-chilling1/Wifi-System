@@ -20,7 +20,7 @@ export function PremiumFeatureThumbnail({
   return (
     <div
       className={cn(
-        "relative shrink-0 overflow-hidden bg-ink",
+        "relative shrink-0 overflow-hidden bg-burgundy-950",
         variant === "card" ? "aspect-video w-full" : "h-14 w-20 rounded-lg",
         className,
       )}

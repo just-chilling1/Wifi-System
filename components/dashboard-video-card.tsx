@@ -56,7 +56,7 @@ export function DashboardVideoCard({ video }: Props) {
           }}
           disabled={!canPlay}
           aria-label={canPlay ? `Play ${video.title}` : `${video.title} — coming soon`}
-          className="group relative block aspect-video w-full overflow-hidden bg-ink text-left disabled:cursor-default"
+          className="group relative block aspect-video w-full overflow-hidden bg-burgundy-950 text-left disabled:cursor-default"
         >
           {thumbnail ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -68,19 +68,19 @@ export function DashboardVideoCard({ video }: Props) {
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-ink via-[#1e3a5f] to-sapphire-700" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand-950)] via-[var(--brand-800)] to-[var(--brand-600)]" />
           )}
           <div className="video-thumb-scrim absolute inset-0" />
 
-          <span className="absolute right-3 top-3 z-10 rounded-md bg-ink/80 px-2 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">
+          <span className="absolute right-3 top-3 z-10 rounded-md bg-black/70 px-2 py-1 text-[11px] font-semibold text-white backdrop-blur-sm">
             {video.duration}
           </span>
 
           <span className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-sapphire-700 shadow-[0_10px_28px_-8px_rgba(20,33,61,0.45)] transition-transform duration-300 group-hover:scale-105 motion-reduce:group-hover:scale-100 sm:h-[4.5rem] sm:w-[4.5rem]">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-[var(--brand-50)] shadow-[var(--shadow-brand)] transition-transform duration-300 group-hover:scale-105 motion-reduce:group-hover:scale-100 sm:h-[4.5rem] sm:w-[4.5rem]">
               <Play className="ml-1 h-8 w-8 fill-current" aria-hidden />
             </span>
-            <span className="inline-flex items-center rounded-full bg-ink/70 px-3 py-1.5 text-[13px] font-medium text-white backdrop-blur-sm">
+            <span className="inline-flex items-center rounded-full bg-black/70 px-3 py-1.5 text-[13px] font-medium text-white backdrop-blur-sm">
               {canPlay ? "Click to Play Video" : "Video coming soon"}
             </span>
           </span>
