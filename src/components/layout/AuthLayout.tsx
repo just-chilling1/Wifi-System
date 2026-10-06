@@ -16,7 +16,7 @@ export function AuthLayout({ children, subtitle }: AuthLayoutProps) {
   return (
     <div className="app-bg relative grid min-h-[100dvh] lg:grid-cols-[minmax(0,1.05fr)_minmax(22rem,32rem)]">
       <div className="relative z-[1] flex flex-col justify-between px-6 py-8 sm:px-10 lg:px-14 lg:py-12">
-        <BrandLogo variant="wordmark" width={180} priority />
+        <BrandLogo variant="wordmark" size={48} priority />
         <div className="max-w-xl py-10 lg:py-0">
           <p className="type-eyebrow mb-4">{brand.productName}</p>
           <h1 className="type-display-lg">{subtitle || brand.tagline}</h1>

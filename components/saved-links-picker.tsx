@@ -54,7 +54,7 @@ export function SavedLinksPicker({ links, selectedId, onSelect }: SavedLinksPick
               className={cn(
                 "flex w-full items-center gap-3 rounded-xl border-2 px-3.5 py-2.5 text-left font-sans transition-colors",
                 selected
-                  ? "border-[var(--brand-50)] bg-primary text-primary-foreground shadow-[var(--shadow-brand)]"
+                  ? "border-[var(--brand-100)] bg-[var(--primary)] text-[var(--brand-50)] shadow-[var(--shadow-brand)]"
                   : "border-[var(--border)] bg-[var(--surface-field)] text-ink hover:border-primary hover:bg-primary-light",
               )}
             >
@@ -62,7 +62,7 @@ export function SavedLinksPicker({ links, selectedId, onSelect }: SavedLinksPick
                 className={cn(
                   "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border",
                   selected
-                    ? "border-primary-foreground bg-primary-foreground text-primary"
+                    ? "border-[var(--brand-50)] bg-[var(--brand-50)] text-[var(--primary)]"
                     : "border-[var(--border-strong)] bg-transparent text-transparent",
                 )}
                 aria-hidden
@@ -73,7 +73,7 @@ export function SavedLinksPicker({ links, selectedId, onSelect }: SavedLinksPick
                 <span className="flex items-center gap-2">
                   <span className="truncate text-sm font-semibold">{link.offer_name}</span>
                   {selected ? (
-                    <span className="shrink-0 rounded-full bg-primary-foreground px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
+                    <span className="shrink-0 rounded-full bg-[var(--brand-50)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[var(--primary)]">
                       Selected
                     </span>
                   ) : null}
@@ -81,7 +81,7 @@ export function SavedLinksPicker({ links, selectedId, onSelect }: SavedLinksPick
                 <span
                   className={cn(
                     "mt-0.5 block truncate text-[12px] font-medium",
-                    selected ? "text-primary-foreground/80" : "text-text-secondary",
+                    selected ? "text-[var(--brand-100)]" : "text-text-secondary",
                   )}
                 >
                   {shortUrl(link.affiliate_url)}

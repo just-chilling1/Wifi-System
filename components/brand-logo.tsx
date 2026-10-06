@@ -6,45 +6,48 @@ type BrandLogoVariant = "icon" | "wordmark"
 
 interface BrandLogoProps {
   variant?: BrandLogoVariant
-  /** Pixel size for the icon variant (width = height). Ignored for wordmark. */
+  /** Pixel size of the mark. */
   size?: number
-  /** Wordmark width in pixels. Height scales automatically. */
-  width?: number
   className?: string
   priority?: boolean
 }
 
 export function BrandLogo({
   variant = "icon",
-  size = 52,
-  width = 260,
+  size = 32,
   className,
   priority = false,
 }: BrandLogoProps) {
-  if (variant === "wordmark") {
-    const height = Math.round(width * (289 / 865))
-    return (
-      <Image
-        src={brand.logo.src}
-        alt={brand.logo.alt}
-        width={width}
-        height={height}
-        priority={priority}
-        className={cn("h-auto max-w-full object-contain", className)}
-        style={{ width, maxWidth: "100%", height: "auto" }}
-      />
-    )
-  }
-
-  return (
+  const mark = (
     <Image
       src={brand.logo.iconSrc}
-      alt={brand.logo.alt}
+      alt={variant === "wordmark" ? "" : brand.logo.alt}
       width={size}
       height={size}
       priority={priority}
-      className={cn("object-contain", className)}
+      className="shrink-0 object-contain"
       style={{ width: size, height: size }}
     />
   )
+
+  if (variant === "wordmark") {
+    const wordHeight = Math.round(size * 0.72)
+    const wordWidth = Math.round(wordHeight * (452 / 98))
+    return (
+      <span className={cn("inline-flex min-w-0 items-center gap-2.5", className)}>
+        {mark}
+        <Image
+          src={brand.logo.wordmarkSrc}
+          alt={brand.logo.alt}
+          width={wordWidth}
+          height={wordHeight}
+          priority={priority}
+          className="h-auto max-w-full object-contain"
+          style={{ height: wordHeight, width: "auto", maxWidth: "100%" }}
+        />
+      </span>
+    )
+  }
+
+  return <span className={cn("inline-flex shrink-0", className)}>{mark}</span>
 }

@@ -225,7 +225,7 @@ export function OnboardingFlow({ firstName }: { firstName: string }) {
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl border border-[var(--ds-line-sapphire)] bg-card shadow-[var(--ds-shadow-card)]">
           {phase === "initiating" ? (
             <div className="flex flex-1 flex-col items-center justify-center px-6 py-10 text-center">
-              <BrandLogo variant="wordmark" width={200} priority className="w-full max-w-[12.5rem]" />
+              <BrandLogo variant="wordmark" size={48} priority />
               <h1 className="brand-font mt-8 text-[2rem] font-black leading-tight text-ink sm:text-[2.4rem]">
                 {cfg.initiating.title}
               </h1>

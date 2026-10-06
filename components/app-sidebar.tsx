@@ -76,27 +76,27 @@ function SidebarBody({
               onClick={onToggle}
               aria-label="Expand sidebar"
               aria-expanded={false}
-              className="sidebar-collapse-toggle"
+              className="sidebar-collapse-toggle relative z-10"
             >
               <PanelLeftOpen className="h-4 w-4" strokeWidth={1.75} />
             </button>
           </div>
         ) : (
-          <div className="flex min-w-0 items-center gap-2">
+          <div className="grid grid-cols-[minmax(0,1fr)_2.25rem] items-center gap-2">
             <Link
               href="/dashboard"
               onClick={onNavigate}
-              className="min-w-0 flex-1 transition-opacity hover:opacity-90"
+              className="min-w-0 transition-opacity hover:opacity-90"
               title={brand.productName}
             >
-              <BrandLogo variant="wordmark" width={172} priority className="max-w-[calc(100%-0.25rem)]" />
+              <BrandLogo variant="wordmark" size={40} priority />
             </Link>
             <button
               type="button"
               onClick={onToggle}
               aria-label="Collapse sidebar"
-              aria-expanded
-              className="sidebar-collapse-toggle"
+              aria-expanded={true}
+              className="sidebar-collapse-toggle relative z-10"
             >
               <PanelLeftClose className="h-4 w-4" strokeWidth={1.75} />
             </button>
@@ -292,8 +292,8 @@ export function AppSidebar() {
   return (
     <>
       <aside
-        className="app-sidebar fixed left-0 top-0 z-50 hidden h-dvh transition-[width] duration-300 lg:flex"
-        style={{ width: "var(--sidebar-w)" }}
+        className="app-sidebar pointer-events-auto fixed left-0 top-0 z-[80] hidden h-dvh transition-[width] duration-300 lg:flex"
+        style={{ width: collapsed ? "84px" : "280px" }}
       >
         <SidebarBody
           pathname={pathname}
@@ -310,8 +310,8 @@ export function AppSidebar() {
         className="mobile-header-glass fixed inset-x-0 top-0 z-40 flex items-center justify-center lg:hidden"
         style={{ paddingTop: "env(safe-area-inset-top)", height: "calc(var(--mobile-header-h, 3.5rem) + env(safe-area-inset-top))" }}
       >
-        <Link href="/dashboard" className="flex min-w-0 max-w-[min(100%,11.5rem)] items-center px-4">
-          <BrandLogo variant="wordmark" width={148} priority />
+        <Link href="/dashboard" className="flex min-w-0 items-center px-4">
+          <BrandLogo variant="wordmark" size={38} priority />
         </Link>
       </div>
     </>
