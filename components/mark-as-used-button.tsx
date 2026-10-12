@@ -24,10 +24,11 @@ export function MarkAsUsedButton({
     <Button
       type="button"
       variant="outline"
+      size="sm"
       disabled={used || marking || disabled}
       onClick={onClick}
       className={cn(
-        "h-10 flex-1 text-sm",
+        "min-w-0 w-full flex-1 basis-0 text-sm",
         used
           ? "border-[var(--ds-line-offer)] bg-[var(--ds-offer-green-100)] font-medium text-[var(--ds-offer-green-800)]"
           : outlineCtaClass,

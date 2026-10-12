@@ -676,12 +676,12 @@ export default function DFYVaultClient({
                                     </p>
                                   </div>
                                 </div>
-                                <div className="flex flex-col gap-2 sm:flex-row">
+                                <div className="grid grid-cols-2 gap-2">
                                   <Button
                                     type="button"
                                     onClick={() => handleCopyComment(template, video.videoId, index)}
                                     size="sm"
-                                    className="h-9 w-full shrink-0 px-3 sm:flex-1"
+                                    className="btn-pill h-9 min-h-9 w-full min-w-0 px-3"
                                   >
                                     {copied ? (
                                       <>
@@ -700,7 +700,7 @@ export default function DFYVaultClient({
                                     marking={markingKey === itemKey}
                                     disabled={!activeSetId}
                                     onClick={() => void handleMarkUsed(itemKey)}
-                                    className="h-9 sm:flex-1"
+                                    className="btn-pill h-9 min-h-9"
                                   />
                                 </div>
                               </div>

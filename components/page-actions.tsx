@@ -86,13 +86,17 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
             : "flex flex-col gap-2 sm:flex-row sm:items-center"
         }
       >
-        <Button type="button" onClick={handleToggleComments} className="h-11 w-full sm:flex-1">
+        <Button type="button" onClick={handleToggleComments} className="btn-pill h-11 w-full sm:flex-1">
           {expanded ? <ChevronUp className="h-4 w-4" /> : <MessageSquare className="h-4 w-4" />}
           {expanded ? "Hide Comments" : "View Comments"}
         </Button>
 
         <div className="flex items-center gap-2">
-          <Button asChild variant="outline" className="h-11 min-w-0 flex-1 px-4 sm:min-w-[9.5rem] sm:flex-none">
+          <Button
+            asChild
+            variant="outline"
+            className="btn-pill h-11 min-w-0 flex-1 px-4 sm:min-w-[9.5rem] sm:flex-none"
+          >
             <a href={videoUrl || affiliateLink} target="_blank" rel="noopener noreferrer">
               <Youtube className="h-4 w-4" />
               Open Video
@@ -105,7 +109,7 @@ export function PageActions({ pageId, affiliateLink, videoUrl, comments, stacked
             onClick={() => setConfirmOpen(true)}
             disabled={loading}
             aria-label="Delete pack"
-            className="h-11 w-11 shrink-0 px-0 text-[var(--danger)] hover:border-[var(--destructive)] hover:bg-[var(--danger-light)] hover:text-[var(--danger)]"
+            className="btn-pill h-11 w-11 shrink-0 px-0 text-[var(--danger)] hover:border-[var(--destructive)] hover:bg-[var(--danger-light)] hover:text-[var(--danger)]"
           >
             <Trash2 className="h-4 w-4" />
           </Button>

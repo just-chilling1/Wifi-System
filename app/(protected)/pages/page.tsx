@@ -6,7 +6,7 @@ import { Calendar, Copy, Eye, Flame, FolderOpen, Link2, MessageSquare, Youtube }
 import { createClient } from "@/lib/supabase/server"
 import { isDevAuthBypassEnabled } from "@/lib/auth/dev-bypass"
 import { Button } from "@/components/ui/button"
-import { InfoHint } from "@/components/ui/info-hint"
+import { PackCardStats } from "@/components/pack-card-stats"
 import { EarningsBanner } from "@/components/earnings-banner"
 import { PageHeader } from "@/components/page-header"
 import { PageActions } from "@/components/page-actions"
@@ -108,6 +108,8 @@ export default async function MyVaultPage() {
                     offerName={page.offer_name || "Comment Pack"}
                     videoTitle={page.video_title || page.title}
                     nicheIcon={niche?.icon}
+                    nicheName={niche?.name}
+                    channelTitle={page.channel_title}
                     commentCount={comments.length}
                     views={page.views || 0}
                     clicks={page.clicks || 0}
@@ -186,6 +188,8 @@ function PackCard({
   offerName,
   videoTitle,
   nicheIcon,
+  nicheName,
+  channelTitle,
   commentCount,
   views,
   clicks,
@@ -198,6 +202,8 @@ function PackCard({
   offerName: string
   videoTitle: string | null
   nicheIcon?: string | null
+  nicheName?: string | null
+  channelTitle?: string | null
   commentCount: number
   views: number
   clicks: number
@@ -215,10 +221,21 @@ function PackCard({
         </div>
         <div className="min-w-0 flex-1">
           <h2 className="ds-h3 truncate">{offerName}</h2>
+          {nicheName ? (
+            <p className="mt-1 text-sm font-medium text-ink-3">
+              <span className="text-ink-4">Niche:</span> {nicheName}
+            </p>
+          ) : null}
           {videoTitle ? (
             <p className="mt-1 flex items-center gap-1.5 text-sm text-ink-3">
               <Youtube className="h-4 w-4 shrink-0 text-ink-4" aria-hidden />
               <span className="truncate">{videoTitle}</span>
+            </p>
+          ) : null}
+          {channelTitle ? (
+            <p className="mt-1 text-sm text-ink-3">
+              <span className="text-ink-4">Channel:</span>{" "}
+              <span className="truncate">{channelTitle}</span>
             </p>
           ) : null}
           {affiliateLink ? (
@@ -234,41 +251,10 @@ function PackCard({
         </div>
       </div>
 
-      <dl className="grid grid-cols-3 overflow-hidden rounded-xl border border-[var(--ds-line)] bg-[var(--surface-nested)]">
-        <Stat label="Comments" value={commentCount} />
-        <Stat
-          label="Opens"
-          value={views}
-          hint="How many times people have opened this comment pack."
-        />
-        <Stat
-          label="Copies"
-          value={clicks}
-          hint="How many times a comment from this pack has been copied."
-        />
-      </dl>
+      <PackCardStats commentCount={commentCount} views={views} clicks={clicks} />
 
       <PageActions pageId={pageId} affiliateLink={affiliateLink} videoUrl={videoUrl ?? undefined} comments={comments} />
     </article>
   )
 }
 
-function Stat({
-  label,
-  value,
-  hint,
-}: {
-  label: string
-  value: string | number
-  hint?: string
-}) {
-  return (
-    <div className="border-l border-[var(--ds-line)] px-3 py-3 first:border-l-0 sm:px-4">
-      <dt className="flex items-center gap-1 text-xs font-medium text-ink-4">
-        {label}
-        {hint ? <InfoHint label={hint} /> : null}
-      </dt>
-      <dd className="mt-1 text-lg font-semibold tabular-nums text-ink">{value}</dd>
-    </div>
-  )
-}

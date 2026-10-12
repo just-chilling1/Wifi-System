@@ -79,13 +79,14 @@ function TrainingBannerPreview({
   const button = ctaLabel.trim() || "Button text"
 
   return (
-    <div className="earnings-banner-card relative overflow-hidden rounded-xl p-3 text-center" aria-hidden>
-      <span className="earnings-banner-badge mb-2 inline-block rounded-md bg-gold-grad px-2 py-0.5 text-[11px] font-black uppercase tracking-[0.08em] text-white">
+    <div className="bonus-training-card relative overflow-hidden rounded-xl p-3 text-center" aria-hidden>
+      <div className="bonus-training-card__glow" aria-hidden />
+      <span className="bonus-training-badge mb-2 inline-flex px-2 py-0.5 text-[10px]">
         Free Training
       </span>
-      <p className="mb-2 text-[12px] font-black uppercase leading-snug text-ink">{headline}</p>
+      <p className="mb-2 text-[12px] font-semibold leading-snug text-text-primary">{headline}</p>
       <div
-        className={`inline-flex min-h-[36px] w-full items-center justify-center rounded-xl bg-gold-grad px-3 py-1.5 text-[12px] font-black uppercase text-white ${
+        className={`bonus-training-cta !mt-0 !min-h-[36px] !rounded-[var(--ds-r-md)] !px-3 !py-1.5 !text-[11px] ${
           valid ? "" : "opacity-50"
         }`}
       >
@@ -162,7 +163,7 @@ function ScaleTrainingPreview({
       </div>
       <p className="mb-2 text-[13px] font-black leading-snug text-ink">{headline}</p>
       <div
-        className={`inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-gold-grad px-3 py-2.5 text-[12px] font-black uppercase text-white ${
+        className={`bonus-training-cta !mt-0 !min-h-[40px] !rounded-[var(--ds-r-md)] !px-3 !py-2 !text-[11px] ${
           valid ? "" : "opacity-50"
         }`}
       >

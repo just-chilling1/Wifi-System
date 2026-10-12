@@ -22,84 +22,75 @@ export function WelcomeOfferBanner({ size = "full" }: { size?: BannerSize }) {
   const prominent = size === "prominent"
 
   return (
-    <div
-      className={cn(
-        "earnings-banner-card relative w-full overflow-hidden before:hidden",
-        prominent ? "mb-0" : "mb-4",
-        compact ? "rounded-xl" : "rounded-2xl",
-      )}
-    >
+    <div className={cn("bonus-training-card relative w-full", prominent ? "mb-0" : "mb-4")}>
+      <div className="bonus-training-card__glow" aria-hidden />
       <div
         className={cn(
-          "earnings-banner-card__body relative z-[1] flex flex-col items-center text-center",
+          "bonus-training-card__body",
           compact
-            ? "px-3 py-3.5 md:px-5 md:py-5"
+            ? "!px-4 !py-3.5 md:!px-5 md:!py-5"
             : prominent
-              ? "px-4 py-4 pr-10 md:px-8 md:py-6"
-              : "px-4 py-6 pr-10 sm:px-6 sm:py-8 md:px-12 md:py-10",
+              ? "!px-4 !py-4 !pr-10 md:!px-8 md:!py-6"
+              : "!px-4 !py-6 !pr-10 sm:!px-6 sm:!py-8 md:!px-12 md:!py-10",
         )}
       >
         <button
           type="button"
           onClick={() => setDismissed(true)}
           aria-label="Close banner"
-          className="absolute right-2 top-2 z-[2] rounded-lg p-1.5 text-ink-4 transition-colors hover:bg-white/10 hover:text-ink"
+          className="absolute right-2 top-2 z-[2] rounded-lg p-1.5 text-ink-4 transition-colors hover:bg-[var(--surface-hover)] hover:text-ink"
         >
           <X className={compact ? "h-4 w-4" : "h-5 w-5"} />
         </button>
 
-        <span
-          className={cn(
-            "earnings-banner-badge inline-flex items-center rounded-md bg-gold-grad font-black uppercase tracking-[0.16em] text-white",
-            compact
-              ? "mb-2 px-2.5 py-0.5 text-[10px] md:text-xs"
-              : prominent
-                ? "mb-3 px-3.5 py-1 text-xs md:text-sm"
-                : "mb-4 px-4 py-1.5 text-sm md:text-base",
-          )}
-        >
-          You&apos;ve Been Selected
-        </span>
+        <div className="bonus-training-card__badge-wrap">
+          <span
+            className={cn(
+              "bonus-training-badge",
+              compact ? "!px-2.5 !py-0.5 !text-[10px] md:!text-xs" : prominent ? "!text-xs md:!text-sm" : "",
+            )}
+          >
+            You&apos;ve Been Selected
+          </span>
+        </div>
 
         <h2
           className={cn(
-            "font-heading mx-auto font-black uppercase leading-tight text-ink",
+            "font-heading mx-auto mt-3 font-semibold leading-snug text-text-primary",
             compact
-              ? "mb-2 max-w-2xl text-sm md:text-base"
+              ? "max-w-2xl text-sm md:text-base"
               : prominent
-                ? "mb-3 max-w-3xl text-lg sm:text-xl md:text-2xl lg:text-[1.85rem]"
-                : "mb-3 max-w-4xl text-2xl leading-tight sm:mb-4 sm:text-3xl md:text-5xl",
+                ? "max-w-3xl text-lg sm:text-xl md:text-2xl"
+                : "max-w-4xl text-xl sm:text-2xl md:text-3xl",
           )}
         >
           Limited Free Training — Learn How To Make{" "}
-          <span className="earnings-banner-accent">$1,000&ndash;$5,000</span> Per Day
+          <span className="bonus-training-accent">$1,000&ndash;$5,000</span> Per Day
         </h2>
 
         {(prominent || !compact) && (
           <>
             <p
               className={cn(
-                "mx-auto font-bold leading-snug text-ink-4",
-                prominent
-                  ? "mb-4 max-w-2xl text-sm sm:text-base md:text-lg"
-                  : "mb-5 max-w-3xl text-base sm:mb-6 sm:text-lg md:text-2xl",
+                "mx-auto mt-3 max-w-3xl font-medium leading-relaxed text-text-secondary",
+                prominent ? "text-sm sm:text-base" : "text-base sm:text-lg",
               )}
             >
               With no extra work. Fully automated commission system revealed — works in just 20 minutes per day.
             </p>
 
             {!prominent && (
-              <ul className="mx-auto mb-6 max-w-xl space-y-2 text-left text-sm font-semibold text-ink-4 sm:mb-8 sm:text-base md:text-lg">
+              <ul className="mx-auto mt-5 max-w-xl space-y-2 text-left text-sm text-text-secondary sm:text-base">
                 <li className="flex gap-2">
-                  <span className="text-[var(--gold-700)]">★</span>
+                  <span className="text-[var(--link)]">★</span>
                   Fully automated commission system revealed
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-[var(--gold-700)]">★</span>
+                  <span className="text-[var(--link)]">★</span>
                   No tech skills or experience needed
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-[var(--gold-700)]">★</span>
+                  <span className="text-[var(--link)]">★</span>
                   Works in just 20 minutes per day
                 </li>
               </ul>
@@ -112,12 +103,10 @@ export function WelcomeOfferBanner({ size = "full" }: { size?: BannerSize }) {
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            "earnings-banner-cta inline-flex max-w-full items-center justify-center rounded-xl bg-gold-grad font-black uppercase text-white no-underline shadow-[0_12px_36px_-12px_rgba(183,121,31,0.58)] transition-[background,transform,box-shadow] hover:bg-gold-grad-hover hover:-translate-y-px",
-            compact
-              ? "px-4 py-2 text-xs whitespace-normal text-center md:text-sm"
-              : prominent
-                ? "min-h-[3.25rem] w-full px-6 py-3.5 text-sm whitespace-normal text-center sm:w-auto sm:whitespace-nowrap md:min-h-[3.5rem] md:px-8 md:text-base"
-                : "min-h-12 w-full px-6 py-3.5 text-base whitespace-normal text-center sm:w-auto sm:whitespace-nowrap sm:px-10 sm:py-5 sm:text-xl md:text-2xl",
+            "bonus-training-cta",
+            compact && "!mt-3 !min-h-[2.75rem] !rounded-[var(--ds-r-md)] !text-xs md:!text-sm",
+            prominent && "!mt-5",
+            !compact && !prominent && "!mt-6",
           )}
         >
           Claim My Free Spot &gt;&gt;
@@ -125,16 +114,11 @@ export function WelcomeOfferBanner({ size = "full" }: { size?: BannerSize }) {
 
         {(prominent || !compact) && (
           <>
-            <p
-              className={cn(
-                "font-black uppercase tracking-wide text-[#C53030]",
-                prominent ? "mt-4 text-xs md:text-sm" : "mt-4 text-sm md:text-base",
-              )}
-            >
+            <p className={cn("bonus-training-urgency", prominent ? "!mt-3" : "!mt-4")}>
               Warning: Only a few free spots remaining
             </p>
             {!prominent && (
-              <p className="mt-2 text-xs text-ink-4">100% Free — No credit card required</p>
+              <p className="mt-2 text-xs text-text-secondary">100% Free — No credit card required</p>
             )}
           </>
         )}

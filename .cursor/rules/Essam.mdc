@@ -1,0 +1,14 @@
+---
+alwaysApply: true
+---
+
+---
+description: Do not test changes in the local browser automatically
+---
+
+* Do not open, access, or test the local app in the browser after making changes.
+* Make the requested changes and stop.
+* Only test the app in the browser when I explicitly say **"Check it locally"**.
+* Code-level checks such as TypeScript or linting are allowed unless I say otherwise.
+
+

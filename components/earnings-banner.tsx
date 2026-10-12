@@ -23,51 +23,49 @@ export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
   return (
     <div
       className={cn(
-        "earnings-banner-card relative w-full overflow-hidden before:hidden",
+        "bonus-training-card relative w-full",
         prominent ? "mb-0" : "mb-4",
-        compact ? "rounded-xl" : "rounded-2xl",
       )}
     >
+      <div className="bonus-training-card__glow" aria-hidden />
       <div
         className={cn(
-          "earnings-banner-card__body relative z-[1] flex flex-col items-center text-center",
+          "bonus-training-card__body",
           compact
-            ? "px-3 py-3.5 md:px-5 md:py-5"
+            ? "!px-4 !py-3.5 md:!px-5 md:!py-5"
             : prominent
-              ? "px-4 py-4 pr-10 md:px-8 md:py-6"
-              : "px-4 py-6 pr-10 sm:px-6 sm:py-8 md:px-12 md:py-10",
+              ? "!px-4 !py-4 !pr-10 md:!px-8 md:!py-6"
+              : "!px-4 !py-6 !pr-10 sm:!px-6 sm:!py-8 md:!px-12 md:!py-10",
         )}
       >
         <button
           type="button"
           onClick={() => setDismissed(true)}
           aria-label="Close banner"
-          className="absolute right-2 top-2 z-[2] rounded-lg p-1.5 text-ink-4 transition-colors hover:bg-white/10 hover:text-ink"
+          className="absolute right-2 top-2 z-[2] rounded-lg p-1.5 text-ink-4 transition-colors hover:bg-[var(--surface-hover)] hover:text-ink"
         >
           <X className={compact ? "h-4 w-4" : "h-5 w-5"} />
         </button>
 
-        <span
-          className={cn(
-            "earnings-banner-badge inline-flex items-center rounded-md bg-gold-grad font-black uppercase tracking-[0.16em] text-white",
-            compact
-              ? "mb-2 px-2.5 py-0.5 text-[10px] md:text-xs"
-              : prominent
-                ? "mb-3 px-3.5 py-1 text-xs md:text-sm"
-                : "mb-4 px-4 py-1.5 text-sm md:text-base",
-          )}
-        >
-          Free Training
-        </span>
+        <div className="bonus-training-card__badge-wrap">
+          <span
+            className={cn(
+              "bonus-training-badge",
+              compact ? "!px-2.5 !py-0.5 !text-[10px] md:!text-xs" : prominent ? "!text-xs md:!text-sm" : "",
+            )}
+          >
+            Free Training
+          </span>
+        </div>
 
         <h2
           className={cn(
-            "font-heading mx-auto font-black uppercase leading-tight text-ink",
+            "font-heading mx-auto mt-3 font-semibold leading-snug text-text-primary",
             compact
-              ? "mb-2 max-w-2xl text-sm md:text-base"
+              ? "max-w-2xl text-sm md:text-base"
               : prominent
-                ? "mb-3 max-w-3xl text-lg sm:text-xl md:text-2xl lg:text-[1.85rem]"
-                : "mb-3 max-w-4xl text-2xl leading-tight sm:mb-4 sm:text-3xl md:text-5xl",
+                ? "max-w-3xl text-lg sm:text-xl md:text-2xl"
+                : "max-w-4xl text-xl sm:text-2xl md:text-3xl",
           )}
         >
           {title}
@@ -76,10 +74,8 @@ export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
         {(prominent || !compact) && (
           <p
             className={cn(
-              "mx-auto font-bold leading-snug text-ink-4",
-              prominent
-                ? "mb-5 max-w-2xl text-sm sm:text-base md:text-lg"
-                : "mb-6 max-w-3xl text-base sm:mb-8 sm:text-lg md:text-2xl",
+              "mx-auto mt-3 max-w-3xl font-medium leading-relaxed text-text-secondary",
+              prominent ? "text-sm sm:text-base" : "text-base sm:text-lg",
             )}
           >
             Discover how to scale to $1,000&ndash;$5,000 every single day &mdash; without doing any extra work.
@@ -91,24 +87,17 @@ export function EarningsBanner({ size = "full" }: { size?: BannerSize }) {
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            "earnings-banner-cta inline-flex max-w-full items-center justify-center rounded-xl bg-gold-grad font-black uppercase text-white no-underline shadow-[0_12px_36px_-12px_rgba(183,121,31,0.58)] transition-[background,transform,box-shadow] hover:bg-gold-grad-hover hover:-translate-y-px",
-            compact
-              ? "px-4 py-2 text-xs whitespace-normal text-center md:text-sm"
-              : prominent
-                ? "min-h-[3.25rem] w-full px-6 py-3.5 text-sm whitespace-normal text-center sm:w-auto sm:whitespace-nowrap md:min-h-[3.5rem] md:px-8 md:text-base"
-                : "min-h-12 w-full px-6 py-3.5 text-base whitespace-normal text-center sm:w-auto sm:whitespace-nowrap sm:px-10 sm:py-5 sm:text-xl md:text-2xl",
+            "bonus-training-cta",
+            compact && "!mt-3 !min-h-[2.75rem] !rounded-[var(--ds-r-md)] !text-xs md:!text-sm",
+            prominent && "!mt-5",
+            !compact && !prominent && "!mt-6",
           )}
         >
           {ctaLabel}
         </Link>
 
         {(prominent || !compact) && (
-          <p
-            className={cn(
-              "font-black uppercase tracking-wide text-[#C53030]",
-              prominent ? "mt-4 text-xs md:text-sm" : "mt-4 text-sm md:text-base",
-            )}
-          >
+          <p className={cn("bonus-training-urgency", prominent ? "!mt-3" : "!mt-4")}>
             Warning: This will be taken down soon
           </p>
         )}

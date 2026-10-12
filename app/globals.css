@@ -625,6 +625,13 @@ html[data-sidebar="collapsed"] {
     @apply cursor-not-allowed opacity-60;
   }
 
+  .btn-primary.btn-pill,
+  .btn-primary-prominent.btn-pill,
+  .btn-secondary.btn-pill,
+  [data-slot="button"].btn-pill {
+    border-radius: var(--ds-r-pill);
+  }
+
   .btn-secondary {
     background: var(--secondary);
     border: 1px solid transparent;
@@ -744,7 +751,7 @@ html[data-sidebar="collapsed"] {
   .sidebar-nav-item {
     position: relative;
     border: 1px solid transparent;
-    border-radius: var(--ds-r-md);
+    border-radius: var(--ds-r-pill);
     min-height: 44px;
     transition:
       background-color var(--ds-dur) var(--ds-ease),
@@ -763,7 +770,6 @@ html[data-sidebar="collapsed"] {
     color: var(--brand-50);
     border-color: var(--border-brand);
     box-shadow: var(--shadow-brand);
-    border-radius: 999px;
   }
 
   .sidebar-nav-item.is-active .sidebar-nav-label {
@@ -987,6 +993,7 @@ html[data-sidebar="collapsed"] {
   .sidebar-footer .sidebar-nav-item:hover:not(.is-active) {
     background: var(--surface-hover);
     border-color: var(--border-brand);
+    border-radius: var(--ds-r-pill);
     color: var(--text-primary);
     box-shadow: none;
     transform: none;
@@ -1275,7 +1282,7 @@ html[data-sidebar="collapsed"] {
   .premium-sidebar-item {
     position: relative;
     border: 1px solid var(--border);
-    border-radius: var(--ds-r-md);
+    border-radius: var(--ds-r-pill);
     min-height: 44px;
     color: var(--ds-ink);
     background: var(--card);
@@ -2032,124 +2039,6 @@ html[data-sidebar="collapsed"] {
     transition: width 300ms var(--ds-ease);
   }
 
-  .earnings-banner-card {
-    /* Brass offer palette — keep site chrome teal, this banner gold. */
-    --gold-100: #FBF5E6;
-    --gold-200: #F6EDDA;
-    --gold-300: #F0D48A;
-    --gold-500: #C9971F;
-    --gold-600: #BD8B1C;
-    --gold-700: #8A6414;
-    --gold-800: #3A2A05;
-    --gold-grad: linear-gradient(155deg, #F0D48A 0%, #C9971F 100%);
-    --gold-grad-hover: linear-gradient(155deg, #E8CA7E 0%, #BD8B1C 100%);
-    --gold-grad-surface: linear-gradient(165deg, #FBF5E6 0%, #F6EDDA 48%, #F0D48A 100%);
-    --gold-glass: linear-gradient(
-      145deg,
-      color-mix(in srgb, #F6EDDA 98%, white) 0%,
-      color-mix(in srgb, #FBF5E6 95%, white) 45%,
-      color-mix(in srgb, #F0D48A 90%, white) 100%
-    );
-    --gold-glass-border: #C9971F;
-    --gold-glass-border-strong: #8A6414;
-    --gold-shadow: 0 12px 36px -12px rgba(176, 138, 44, 0.58);
-    --gold-shadow-ring: 0 0 0 4px rgba(201, 151, 31, 0.22);
-    --gold-shadow-inset: inset 0 0 0 1px rgba(255, 255, 255, 0.72);
-    /* Light app ink tokens wash out on this cream card. Pin them to brass. */
-    --ds-ink: #3A2A05;
-    --ds-ink-strong: #3A2A05;
-    --ds-ink-2: #4E3A12;
-    --ds-ink-3: #5C4818;
-    --ds-ink-4: #6B5424;
-    --ds-ink-5: #7A6230;
-    --ds-ink-6: #8A7350;
-    --color-ink: #3A2A05;
-    --color-ink-strong: #3A2A05;
-    --color-ink-2: #4E3A12;
-    --color-ink-3: #5C4818;
-    --color-ink-4: #6B5424;
-    --color-ink-5: #7A6230;
-    --color-ink-6: #8A7350;
-    --foreground: #3A2A05;
-    --text-primary: #3A2A05;
-    --text-secondary: #6B5424;
-    --text-heading: #3A2A05;
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    border-radius: var(--ds-r-lg);
-    border: 3px solid var(--gold-glass-border-strong);
-    background: var(--gold-grad-surface);
-    color: var(--foreground);
-    box-shadow:
-      var(--gold-shadow-inset),
-      inset 0 1px 0 rgba(255, 255, 255, 0.45),
-      0 0 0 1px var(--gold-glass-border),
-      var(--gold-shadow-ring),
-      var(--gold-shadow),
-      var(--elevation-shadow);
-  }
-
-  .earnings-banner-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.22) 0%,
-      transparent 55%
-    );
-  }
-
-  .earnings-banner-card__body {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .earnings-banner-badge {
-    display: inline-flex;
-    align-items: center;
-    border-radius: var(--ds-r-md);
-    background: var(--gold-grad);
-    color: #ffffff;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    box-shadow: var(--gold-shadow);
-  }
-
-  .earnings-banner-accent {
-    color: var(--gold-700);
-    font-weight: 800;
-  }
-
-  .earnings-banner-cta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--ds-r-md);
-    background: var(--gold-grad);
-    color: #ffffff;
-    font-weight: 900;
-    text-transform: uppercase;
-    box-shadow: var(--gold-shadow);
-    transition:
-      background var(--ds-dur) var(--ds-ease),
-      transform var(--ds-dur) var(--ds-ease),
-      box-shadow var(--ds-dur) var(--ds-ease);
-  }
-
-  .earnings-banner-cta:hover {
-    background: var(--gold-grad-hover);
-    transform: translateY(-1px);
-    box-shadow: 0 14px 32px -10px rgba(183, 121, 31, 0.62);
-  }
-
   .support-cta-banner {
     position: relative;
     overflow: hidden;
@@ -2538,13 +2427,6 @@ html[data-sidebar="collapsed"] {
     width: 2.75rem;
   }
 
-  .earnings-banner-cta {
-    max-width: 100%;
-    padding-inline: 1rem;
-    font-size: 0.875rem;
-    white-space: normal;
-    text-align: center;
-  }
 }
 
 @media (min-width: 1024px) {

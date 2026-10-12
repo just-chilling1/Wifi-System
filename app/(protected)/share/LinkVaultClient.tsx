@@ -329,14 +329,17 @@ export default function LinkVaultClient() {
                     </div>
 
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                      <Button className="h-11 w-full sm:flex-1" onClick={() => copyLink(link.affiliate_url, link.id)}>
+                      <Button
+                        className="btn-pill h-11 w-full sm:flex-1"
+                        onClick={() => copyLink(link.affiliate_url, link.id)}
+                      >
                         {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                         {copied ? "Copied" : "Copy link"}
                       </Button>
                       <div className="flex items-center gap-2">
                         <Button
                           variant="outline"
-                          className="h-11 min-w-0 flex-1 px-4 sm:flex-none"
+                          className="btn-pill h-11 min-w-0 flex-1 px-4 sm:flex-none"
                           onClick={() => window.open(link.affiliate_url, "_blank", "noopener,noreferrer")}
                         >
                           <ExternalLink className="h-4 w-4" />
@@ -344,7 +347,7 @@ export default function LinkVaultClient() {
                         </Button>
                         <Button
                           variant="outline"
-                          className="h-11 min-w-0 flex-1 px-4 sm:flex-none"
+                          className="btn-pill h-11 min-w-0 flex-1 px-4 sm:flex-none"
                           onClick={() => openEdit(link)}
                         >
                           <Edit2 className="h-4 w-4" />
@@ -355,7 +358,7 @@ export default function LinkVaultClient() {
                           variant="outline"
                           onClick={() => setDeleteId(link.id)}
                           aria-label="Delete link"
-                          className="h-11 w-11 shrink-0 px-0 text-[var(--danger)] hover:border-[var(--destructive)] hover:bg-[var(--danger-light)] hover:text-[var(--danger)]"
+                          className="btn-pill h-11 w-11 shrink-0 px-0 text-[var(--danger)] hover:border-[var(--destructive)] hover:bg-[var(--danger-light)] hover:text-[var(--danger)]"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

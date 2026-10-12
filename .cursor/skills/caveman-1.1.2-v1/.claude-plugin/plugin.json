@@ -1,0 +1,13 @@
+{
+  "name": "caveman",
+  "description": "Talk like caveman. Short words, short sentences, no fluff.",
+  "version": "1.1.2",
+  "author": {
+    "name": "Ali Akram",
+    "email": "akramsystems@gmail.com"
+  },
+  "homepage": "https://github.com/akramsystems/caveman",
+  "repository": "https://github.com/akramsystems/caveman",
+  "license": "MIT",
+  "keywords": ["skill", "style", "caveman", "tone"]
+}

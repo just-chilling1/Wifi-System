@@ -79,7 +79,7 @@ export default async function DashboardPage() {
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/create"
-                className="btn-primary inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 px-4 text-center text-[14px] leading-snug sm:px-6 sm:text-[15px]"
+                className="btn-primary btn-pill inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 px-4 text-center text-[14px] leading-snug sm:px-6 sm:text-[15px]"
               >
                 <Brain className="h-5 w-5 shrink-0" strokeWidth={1.75} />
                 <span className="sm:hidden">Start with Gold Rush</span>
@@ -87,7 +87,7 @@ export default async function DashboardPage() {
               </Link>
               <Link
                 href="/training"
-                className="btn-secondary inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 px-4 text-center text-[14px] leading-snug sm:px-6 sm:text-[15px]"
+                className="btn-secondary btn-pill inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 px-4 text-center text-[14px] leading-snug sm:px-6 sm:text-[15px]"
               >
                 <BookOpen className="h-5 w-5 shrink-0" strokeWidth={1.75} />
                 <span className="sm:hidden">Open the Academy</span>

@@ -255,20 +255,22 @@ export function ProtectorContent({ data }: ProtectorContentProps) {
           <section className={cn(panelClass, "px-5 py-6 md:px-8 md:py-8")}>
             <h2 className="text-xl font-medium tracking-tight text-ink">Recent activity</h2>
             <p className="mt-1 text-sm text-ink-3">Latest account events</p>
-            <div className="mt-5 flex flex-col gap-3 lg:flex-row">
+            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {activities.map((event) => {
                 const Icon = activityIcons[event.id as keyof typeof activityIcons] ?? Activity
                 return (
                   <div
                     key={event.id}
-                    className="surface-action flex min-w-0 flex-1 items-start gap-3 rounded-[1.25rem] px-4 py-3"
+                    className="surface-action flex min-w-0 items-start gap-3 rounded-[1.25rem] px-4 py-3.5"
                   >
                     <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--layer-elevated)] text-ink-3">
                       <Icon className="h-4 w-4" aria-hidden />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-ink">{event.label}</p>
-                      <p className="text-sm text-ink-3">{event.time}</p>
+                      <p className="text-sm font-medium leading-snug text-ink">
+                        {event.label}
+                      </p>
+                      <p className="mt-1 text-sm text-ink-3">{event.time}</p>
                     </div>
                   </div>
                 )

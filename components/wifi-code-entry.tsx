@@ -99,7 +99,10 @@ export function WifiCodeEntry() {
                 </p>
               ) : null}
             </div>
-            <button type="submit" className="btn-primary min-h-[48px] shrink-0 px-6 sm:min-w-[8.5rem]">
+            <button
+              type="submit"
+              className="btn-primary btn-pill min-h-[48px] shrink-0 px-6 sm:min-w-[8.5rem]"
+            >
               Submit
             </button>
           </form>

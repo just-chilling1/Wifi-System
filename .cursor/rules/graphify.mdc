@@ -1,0 +1,16 @@
+---
+description: graphify knowledge graph context
+alwaysApply: true
+---
+
+Use Graphify only when `graphify-out/graph.json` exists.
+
+When that file exists, run Graphify before exploring the codebase:
+
+- `graphify query "<question>"` — scoped subgraph for any codebase or architecture question
+- `graphify path "<A>" "<B>"` — dependency path between two symbols
+- `graphify explain "<concept>"` — all nodes related to a concept
+
+This applies to every subagent that explores code. After modifying code files, run `graphify update .` (AST-only, no API cost).
+
+When `graphify-out/graph.json` does not exist, Graphify is not installed for this project. Use ordinary file search and reads. Do not install Graphify or add a package script unless asked.

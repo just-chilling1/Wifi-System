@@ -1,0 +1,39 @@
+---
+alwaysApply: true
+---
+
+# App-Specific Design Identity
+
+## Objective
+
+Use the existing design system as a reusable foundation while giving every new application its own distinctive, cohesive visual identity.
+
+## Before Implementing a New App
+
+1. Analyze the application's purpose, target audience, functionality, and brand personality.
+2. Review the existing skeleton and identify which design tokens, components, and layout patterns can be customized.
+3. Establish an app-specific design direction before implementing pages. Define the color palette, typography, visual hierarchy, component styling, layout approach, surface treatments, and overall visual personality.
+4. Ensure the new design is meaningfully different from the default skeleton and previous app designs. Do not simply change the primary color.
+
+## Design System Rules
+
+* Preserve the reusable foundation, component architecture, semantic token names, spacing scale, responsive behavior, accessibility standards, and shared functionality.
+* Customize app-specific design tokens and approved component variants instead of modifying shared foundations unnecessarily.
+* Keep all pages within the same application consistent with its established design direction.
+* Use centralized semantic tokens rather than scattered hardcoded colors, spacing values, typography, and decorative styles.
+* Establish clear visual hierarchy, readable typography, sufficient contrast, and intentional use of color.
+* Avoid washed-out interfaces, low-contrast text, excessive muted colors, inconsistent spacing, arbitrary border radii, and unnecessary decoration.
+* Do not introduce new visual styles on individual pages without a design-system reason.
+* Do not force the same card, navigation, layout, or surface treatment onto every application when a different treatment better suits the product.
+* Reuse existing components where appropriate. Extend them through consistent variants when the product requires a different appearance.
+* Keep the app-specific theme and customization isolated so that changes do not unintentionally affect other projects using the skeleton.
+
+## Decision Rule
+
+Consistency within the current application is mandatory. Visual similarity to other applications built from the skeleton is not.
+
+Before implementation, copy `docs/DESIGN_DIRECTION.template.md` to `DESIGN_DIRECTION.md` and fill it in. The permanent foundation lives in `docs/DESIGN_SYSTEM.md`. Then update the app-specific tokens in `src/config/brand.config.ts` and use that direction consistently.
+
+New pages use the shared components in `src/components/ui` (`Button`, `Input`, `Select`, `Checkbox`, `FormField`, `Card`, `Badge`, `Alert`, `EmptyState`, `Modal`, `Tabs`, `Table`, `Skeleton`, `PageHeader`, `PageContainer`, `SectionHeader`) and semantic theme tokens. Do not invent a new button, card, or field treatment on a single page.
+
+Do not launch a local browser or perform browser-based validation unless explicitly requested.
