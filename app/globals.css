@@ -3100,3 +3100,42 @@ html[data-sidebar="collapsed"] {
     color: #ffffff;
   }
 }
+
+/* Auth cards use --layer-feature, the same fill as .btn-primary, so the control vanishes. */
+.surface-featured .btn-primary,
+.surface-featured .btn-primary-prominent {
+  background: var(--brand-50);
+  color: var(--brand-700);
+  border: 1px solid color-mix(in srgb, var(--brand-950) 18%, var(--brand-50));
+  box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.55);
+}
+
+.surface-featured .btn-primary:hover:not(:disabled),
+.surface-featured .btn-primary-prominent:hover:not(:disabled) {
+  background: #ffffff;
+  color: var(--brand-800);
+  box-shadow: 0 14px 28px -10px rgba(0, 0, 0, 0.6);
+}
+
+.surface-featured .btn-primary:active:not(:disabled),
+.surface-featured .btn-primary-prominent:active:not(:disabled) {
+  background: var(--brand-100);
+  color: var(--brand-800);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(1px);
+}
+
+/* Destructive red at 15% opacity disappears on the burgundy auth card. */
+.surface-featured .bg-destructive\/15 {
+  background: var(--brand-50);
+  border: 2px solid #C4453A;
+  box-shadow: inset 4px 0 0 #C4453A;
+  padding: 0.85rem 0.95rem 0.85rem 1rem;
+}
+
+.surface-featured .text-destructive {
+  color: #7A1520;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+}
