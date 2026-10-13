@@ -1192,6 +1192,26 @@ html[data-sidebar="collapsed"] {
     padding-bottom: 0;
   }
 
+  .dashboard-page.page-container {
+    gap: 1.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .dashboard-page.page-container {
+      gap: 2.5rem;
+    }
+  }
+
+  .dashboard-page .page-hero {
+    margin-bottom: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .dashboard-page .page-hero {
+      margin-bottom: 1.75rem;
+    }
+  }
+
   .ds-well {
     background: var(--surface-nested);
     border: 1px solid var(--border);

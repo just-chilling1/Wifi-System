@@ -44,7 +44,7 @@ export default async function DashboardPage() {
     const firstName = profile?.full_name ? profile.full_name.split(" ")[0] : ""
 
     return (
-      <div className="page-container mx-auto w-full max-w-7xl">
+      <div className="page-container dashboard-page mx-auto w-full max-w-7xl">
         <PageHeader
           eyebrow={dashboard.eyebrow}
           title={
@@ -54,6 +54,7 @@ export default async function DashboardPage() {
             </>
           }
           subtitle={dashboard.subtitle}
+          subtitleClassName="max-w-none lg:max-w-4xl xl:max-w-5xl"
         />
 
         <div className="grid grid-cols-1 gap-5 lg:gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]">
