@@ -91,7 +91,7 @@ export default function LoginPage() {
             </Label>
             <Link
               href="/auth/forgot-password"
-              className="text-xs font-medium text-sapphire-700 transition-colors hover:text-primary"
+              className="auth-prominent-link auth-prominent-link--compact shrink-0"
             >
               Forgot password?
             </Link>
@@ -135,13 +135,11 @@ export default function LoginPage() {
         <Button type="submit" className="btn-primary h-12 w-full font-semibold" disabled={isLoading}>
           {isLoading ? "Authenticating..." : "Enter Platform"}
         </Button>
-        <div className="pt-1 text-center">
-          <p className="text-sm text-ink-3">
-            New user?{" "}
-            <Link href="/auth/sign-up" className="font-semibold text-sapphire-700 transition-colors hover:text-primary">
-              Create Account
-            </Link>
-          </p>
+        <div className="pt-2 text-center">
+          <p className="text-sm font-medium text-ink-3">New user?</p>
+          <Link href="/auth/sign-up" className="auth-prominent-link auth-prominent-link--block">
+            Create Account
+          </Link>
         </div>
       </form>
     </div>

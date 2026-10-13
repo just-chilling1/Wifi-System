@@ -3148,3 +3148,42 @@ html[data-sidebar="collapsed"] {
 .surface-featured a.hover\:text-primary:hover {
   color: #ffffff;
 }
+
+.surface-featured .auth-prominent-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.55);
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.surface-featured .auth-prominent-link:hover {
+  background: #ffffff;
+  color: var(--brand-700);
+  box-shadow: 0 10px 22px -8px rgba(0, 0, 0, 0.6);
+}
+
+.surface-featured .auth-prominent-link--compact {
+  font-size: 12px;
+  min-height: 34px;
+  padding: 0.3rem 0.9rem;
+}
+
+.surface-featured .auth-prominent-link--block {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 0.625rem;
+  font-size: 14px;
+  padding: 0.65rem 1rem;
+}
