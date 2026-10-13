@@ -1,0 +1,812 @@
+{
+ "durationSec": 334.48,
+ "slides": [
+  {
+   "type": "intro",
+   "num": "8",
+   "title": [
+    "LINK VAULT",
+    "MINDSET"
+   ],
+   "sub": "Beliefs before buttons",
+   "start": 0.0,
+   "end": 3.46
+  },
+  {
+   "type": "title",
+   "kicker": "THIS VIDEO",
+   "headline": "Save trust,\nnot just URLs.",
+   "sub": "Sidebar: Link Vault. Button: Save to Your Links.",
+   "start": 3.46,
+   "end": 58.22
+  },
+  {
+   "type": "title",
+   "kicker": "BELIEF 1",
+   "headline": "Name offers\nlike products on a shelf.",
+   "sub": "Messy names become mis-clicks.",
+   "start": 58.22,
+   "end": 85.6
+  },
+  {
+   "type": "title",
+   "kicker": "BELIEF 2",
+   "headline": "One canonical hop\nper offer.",
+   "sub": "Invalid at save beats invalid in fifty comments.",
+   "start": 85.6,
+   "end": 114.26
+  },
+  {
+   "type": "shot",
+   "img": "share.png",
+   "caption": "Wallet of tickets \u2192 Gold Rush \u2192 My Vault \u2192 post.",
+   "start": 114.26,
+   "end": 143.12
+  },
+  {
+   "type": "title",
+   "kicker": "BELIEF 4",
+   "headline": "Edit beats delete.",
+   "sub": "Regenerate packs after a link swap.",
+   "start": 143.12,
+   "end": 173.94
+  },
+  {
+   "type": "title",
+   "kicker": "BELIEF 5",
+   "headline": "Match links to niches.",
+   "sub": "Mismatch gets views \u2014 rarely buyers.",
+   "start": 173.94,
+   "end": 203.78
+  },
+  {
+   "type": "title",
+   "kicker": "BELIEF 6",
+   "headline": "Treat hops like cash.",
+   "sub": "Promote what you'd tell your sister about.",
+   "start": 203.78,
+   "end": 276.28
+  },
+  {
+   "type": "steps",
+   "kicker": "HABITS",
+   "items": [
+    "Confirm saved cards",
+    "One notes line on winners",
+    "Pick Link Vault winner before premium"
+   ],
+   "sub": "Boring accuracy \u2192 paydays later.",
+   "start": 276.28,
+   "end": 278.78
+  },
+  {
+   "type": "end",
+   "headline": "Next: Link Vault Training",
+   "sub": "Save one https hop before the how-to.",
+   "start": 278.78,
+   "end": 333.98
+  }
+ ],
+ "captions": [
+  {
+   "s": 0.0,
+   "e": 1.16,
+   "text": "Hey, welcome back!"
+  },
+  {
+   "s": 1.54,
+   "e": 4.66,
+   "text": "In this video, we will tackle Link Vault mindset"
+  },
+  {
+   "s": 4.66,
+   "e": 6.52,
+   "text": "and how to make the most out of it."
+  },
+  {
+   "s": 6.76,
+   "e": 9.24,
+   "text": "Your affiliate link is the coupon with your name"
+  },
+  {
+   "s": 9.24,
+   "e": 9.64,
+   "text": "on it."
+  },
+  {
+   "s": 9.84,
+   "e": 12.76,
+   "text": "If the code is wrong, you did the work and somebody"
+  },
+  {
+   "s": 12.76,
+   "e": 13.78,
+   "text": "else gets the credit."
+  },
+  {
+   "s": 14.12,
+   "e": 16.88,
+   "text": "Link Vault is where Wi -Fi system stores those"
+  },
+  {
+   "s": 16.88,
+   "e": 19.76,
+   "text": "coupons, so Gold Rush always arms comments with"
+  },
+  {
+   "s": 19.76,
+   "e": 20.66,
+   "text": "the right URL."
+  },
+  {
+   "s": 21.14,
+   "e": 24.1,
+   "text": "This is beliefs before buttons, so when you save"
+  },
+  {
+   "s": 24.1,
+   "e": 25.64,
+   "text": "links, you save trust."
+  },
+  {
+   "s": 26.24,
+   "e": 27.04,
+   "text": "Quick picture."
+  },
+  {
+   "s": 27.28,
+   "e": 29.86,
+   "text": "You already ran Gold Rush at least once."
+  },
+  {
+   "s": 30.1,
+   "e": 32.6,
+   "text": "If you did not, go ahead and watch the previous"
+  },
+  {
+   "s": 32.6,
+   "e": 33.06,
+   "text": "videos."
+  },
+  {
+   "s": 33.32,
+   "e": 35.62,
+   "text": "You will get a step -by -step guide on how to do"
+  },
+  {
+   "s": 35.62,
+   "e": 36.98,
+   "text": "it, so let us continue."
+  },
+  {
+   "s": 37.5,
+   "e": 40.12,
+   "text": "On Gold Rush, you can paste your affiliate link"
+  },
+  {
+   "s": 40.12,
+   "e": 43.12,
+   "text": "every time or save to your links so it lands in"
+  },
+  {
+   "s": 43.12,
+   "e": 43.56,
+   "text": "Link Vault."
+  },
+  {
+   "s": 43.8,
+   "e": 46.82,
+   "text": "The sidebar label is Link Vault under Library,"
+  },
+  {
+   "s": 47.06,
+   "e": 48.34,
+   "text": "Saved Affiliate Links."
+  },
+  {
+   "s": 48.78,
+   "e": 51.24,
+   "text": "In training, say Link Vault allowed."
+  },
+  {
+   "s": 51.5,
+   "e": 54.36,
+   "text": "The Gold Rush button still says Save to Your Links"
+  },
+  {
+   "s": 54.36,
+   "e": 56.32,
+   "text": "because that is the action on that screen."
+  },
+  {
+   "s": 56.92,
+   "e": 57.8,
+   "text": "Belief 1."
+  },
+  {
+   "s": 58.22,
+   "e": 60.58,
+   "text": "Naming is caring for future you."
+  },
+  {
+   "s": 60.88,
+   "e": 63.52,
+   "text": "Offer names should read like a product on a shelf."
+  },
+  {
+   "s": 63.86,
+   "e": 66.56,
+   "text": "Ultimate weight loss system, not Link 3."
+  },
+  {
+   "s": 67.1,
+   "e": 69.68,
+   "text": "Niche or category helps when you promote multiple"
+  },
+  {
+   "s": 69.68,
+   "e": 70.96,
+   "text": "offers in one vertical."
+  },
+  {
+   "s": 71.28,
+   "e": 73.44,
+   "text": "Weight loss, make money, dating."
+  },
+  {
+   "s": 73.72,
+   "e": 76.62,
+   "text": "Notes are for commission rate, audience, where"
+  },
+  {
+   "s": 76.62,
+   "e": 78.52,
+   "text": "it converts, not a life story."
+  },
+  {
+   "s": 79.08,
+   "e": 81.44,
+   "text": "Future you picks from a list in Gold Rush."
+  },
+  {
+   "s": 81.68,
+   "e": 83.78,
+   "text": "Messy names become misclicks."
+  },
+  {
+   "s": 84.34,
+   "e": 85.2,
+   "text": "Belief 2."
+  },
+  {
+   "s": 85.6,
+   "e": 88.88,
+   "text": "One canonical link per offer beats five almost"
+  },
+  {
+   "s": 88.88,
+   "e": 89.74,
+   "text": "the same hops."
+  },
+  {
+   "s": 90.12,
+   "e": 92.88,
+   "text": "Vendors sometimes give multiple tracking URLs."
+  },
+  {
+   "s": 93.2,
+   "e": 96.38,
+   "text": "Pick one primary hop, save it in Link Vault, and"
+  },
+  {
+   "s": 96.38,
+   "e": 98.24,
+   "text": "use it until the vendor replaces it."
+  },
+  {
+   "s": 98.48,
+   "e": 100.3,
+   "text": "Testing different links is valid."
+  },
+  {
+   "s": 100.56,
+   "e": 102.78,
+   "text": "Save them as different offer names so you know"
+  },
+  {
+   "s": 102.78,
+   "e": 104.02,
+   "text": "which ticket you are posting."
+  },
+  {
+   "s": 104.02,
+   "e": 107.24,
+   "text": "Never paste a broken or incomplete URL."
+  },
+  {
+   "s": 107.8,
+   "e": 111.12,
+   "text": "Invalid at save time is cheaper than invalid inside"
+  },
+  {
+   "s": 111.12,
+   "e": 112.44,
+   "text": "50 live comments."
+  },
+  {
+   "s": 112.9,
+   "e": 113.8,
+   "text": "Belief 3."
+  },
+  {
+   "s": 114.26,
+   "e": 116.64,
+   "text": "Link Vault is set up, not traffic."
+  },
+  {
+   "s": 116.96,
+   "e": 119.64,
+   "text": "Saving links does not send clicks by itself."
+  },
+  {
+   "s": 119.86,
+   "e": 122.1,
+   "text": "It removes friction before Gold Rush."
+  },
+  {
+   "s": 122.54,
+   "e": 123.82,
+   "text": "Think Wallet of Tickets."
+  },
+  {
+   "s": 124.08,
+   "e": 127.06,
+   "text": "You choose the ticket once, Gold Rush prints comments"
+  },
+  {
+   "s": 127.06,
+   "e": 128.16,
+   "text": "with that ticket inside."
+  },
+  {
+   "s": 128.68,
+   "e": 130.36,
+   "text": "My Vault stores the printed stack."
+  },
+  {
+   "s": 130.5,
+   "e": 131.72,
+   "text": "You post on shorts."
+  },
+  {
+   "s": 132.34,
+   "e": 134.1,
+   "text": "Skipping Link Vault is not fatal."
+  },
+  {
+   "s": 134.42,
+   "e": 137.34,
+   "text": "Paste works, but operators with three or more offers"
+  },
+  {
+   "s": 137.34,
+   "e": 140.54,
+   "text": "almost always save first because repasting is where"
+  },
+  {
+   "s": 140.54,
+   "e": 141.38,
+   "text": "typos hide."
+  },
+  {
+   "s": 142.02,
+   "e": 142.68,
+   "text": "Belief 4."
+  },
+  {
+   "s": 143.12,
+   "e": 144.98,
+   "text": "Edit beats delete and hope."
+  },
+  {
+   "s": 145.54,
+   "e": 146.56,
+   "text": "Vendor changed your hop?"
+  },
+  {
+   "s": 146.86,
+   "e": 149.82,
+   "text": "Open the card, edit, update your affiliate link,"
+  },
+  {
+   "s": 149.82,
+   "e": 150.88,
+   "text": "save changes."
+  },
+  {
+   "s": 151.18,
+   "e": 154.46,
+   "text": "Old comment packs in My Vault still carry the old"
+  },
+  {
+   "s": 154.46,
+   "e": 156.58,
+   "text": "URL from Generation Day."
+  },
+  {
+   "s": 157.14,
+   "e": 160.0,
+   "text": "Regenerate packs after a link swap if that offer"
+  },
+  {
+   "s": 160.0,
+   "e": 160.84,
+   "text": "is still active."
+  },
+  {
+   "s": 161.18,
+   "e": 164.28,
+   "text": "Delete removes the link from Link Vault and Gold"
+  },
+  {
+   "s": 164.28,
+   "e": 167.0,
+   "text": "Rush will not offer it in the saved picker anymore."
+  },
+  {
+   "s": 167.52,
+   "e": 170.66,
+   "text": "Only delete dead offers or duplicates you created"
+  },
+  {
+   "s": 170.66,
+   "e": 171.4,
+   "text": "by mistake."
+  },
+  {
+   "s": 172.4,
+   "e": 173.5,
+   "text": "Belief 5."
+  },
+  {
+   "s": 173.94,
+   "e": 175.72,
+   "text": "Organization is targeting."
+  },
+  {
+   "s": 176.1,
+   "e": 180.2,
+   "text": "Tips on the page say, organize by niche, test multiple"
+  },
+  {
+   "s": 180.2,
+   "e": 183.88,
+   "text": "offers, track clicks if you use a shortener, aim"
+  },
+  {
+   "s": 183.88,
+   "e": 185.76,
+   "text": "higher ticket when it fits your audience."
+  },
+  {
+   "s": 185.98,
+   "e": 189.82,
+   "text": "You do not need every tip day one, but match links"
+  },
+  {
+   "s": 189.82,
+   "e": 191.48,
+   "text": "to niches is the spine."
+  },
+  {
+   "s": 191.92,
+   "e": 194.14,
+   "text": "Weight loss link on weight loss shorts."
+  },
+  {
+   "s": 194.8,
+   "e": 196.86,
+   "text": "Make money link on side hustle shorts."
+  },
+  {
+   "s": 197.5,
+   "e": 198.8,
+   "text": "Mismatch gets views."
+  },
+  {
+   "s": 199.36,
+   "e": 201.3,
+   "text": "Mismatch rarely gets buyers."
+  },
+  {
+   "s": 202.42,
+   "e": 203.46,
+   "text": "Belief 6."
+  },
+  {
+   "s": 203.78,
+   "e": 206.72,
+   "text": "Your link is public the moment it is in a YouTube"
+  },
+  {
+   "s": 206.72,
+   "e": 207.28,
+   "text": "comment."
+  },
+  {
+   "s": 207.52,
+   "e": 208.9,
+   "text": "Treat it like cash."
+  },
+  {
+   "s": 209.08,
+   "e": 212.04,
+   "text": "Do not share your Link Vault screen and screenshots"
+  },
+  {
+   "s": 212.04,
+   "e": 215.22,
+   "text": "with full URLs if you worry about bad actors."
+  },
+  {
+   "s": 215.52,
+   "e": 217.12,
+   "text": "Normal affiliate hygiene."
+  },
+  {
+   "s": 217.4,
+   "e": 220.22,
+   "text": "Do not save links to offers you have not read."
+  },
+  {
+   "s": 220.62,
+   "e": 223.48,
+   "text": "Refund rates hurt accounts, not just vibes."
+  },
+  {
+   "s": 223.98,
+   "e": 226.18,
+   "text": "Promote what you would tell your sister about."
+  },
+  {
+   "s": 226.36,
+   "e": 227.92,
+   "text": "Or do not promote it."
+  },
+  {
+   "s": 228.9,
+   "e": 229.88,
+   "text": "Belief 7."
+  },
+  {
+   "s": 230.28,
+   "e": 233.3,
+   "text": "Empty Link Vault is a choice, not a failure."
+  },
+  {
+   "s": 233.3,
+   "e": 236.98,
+   "text": "No affiliate links yet walks you through save a"
+  },
+  {
+   "s": 236.98,
+   "e": 239.94,
+   "text": "money link, name the offer, drop it in comments."
+  },
+  {
+   "s": 240.16,
+   "e": 243.48,
+   "text": "If you are one -off testing Gold Rush, paste once"
+  },
+  {
+   "s": 243.48,
+   "e": 244.42,
+   "text": "and save later."
+  },
+  {
+   "s": 244.7,
+   "e": 247.76,
+   "text": "If you are building a catalog, save first every"
+  },
+  {
+   "s": 247.76,
+   "e": 249.7,
+   "text": "time you commit to an offer for the week."
+  },
+  {
+   "s": 250.94,
+   "e": 251.96,
+   "text": "Emotional stakes."
+  },
+  {
+   "s": 252.3,
+   "e": 253.1,
+   "text": "Plain version."
+  },
+  {
+   "s": 253.54,
+   "e": 256.74,
+   "text": "One correct link in Link Vault means every comment"
+  },
+  {
+   "s": 256.74,
+   "e": 259.22,
+   "text": "Gold Rush writes carries your commission ID."
+  },
+  {
+   "s": 259.62,
+   "e": 262.82,
+   "text": "One typo means you become unpaid marketing for"
+  },
+  {
+   "s": 262.82,
+   "e": 263.28,
+   "text": "the vendor."
+  },
+  {
+   "s": 263.92,
+   "e": 266.46,
+   "text": "Link Vault mindset is boring on purpose."
+  },
+  {
+   "s": 267.16,
+   "e": 270.1,
+   "text": "Boring accuracy makes exciting paydays possible"
+  },
+  {
+   "s": 270.1,
+   "e": 270.52,
+   "text": "later."
+  },
+  {
+   "s": 271.12,
+   "e": 273.8,
+   "text": "Treat every saved hop like a paycheck envelope"
+  },
+  {
+   "s": 273.8,
+   "e": 275.32,
+   "text": "with your name on the flap."
+  },
+  {
+   "s": 276.28,
+   "e": 279.32,
+   "text": "Three habits before the click -by -click Link Vault"
+  },
+  {
+   "s": 279.32,
+   "e": 279.76,
+   "text": "training."
+  },
+  {
+   "s": 280.12,
+   "e": 280.98,
+   "text": "Habit one."
+  },
+  {
+   "s": 281.22,
+   "e": 283.8,
+   "text": "When you click save to your links on Gold Rush,"
+  },
+  {
+   "s": 284.18,
+   "e": 286.98,
+   "text": "open Link Vault within a day and confirm the card"
+  },
+  {
+   "s": 286.98,
+   "e": 287.62,
+   "text": "looks right."
+  },
+  {
+   "s": 287.98,
+   "e": 290.4,
+   "text": "Name, niche, URL tail."
+  },
+  {
+   "s": 290.86,
+   "e": 291.76,
+   "text": "Habit two."
+  },
+  {
+   "s": 292.18,
+   "e": 294.24,
+   "text": "One notes line on your best offer."
+  },
+  {
+   "s": 294.5,
+   "e": 296.56,
+   "text": "Converts on shorts or main hop."
+  },
+  {
+   "s": 296.8,
+   "e": 299.68,
+   "text": "So six months from now, you remember why you kept"
+  },
+  {
+   "s": 299.68,
+   "e": 299.88,
+   "text": "it."
+  },
+  {
+   "s": 299.88,
+   "e": 301.14,
+   "text": "Habit three."
+  },
+  {
+   "s": 301.42,
+   "e": 304.76,
+   "text": "Before any premium tool later in academy, pick"
+  },
+  {
+   "s": 304.76,
+   "e": 305.76,
+   "text": "your Link Vault winner."
+  },
+  {
+   "s": 306.16,
+   "e": 308.52,
+   "text": "Premium kits reuse the same tickets."
+  },
+  {
+   "s": 309.08,
+   "e": 309.74,
+   "text": "Your action."
+  },
+  {
+   "s": 309.98,
+   "e": 312.84,
+   "text": "If you have not saved a link yet, grab your best"
+  },
+  {
+   "s": 312.84,
+   "e": 316.36,
+   "text": "HTTPS affiliate hop, open Link Vault from Library,"
+  },
+  {
+   "s": 316.54,
+   "e": 319.14,
+   "text": "and add it with a human offer name before the next"
+  },
+  {
+   "s": 319.14,
+   "e": 319.48,
+   "text": "video."
+  },
+  {
+   "s": 319.8,
+   "e": 322.62,
+   "text": "If you already saved from Gold Rush, open Link"
+  },
+  {
+   "s": 322.62,
+   "e": 324.5,
+   "text": "Vault and read the three use steps."
+  },
+  {
+   "s": 324.86,
+   "e": 327.84,
+   "text": "Copy or pick, generate comments, post, post, and"
+  },
+  {
+   "s": 327.84,
+   "e": 329.58,
+   "text": "earn, out loud once."
+  },
+  {
+   "s": 329.9,
+   "e": 330.7,
+   "text": "Sounds silly."
+  },
+  {
+   "s": 331.12,
+   "e": 332.54,
+   "text": "Locks the model in your head."
+  },
+  {
+   "s": 332.78,
+   "e": 333.98,
+   "text": "I'll see you in the next one."
+  }
+ ]
+}

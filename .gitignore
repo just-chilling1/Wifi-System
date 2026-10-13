@@ -5,6 +5,9 @@
 
 # dependencies
 /node_modules
+wifi-system-videos/node_modules/
+wifi-system-videos/remotion/node_modules/
+wifi-system-videos/remotion/out/
 
 # next.js
 /.next/

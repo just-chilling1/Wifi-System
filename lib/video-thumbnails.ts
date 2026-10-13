@@ -1,3 +1,6 @@
+/** Bump when replacing files under public/thumbnails/. */
+const THUMBNAIL_ASSET_VERSION = "20261012"
+
 /** Local WebP posters keyed by training-video roster slug. */
 export const VIDEO_THUMBNAIL_PATHS = {
   "watch-this-first": "/thumbnails/wc-thumb-01-watch-this-first.webp",
@@ -61,14 +64,24 @@ type ThumbnailLookup = {
   vimeoId?: string
 }
 
+function withThumbnailVersion(path: string): string {
+  return `${path}?v=${THUMBNAIL_ASSET_VERSION}`
+}
+
 export function getVideoThumbnailPath(slug: VideoThumbnailSlug): string {
-  return VIDEO_THUMBNAIL_PATHS[slug]
+  return withThumbnailVersion(VIDEO_THUMBNAIL_PATHS[slug])
 }
 
 /** Resolve a poster by slug first, then by Vimeo ID when present. */
 export function getVideoThumbnail({ slug, vimeoId }: ThumbnailLookup = {}): string | null {
-  if (slug) return VIDEO_THUMBNAIL_PATHS[slug] ?? null
+  if (slug) {
+    const path = VIDEO_THUMBNAIL_PATHS[slug]
+    return path ? withThumbnailVersion(path) : null
+  }
   const id = vimeoId?.match(/\d{7,}/)?.[0]
-  if (id && VIMEO_TO_SLUG[id]) return VIDEO_THUMBNAIL_PATHS[VIMEO_TO_SLUG[id]!] ?? null
+  if (id && VIMEO_TO_SLUG[id]) {
+    const path = VIDEO_THUMBNAIL_PATHS[VIMEO_TO_SLUG[id]!]
+    return path ? withThumbnailVersion(path) : null
+  }
   return null
 }

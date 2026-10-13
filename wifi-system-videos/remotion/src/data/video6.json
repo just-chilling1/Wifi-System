@@ -1,0 +1,817 @@
+{
+ "durationSec": 337.5,
+ "slides": [
+  {
+   "type": "intro",
+   "num": "6",
+   "title": [
+    "MY VAULT",
+    "MINDSET"
+   ],
+   "sub": "Memory of your operation",
+   "start": 0.0,
+   "end": 3.26
+  },
+  {
+   "type": "title",
+   "kicker": "THIS VIDEO",
+   "headline": "Assets, not clutter.",
+   "sub": "Packs save automatically on success.",
+   "start": 3.26,
+   "end": 60.64
+  },
+  {
+   "type": "title",
+   "kicker": "BELIEF 1",
+   "headline": "Potential \u2192 kinetic\nwhen you post.",
+   "sub": "Uncopied comments send no traffic.",
+   "start": 60.64,
+   "end": 93.0
+  },
+  {
+   "type": "title",
+   "kicker": "BELIEF 2",
+   "headline": "Organize by action.",
+   "sub": "Delete dead offers \u2014 not weird line two.",
+   "start": 93.0,
+   "end": 128.26
+  },
+  {
+   "type": "shot",
+   "img": "pages.png",
+   "caption": "View comments. Open video. Copy. Post.",
+   "start": 128.26,
+   "end": 151.56
+  },
+  {
+   "type": "title",
+   "kicker": "BELIEF 4",
+   "headline": "Empty vault?\nFix the habit.",
+   "sub": "One Gold Rush run before more theory.",
+   "start": 151.56,
+   "end": 178.74
+  },
+  {
+   "type": "title",
+   "kicker": "BELIEF 5",
+   "headline": "Opens & copies = feedback.",
+   "sub": "Generate \u2192 vault \u2192 copy \u2192 post.",
+   "start": 178.74,
+   "end": 234.74
+  },
+  {
+   "type": "title",
+   "kicker": "BELIEF 7",
+   "headline": "Links vs comment packs.",
+   "sub": "New hop link \u2192 fresh Gold Rush pack.",
+   "start": 234.74,
+   "end": 282.52
+  },
+  {
+   "type": "steps",
+   "kicker": "HABITS",
+   "items": [
+    "Open vault after each run",
+    "Post one old pack weekly",
+    "Double down on winners"
+   ],
+   "sub": "Motion beats theory.",
+   "start": 282.52,
+   "end": 316.7
+  },
+  {
+   "type": "end",
+   "headline": "Next: My Vault Training",
+   "sub": "Copy one line tonight if you have a pack.",
+   "start": 316.7,
+   "end": 337.0
+  }
+ ],
+ "captions": [
+  {
+   "s": 0.0,
+   "e": 1.12,
+   "text": "Hey, welcome back!"
+  },
+  {
+   "s": 1.48,
+   "e": 4.4,
+   "text": "In this video, we will tackle My Vault mindset"
+  },
+  {
+   "s": 4.4,
+   "e": 6.34,
+   "text": "and how to make the most out of it."
+  },
+  {
+   "s": 6.88,
+   "e": 9.6,
+   "text": "My Vault is not a junk drawer for AI text."
+  },
+  {
+   "s": 9.8,
+   "e": 11.96,
+   "text": "It is the memory of your operation."
+  },
+  {
+   "s": 12.34,
+   "e": 15.24,
+   "text": "Every comment pack Gold Rush saves is proof you"
+  },
+  {
+   "s": 15.24,
+   "e": 17.92,
+   "text": "ran the play, and a shortcut when life gets busy"
+  },
+  {
+   "s": 17.92,
+   "e": 20.12,
+   "text": "and you do not want to regenerate from scratch."
+  },
+  {
+   "s": 20.44,
+   "e": 23.6,
+   "text": "By the end, you will treat packs like assets, not"
+  },
+  {
+   "s": 23.6,
+   "e": 23.96,
+   "text": "clutter."
+  },
+  {
+   "s": 24.38,
+   "e": 25.24,
+   "text": "Quick picture."
+  },
+  {
+   "s": 25.52,
+   "e": 28.38,
+   "text": "You already generated at least one comment pack"
+  },
+  {
+   "s": 28.38,
+   "e": 29.06,
+   "text": "in Gold Rush."
+  },
+  {
+   "s": 29.06,
+   "e": 31.7,
+   "text": "If you did not, go ahead and watch the previous"
+  },
+  {
+   "s": 31.7,
+   "e": 32.16,
+   "text": "videos."
+  },
+  {
+   "s": 32.42,
+   "e": 34.84,
+   "text": "You will get a step -by -step guide on how to do"
+  },
+  {
+   "s": 34.84,
+   "e": 35.0,
+   "text": "it."
+  },
+  {
+   "s": 35.16,
+   "e": 36.2,
+   "text": "So, let us continue."
+  },
+  {
+   "s": 36.62,
+   "e": 39.68,
+   "text": "When generation succeeds on Gold Rush, the pack"
+  },
+  {
+   "s": 39.68,
+   "e": 41.34,
+   "text": "lands in My Vault automatically."
+  },
+  {
+   "s": 41.82,
+   "e": 43.44,
+   "text": "You did not forget to click Save."
+  },
+  {
+   "s": 43.74,
+   "e": 46.32,
+   "text": "The system did that because your future self will"
+  },
+  {
+   "s": 46.32,
+   "e": 47.0,
+   "text": "need a library."
+  },
+  {
+   "s": 47.42,
+   "e": 50.24,
+   "text": "My Vault lives under Library on the sidebar."
+  },
+  {
+   "s": 50.4,
+   "e": 51.62,
+   "text": "Your saved comments."
+  },
+  {
+   "s": 51.86,
+   "e": 55.32,
+   "text": "The page reminds you, Every pack you generate lives"
+  },
+  {
+   "s": 55.32,
+   "e": 55.58,
+   "text": "here."
+  },
+  {
+   "s": 55.9,
+   "e": 58.56,
+   "text": "Copy one, open the short, and post."
+  },
+  {
+   "s": 58.56,
+   "e": 59.96,
+   "text": "Belief one."
+  },
+  {
+   "s": 60.2,
+   "e": 62.7,
+   "text": "A pack in the Vault is potential energy."
+  },
+  {
+   "s": 63.08,
+   "e": 64.84,
+   "text": "Posting converts it to kinetic."
+  },
+  {
+   "s": 65.48,
+   "e": 68.2,
+   "text": "Comments sitting uncopied do not send traffic."
+  },
+  {
+   "s": 68.88,
+   "e": 71.28,
+   "text": "Opens and copies on each pack tell you whether"
+  },
+  {
+   "s": 71.28,
+   "e": 74.0,
+   "text": "you are revisiting winners or hoarding drafts."
+  },
+  {
+   "s": 74.34,
+   "e": 77.22,
+   "text": "Opens track how many times you expanded the comment"
+  },
+  {
+   "s": 77.22,
+   "e": 77.58,
+   "text": "list."
+  },
+  {
+   "s": 77.96,
+   "e": 80.58,
+   "text": "Copies track how many times you grabbed text."
+  },
+  {
+   "s": 80.96,
+   "e": 84.12,
+   "text": "High copies with zero YouTube posts still means"
+  },
+  {
+   "s": 84.12,
+   "e": 86.86,
+   "text": "you copied, but only posted comments earn."
+  },
+  {
+   "s": 87.14,
+   "e": 90.6,
+   "text": "The Vault measures your workflow honesty, not commission"
+  },
+  {
+   "s": 90.6,
+   "e": 91.14,
+   "text": "directly."
+  },
+  {
+   "s": 91.56,
+   "e": 92.5,
+   "text": "Belief two."
+  },
+  {
+   "s": 93.0,
+   "e": 95.78,
+   "text": "Organize by action, not by perfection."
+  },
+  {
+   "s": 96.28,
+   "e": 99.9,
+   "text": "Each card shows offer name, video title, niche,"
+  },
+  {
+   "s": 100.3,
+   "e": 103.36,
+   "text": "comment count, opens, copies, and date."
+  },
+  {
+   "s": 103.76,
+   "e": 106.44,
+   "text": "Do not delete packs because comment two sounded"
+  },
+  {
+   "s": 106.44,
+   "e": 106.84,
+   "text": "weird."
+  },
+  {
+   "s": 107.24,
+   "e": 109.9,
+   "text": "Delete when the offer is dead, the link changed"
+  },
+  {
+   "s": 109.9,
+   "e": 112.58,
+   "text": "permanently, or the short was a mismatch you will"
+  },
+  {
+   "s": 112.58,
+   "e": 113.44,
+   "text": "not touch again."
+  },
+  {
+   "s": 113.86,
+   "e": 116.82,
+   "text": "Keep packs for offers you still promote, even if"
+  },
+  {
+   "s": 116.82,
+   "e": 119.02,
+   "text": "you only posted one comment from the set."
+  },
+  {
+   "s": 119.68,
+   "e": 122.2,
+   "text": "Regenerate on Gold Rush when the angle is stale."
+  },
+  {
+   "s": 122.64,
+   "e": 125.3,
+   "text": "Reuse My Vault when you are reposting on a new"
+  },
+  {
+   "s": 125.3,
+   "e": 126.66,
+   "text": "short with the same offer."
+  },
+  {
+   "s": 127.08,
+   "e": 127.92,
+   "text": "Belief three."
+  },
+  {
+   "s": 128.26,
+   "e": 130.56,
+   "text": "My Vault is your rehearsal room."
+  },
+  {
+   "s": 131.12,
+   "e": 133.88,
+   "text": "Expanding comments shows numbered lines with copy"
+  },
+  {
+   "s": 133.88,
+   "e": 134.66,
+   "text": "on each row."
+  },
+  {
+   "s": 135.26,
+   "e": 137.8,
+   "text": "Open video jumps to the YouTube short so you can"
+  },
+  {
+   "s": 137.8,
+   "e": 139.22,
+   "text": "re -listen before you paste."
+  },
+  {
+   "s": 139.58,
+   "e": 141.66,
+   "text": "Treat each pack like a script card."
+  },
+  {
+   "s": 141.98,
+   "e": 144.86,
+   "text": "Pick the line that fits today, tweak one sentence"
+  },
+  {
+   "s": 144.86,
+   "e": 146.36,
+   "text": "in your voice, post."
+  },
+  {
+   "s": 146.78,
+   "e": 149.42,
+   "text": "Hide comments when you are done so the list stays"
+  },
+  {
+   "s": 149.42,
+   "e": 150.02,
+   "text": "scannable."
+  },
+  {
+   "s": 150.4,
+   "e": 151.16,
+   "text": "Belief four."
+  },
+  {
+   "s": 151.56,
+   "e": 153.62,
+   "text": "Empty Vault means empty habit."
+  },
+  {
+   "s": 153.96,
+   "e": 155.82,
+   "text": "Fix the habit, not the tool."
+  },
+  {
+   "s": 156.14,
+   "e": 159.3,
+   "text": "The empty state walks you through generate, copy,"
+  },
+  {
+   "s": 159.62,
+   "e": 159.98,
+   "text": "paste."
+  },
+  {
+   "s": 160.22,
+   "e": 162.6,
+   "text": "If you are watching this mindset video with an"
+  },
+  {
+   "s": 162.6,
+   "e": 165.84,
+   "text": "empty vault, your homework is one Gold Rush run"
+  },
+  {
+   "s": 165.84,
+   "e": 168.9,
+   "text": "before the next Academy video, not more theory."
+  },
+  {
+   "s": 169.42,
+   "e": 171.76,
+   "text": "Generate new pack on the header sends you back"
+  },
+  {
+   "s": 171.76,
+   "e": 174.64,
+   "text": "to Gold Rush when you want fresh shorts, not when"
+  },
+  {
+   "s": 174.64,
+   "e": 176.78,
+   "text": "you are avoiding posting what is already copied."
+  },
+  {
+   "s": 177.5,
+   "e": 178.24,
+   "text": "Belief five."
+  },
+  {
+   "s": 178.74,
+   "e": 181.1,
+   "text": "Numbers are feedback, not judgment."
+  },
+  {
+   "s": 181.88,
+   "e": 184.54,
+   "text": "Low opens might mean you never reopened the pack."
+  },
+  {
+   "s": 184.88,
+   "e": 185.66,
+   "text": "Open it tonight."
+  },
+  {
+   "s": 186.0,
+   "e": 189.26,
+   "text": "Low copies might mean you generate but never commit"
+  },
+  {
+   "s": 189.26,
+   "e": 190.12,
+   "text": "to one line."
+  },
+  {
+   "s": 190.4,
+   "e": 193.2,
+   "text": "Copy one comment before you close the laptop."
+  },
+  {
+   "s": 193.2,
+   "e": 194.96,
+   "text": "You are building a rhythm."
+  },
+  {
+   "s": 195.6,
+   "e": 199.86,
+   "text": "Generate, vault, view, copy, open video, paste"
+  },
+  {
+   "s": 199.86,
+   "e": 200.38,
+   "text": "on YouTube."
+  },
+  {
+   "s": 200.82,
+   "e": 203.28,
+   "text": "Skip a step and the chain breaks quietly."
+  },
+  {
+   "s": 203.68,
+   "e": 205.94,
+   "text": "No error message, just no traffic."
+  },
+  {
+   "s": 206.74,
+   "e": 207.42,
+   "text": "Belief six."
+  },
+  {
+   "s": 207.96,
+   "e": 209.36,
+   "text": "Respect deletion."
+  },
+  {
+   "s": 209.76,
+   "e": 211.7,
+   "text": "Delete this pack is permanent."
+  },
+  {
+   "s": 212.02,
+   "e": 213.76,
+   "text": "Only delete when you are sure."
+  },
+  {
+   "s": 214.12,
+   "e": 217.76,
+   "text": "Wrong offer, toxic short association, or duplicate"
+  },
+  {
+   "s": 217.76,
+   "e": 219.04,
+   "text": "you created by accident."
+  },
+  {
+   "s": 219.3,
+   "e": 221.44,
+   "text": "If you are deleting because you are embarrassed"
+  },
+  {
+   "s": 221.44,
+   "e": 225.28,
+   "text": "by the wording, regenerate instead, or copy a different"
+  },
+  {
+   "s": 225.28,
+   "e": 226.62,
+   "text": "comment from the same pack."
+  },
+  {
+   "s": 227.0,
+   "e": 229.78,
+   "text": "The vault should shrink slowly and on purpose,"
+  },
+  {
+   "s": 230.14,
+   "e": 232.74,
+   "text": "not because you rage click after one bad day."
+  },
+  {
+   "s": 233.26,
+   "e": 234.14,
+   "text": "Belief seven."
+  },
+  {
+   "s": 234.74,
+   "e": 238.1,
+   "text": "Link vault and my vault are siblings, not duplicates."
+  },
+  {
+   "s": 238.72,
+   "e": 240.94,
+   "text": "Link vault stores affiliate URLs."
+  },
+  {
+   "s": 241.56,
+   "e": 244.32,
+   "text": "My vault stores comment packs tied to shorts and"
+  },
+  {
+   "s": 244.32,
+   "e": 244.72,
+   "text": "offers."
+  },
+  {
+   "s": 245.2,
+   "e": 247.72,
+   "text": "Changing a link in link vault does not rewrite"
+  },
+  {
+   "s": 247.72,
+   "e": 249.56,
+   "text": "old comments in saved packs."
+  },
+  {
+   "s": 250.2,
+   "e": 253.16,
+   "text": "Gold Rush baked whatever URL you used at generation"
+  },
+  {
+   "s": 253.16,
+   "e": 253.68,
+   "text": "time."
+  },
+  {
+   "s": 253.9,
+   "e": 256.8,
+   "text": "When your vendor gives a new hop link, run a fresh"
+  },
+  {
+   "s": 256.8,
+   "e": 259.9,
+   "text": "pack on Gold Rush with the updated URL and let"
+  },
+  {
+   "s": 259.9,
+   "e": 262.72,
+   "text": "the new pack sit beside the old one until you retire"
+  },
+  {
+   "s": 262.72,
+   "e": 263.54,
+   "text": "the old offer."
+  },
+  {
+   "s": 263.96,
+   "e": 267.12,
+   "text": "One emotional stakes line, because it is true."
+  },
+  {
+   "s": 267.36,
+   "e": 270.5,
+   "text": "The pack you copy tonight might be the one a stranger"
+  },
+  {
+   "s": 270.5,
+   "e": 273.22,
+   "text": "reads tomorrow on a short they were already watching."
+  },
+  {
+   "s": 273.5,
+   "e": 276.76,
+   "text": "One link to change their path and also yours if"
+  },
+  {
+   "s": 276.76,
+   "e": 277.64,
+   "text": "they buy through you."
+  },
+  {
+   "s": 278.22,
+   "e": 280.82,
+   "text": "My vault keeps that moment from disappearing into"
+  },
+  {
+   "s": 280.82,
+   "e": 281.78,
+   "text": "clipboard history."
+  },
+  {
+   "s": 282.52,
+   "e": 283.9,
+   "text": "Three operator habits."
+  },
+  {
+   "s": 284.5,
+   "e": 285.16,
+   "text": "Habit one."
+  },
+  {
+   "s": 285.46,
+   "e": 288.68,
+   "text": "After every Gold Rush generation, open my vault"
+  },
+  {
+   "s": 288.68,
+   "e": 291.9,
+   "text": "within five minutes and view comments once, even"
+  },
+  {
+   "s": 291.9,
+   "e": 294.06,
+   "text": "if you already copied on the Gold Rush page."
+  },
+  {
+   "s": 294.26,
+   "e": 296.38,
+   "text": "Double check the pack stored correctly."
+  },
+  {
+   "s": 296.78,
+   "e": 297.64,
+   "text": "Habit two."
+  },
+  {
+   "s": 297.9,
+   "e": 300.94,
+   "text": "Once a week, scroll your vault top to bottom and"
+  },
+  {
+   "s": 300.94,
+   "e": 303.26,
+   "text": "post one older pack you never used."
+  },
+  {
+   "s": 303.54,
+   "e": 304.66,
+   "text": "Second chance money."
+  },
+  {
+   "s": 304.84,
+   "e": 305.58,
+   "text": "Habit three."
+  },
+  {
+   "s": 306.18,
+   "e": 308.62,
+   "text": "When an offer wins, stick with that name."
+  },
+  {
+   "s": 308.98,
+   "e": 310.44,
+   "text": "Generate more packs for it."
+  },
+  {
+   "s": 310.82,
+   "e": 313.72,
+   "text": "Ignore shiny new offers until you have posted three"
+  },
+  {
+   "s": 313.72,
+   "e": 314.82,
+   "text": "comments for the winner."
+  },
+  {
+   "s": 315.54,
+   "e": 317.62,
+   "text": "Your action before my vault training."
+  },
+  {
+   "s": 317.84,
+   "e": 321.06,
+   "text": "If you have packs, open my vault now and pick the"
+  },
+  {
+   "s": 321.06,
+   "e": 321.78,
+   "text": "newest one."
+  },
+  {
+   "s": 322.02,
+   "e": 326.1,
+   "text": "View comments, copy one line, open video, and post"
+  },
+  {
+   "s": 326.1,
+   "e": 326.94,
+   "text": "if you have not yet."
+  },
+  {
+   "s": 327.16,
+   "e": 330.64,
+   "text": "If the vault is empty, stop this video, run Gold"
+  },
+  {
+   "s": 330.64,
+   "e": 332.36,
+   "text": "Rush once, then come back."
+  },
+  {
+   "s": 332.82,
+   "e": 334.24,
+   "text": "Mindset plus motion."
+  },
+  {
+   "s": 334.52,
+   "e": 335.54,
+   "text": "Always motion."
+  },
+  {
+   "s": 335.92,
+   "e": 337.0,
+   "text": "I'll see you in the next one."
+  }
+ ]
+}

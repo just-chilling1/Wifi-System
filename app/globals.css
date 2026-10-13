@@ -3139,3 +3139,12 @@ html[data-sidebar="collapsed"] {
   font-weight: 700;
   line-height: 1.4;
 }
+
+.surface-featured a.text-sapphire-700 {
+  color: var(--brand-50);
+}
+
+.surface-featured a.text-sapphire-700:hover,
+.surface-featured a.hover\:text-primary:hover {
+  color: #ffffff;
+}
